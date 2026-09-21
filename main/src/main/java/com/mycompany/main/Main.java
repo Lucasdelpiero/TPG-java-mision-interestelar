@@ -4,10 +4,6 @@
 
 package com.mycompany.main;
 
-/**
- *
- * @author Lucas
- */
 public class Main {
 
     public static void main(String[] args) {
