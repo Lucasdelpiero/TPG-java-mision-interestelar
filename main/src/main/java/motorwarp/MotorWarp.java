@@ -4,10 +4,7 @@
  */
 package motorwarp;
 
-/**
- *
- * @author Lucas
- */
+
 public class MotorWarp {
     
 }

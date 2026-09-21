@@ -4,10 +4,7 @@
  */
 package nave;
 
-/**
- *
- * @author Lucas
- */
+
 public class Bitacora {
     
 }
