@@ -7,7 +7,7 @@ import modelo.motorwarp.*;
 public abstract class Nave {
     
     protected Recursos recursos;
-    protected MotorWarp motor;
+    protected MotorWarp motorwarp;
     protected ArrayList<Tripulante>tripulacion;
     protected Componentes componentes;
     protected String id;
@@ -17,18 +17,18 @@ public abstract class Nave {
     //-------------------------------------------
     
     //Creacion de nave proviene de NAVE-FACTORY
-    public Nave(String id, MotorWarp motorwarp, int combustible, int energia, int desgaste){
+    protected Nave(String id, MotorWarp motorwarp, int combustible, int energia, int desgaste){
         
         validacion(id, motorwarp);
         
         tripulacion = new ArrayList<>();
         recursos = new Recursos(combustible, energia, desgaste);
         this.id = id;
-        this.motor = motorwarp;
+        this.motorwarp = motorwarp;
     }
     
     private void validacion(String id, MotorWarp motorwarp){
-        if(id == null || id == "" || motorwarp == null){
+        if(id == null || id.equalsIgnoreCase("") || motorwarp == null){
             throw new IllegalArgumentException("ERROR: Campos invalidos (id/MotorWarp)");
         }
     }
@@ -58,7 +58,7 @@ public abstract class Nave {
     }
 
     public MotorWarp getMotor() {
-        return motor;
+        return motorwarp;
     }
 
     public ArrayList<Tripulante> getTripulacion() {
@@ -82,7 +82,7 @@ public abstract class Nave {
     }
 
     public void setMotor(MotorWarp motor) {
-        this.motor = motor;
+        this.motorwarp = motor;
     }
 
     public void setTripulacion(ArrayList<Tripulante> tripulacion) {
