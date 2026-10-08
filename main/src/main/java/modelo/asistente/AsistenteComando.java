@@ -3,8 +3,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package modelo.asistente;
+
 import modelo.nave.Nave;
-import modelo.nave.Bitacora;
+import modelo.nave.Recursos;
+
+import modelo.bitacora.Bitacora;
 import modelo.mision.Mision;
 
 public class AsistenteComando {
@@ -29,6 +32,9 @@ public class AsistenteComando {
      * @param mision una clase hija de mision
      */
     public void iniciaMision(Mision mision){
+        assert (mision == null) : "Mision es nulo";
+        try {mision.hacerMision(nave);}
+        finally{};
         
     }
 }
