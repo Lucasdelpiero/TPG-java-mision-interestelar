@@ -3,10 +3,13 @@
  */
 
 package com.mycompany.main;
+import modelo.asistente.AsistenteComando;
+import modelo.nave.*;
 
 public class Main {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+       AsistenteComando asistente = new AsistenteComando();
+       Nave nave = getNave();
     }
 }
