@@ -2,12 +2,19 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+
 package modelo.mision;
 
 public class RecursosConsumidos {
-    protected int energiaConsumida = 0;
-    protected int combustibleConsumido = 0;
-    protected int desgasteConsumido = 0;
+    protected int energiaConsumida;
+    protected int combustibleConsumido;
+    protected int desgasteConsumido;
+    
+    public RecursosConsumidos(){
+        energiaConsumida = 0;
+        combustibleConsumido = 0;
+        desgasteConsumido = 0;
+    }
     
     /**
      * <b>pre:</b> num es posivo y no se consume mas de lo que la nave tiene
@@ -31,7 +38,7 @@ public class RecursosConsumidos {
      * @param num cantidad que se suma a lo consumido de este desgaste
      */
     public void consumirDesgaste(int num){
-        desgasteConsumido += 0;
+        desgasteConsumido += num;
     }
     
     public int getEnergiaConsumida() {
@@ -46,8 +53,7 @@ public class RecursosConsumidos {
         return desgasteConsumido;
     }
 
-    public RecursosConsumidos() {
-    }
+
     
     
 }
