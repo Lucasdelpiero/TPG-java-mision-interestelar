@@ -13,6 +13,9 @@ public class Evento {
     private final String descripcion;
     private final String idMision; // Podria ser null si el evento no esta relacionado a una mision
 
+    //-------------------------------------------
+    //          CONSTRUCTOR / VALIDACION
+    //-------------------------------------------    
     // Sobrecarga
     public Evento(TipoEvento tipo, String descripcion) {
         this(tipo, descripcion, null);
@@ -35,6 +38,10 @@ public class Evento {
             throw new IllegalArgumentException("El evento que se intenta registrar tiene datos invalidos");
         }
     }
+    
+    //-------------------------------------------
+    //          GETTERS / SETTERS
+    //-------------------------------------------    
     
     /**
      * 
