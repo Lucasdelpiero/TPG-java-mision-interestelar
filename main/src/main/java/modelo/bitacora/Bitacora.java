@@ -4,15 +4,17 @@ import java.util.ArrayList;
 public class Bitacora {
     private ArrayList<Evento> eventos;
     
+    //-------------------------------------------
+    //          CONSTRUCTOR
+    //------------------------------------------- 
     public Bitacora(){
         this.eventos = new ArrayList<Evento>();
     }
     
-    // Sobrecarga
-    public void registrar(TipoEvento tipo, String descripcion){
-        this.registrar(tipo, descripcion, null);
-    }
-
+    //-------------------------------------------
+    //          ADICIONALES
+    //------------------------------------------- 
+    
     /**
      * <b>PRE</b>
      * Requiere que el evento sea valido, la validacion ocurre en la clase Evento
@@ -23,6 +25,15 @@ public class Bitacora {
         Evento evento = new Evento(tipo, descripcion, idMision);
         this.eventos.add(evento);
     }
+    
+    // Sobrecarga
+    public void registrar(TipoEvento tipo, String descripcion){
+        this.registrar(tipo, descripcion, null);
+    }
+
+    //-------------------------------------------
+    //          GETTERS / SETTERS
+    //------------------------------------------- 
     
     public ArrayList<Evento> getEventosDeMision(String idMision){
         ArrayList<Evento> resultado = new ArrayList<Evento>();
