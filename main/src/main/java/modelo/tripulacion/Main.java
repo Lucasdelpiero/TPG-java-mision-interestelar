@@ -2,9 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.mycompany.tripulacion;
-
+package modelo.tripulacion;
 import java.util.ArrayList;
+
+//      MAIN DE PRUEBA
+//      MAIN DE PRUEBA
+//      MAIN DE PRUEBA
 
 public class Main {
 

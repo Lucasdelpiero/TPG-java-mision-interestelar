@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  */
 
-package com.mycompany.tripulacion;
+package modelo.tripulacion;
 import java.util.ArrayList;
 /**
  *
