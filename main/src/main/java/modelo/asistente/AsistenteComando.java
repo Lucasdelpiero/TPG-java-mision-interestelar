@@ -79,11 +79,11 @@ public class AsistenteComando {
      * 
      */
     public void registrarMision(TipoEvento e, String descripcion, String idMision){
-        bitacora.registrar(e, descripcion, idMision);
+        //bitacora.registrar(e, descripcion, idMision);
     }
     
     public void registrarEvento(TipoEvento e, String descripcion){
-        bitacora.registrar(e, descripcion);
+        //bitacora.registrar(e, descripcion);
     }
     
     
@@ -95,6 +95,9 @@ public class AsistenteComando {
         return nave;
     }
     
+    public void setNave(Nave nave){
+        this.nave = nave;
+    }
     //public Recursos getRecursos(){
     //    return nave.getRecursos();
     //}

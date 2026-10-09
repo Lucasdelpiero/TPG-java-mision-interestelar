@@ -1,39 +1,36 @@
 package modelo.nave;
 
-import modelo.motorwarp.*;
 /**
- *   
- *  PRE:
- *      'id' es un string correcto.
- *      'MotorWarp' ??
+ * Permite crear naves con metodos y atributos estaticos, sin instanciarla   
  * 
- *  POST: Devuelve un objeto tipo Nave
  */
-
 public class NaveFactory {
     
-    public Nave getNave(String tipo, String id, MotorWarp motorwarp){
-        if(tipo == null){
+    public static enum tipoNave {
+        EXPLORADORA,
+        CARGUERA,
+        COMBATE
+    }
+   
+    /**
+     * Construye una nave segun el tipo que le hayan pedido<br>
+     * PRE: tipo es uno de los valores validos en el enum tipoNave<br>
+     * POST: se retorna una nueva nave del tipo pedido<br>
+     * @param tipo se invoca con "NaveFactory.tipoNave.[TIPO]"
+     * @return devuelve una nave del tipo pedido
+     */
+    public static Nave getNave(tipoNave tipo){
+        if (tipo == tipoNave.EXPLORADORA){
+            return new Exploradora();
+        } else 
+            if (tipo == tipoNave.CARGUERA){
+                return new Carguero();
+        } else 
+            if (tipo == tipoNave.COMBATE){
+                return new Combate();
+        } else {
+            System.out.println("Llamada con un tipo incorrecto");
             return null;
         }
-        if(tipo.equalsIgnoreCase("Exploradora")){
-            //  Combustible = 60;
-            //  Energia = 80;
-            //  Desgaste = 0;           
-            return new Exploradora(id, motorwarp, 60, 80, 0);
-        }
-        else if(tipo.equalsIgnoreCase("Carguero")){
-            //  Combustible = 100;
-            //  Energia = 60;
-            //  Desgaste = 0;
-            return new Carguero(id, motorwarp, 100, 60, 0);
-        }
-        else if(tipo.equalsIgnoreCase("Combate")){
-            //  Combustible = 80;
-            //  Energia = 100;
-            //  Desgaste = 0;
-            return new Combate(id, motorwarp, 80, 100, 0);
-        }
-        return null;
     }
 }

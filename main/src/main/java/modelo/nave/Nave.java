@@ -10,27 +10,30 @@ public abstract class Nave {
     protected MotorWarp motorwarp;
     protected ArrayList<Tripulante>tripulacion;
     protected Componentes componentes;
-    protected String id;
+    protected int id;
+    protected static int idSiguiente = 1;
     
     //-------------------------------------------
     //          CONSTRUCTOR/VALIDADOR
     //-------------------------------------------
     
+    /**
+     * PRE: combustible, energia y desgaste:  x >= 0 y con x <= 100 <br>
+     * POST: se devuelve una nave
+     * @param combustible combustible de la nave
+     * @param energia energia de la nave
+     * @param desgaste desgaste de la nave
+     */
     //Creacion de nave proviene de NAVE-FACTORY
-    protected Nave(String id, MotorWarp motorwarp, int combustible, int energia, int desgaste){
-        
-        validacion(id, motorwarp);
+    protected Nave(int combustible, int energia, int desgaste){
+        assert(combustible >= 0 && combustible <= 100): "Error: combustible no valido";
+        assert(energia >= 0 && energia <= 100): "Error: energia no valida";
+        assert(desgaste >= 0 && desgaste <= 100): "Error: desgaste no valido";
         
         tripulacion = new ArrayList<>();
         recursos = new Recursos(combustible, energia, desgaste);
-        this.id = id;
-        this.motorwarp = motorwarp;
-    }
-    
-    private void validacion(String id, MotorWarp motorwarp){
-        if(id == null || id.equalsIgnoreCase("") || motorwarp == null){
-            throw new IllegalArgumentException("ERROR: Campos invalidos (id/MotorWarp)");
-        }
+        this.id = idSiguiente++;
+        this.motorwarp = new MotorWarp();
     }
 
 
@@ -38,8 +41,14 @@ public abstract class Nave {
     //          ADICIONALES
     //-------------------------------------------    
     
-    
+    /**
+     * PRE: tripulante t != null<br>
+     * POST: se agrega tripulante a la tripulacion
+     * @param t es el tripulante que se quiere añadir a la tripulacion 
+     */
     public void addTripulante(Tripulante t){
+        assert(t != null): "Error: tripulando es null";
+        
         tripulacion.add(t);
     }
     
@@ -69,7 +78,7 @@ public abstract class Nave {
         return componentes;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
     
@@ -92,10 +101,5 @@ public abstract class Nave {
     public void setComponentes(Componentes componentes) {
         this.componentes = componentes;
     }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-    
     
 }
