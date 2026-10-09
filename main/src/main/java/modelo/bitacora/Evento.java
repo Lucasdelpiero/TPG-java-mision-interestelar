@@ -3,9 +3,9 @@ import java.util.Date;
 
 /**
  * <b>PRE</b>
- * - Tipo debe ser algunos de los tipos soportados por el Enum TipoEvento
- * - La descripcion no debe estar vacia
- * - El idMision puede ser null pero de no serlo no puede estar vacio
+ * Tipo debe ser algunos de los tipos soportados por el Enum TipoEvento
+ * La descripcion no debe estar vacia
+ * El idMision puede ser null pero de no serlo no puede estar vacio
  */
 public class Evento {
     private final Date momento;
@@ -31,7 +31,7 @@ public class Evento {
             descripcion == null ||
             descripcion.trim().isEmpty() ||
             (idMision != null && idMision.trim().isEmpty())) {
-            
+
             throw new IllegalArgumentException("El evento que se intenta registrar tiene datos invalidos");
         }
     }
@@ -40,7 +40,7 @@ public class Evento {
      * 
      * @return Devuelve el tiempo actual al Date creado en el constructor
      */
-    private Date getMomento(){
+    public Date getMomento(){
         return new Date(this.momento.getTime()); // Se crea un nuevo Date() no se devuelve la referencia al atributo
     }
     

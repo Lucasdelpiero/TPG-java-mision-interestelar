@@ -1,12 +1,12 @@
 package modelo.motorwarp;
 
 /**
+ * <b>INVARIANTE</b>
  * El atributo estado nunca debe ser null
  * El estado inicial es DisponibleState
  * El estado solo cambia cuando la transicion es semanticamente valida, por ej,
  * no se puede transicionar de en preparando a disponible
  * Las transiciones validas retornan true y las invalidas retornan false
- * @author defin
  */
 public class MotorWarp {
     private EstadoMotor estado;
@@ -18,7 +18,7 @@ public class MotorWarp {
     /**
      * Sirve para setear el estado del motor warp
      * <b>PRE</b>
-     * - El estado debe estar definido, debe no ser null en caso contrario se lanza una excepcion
+     * El estado debe estar definido, debe no ser null en caso contrario se lanza una excepcion
      * @param estado 
      */
     void setEstado(EstadoMotor estado){ //Visibilidad de paquete, correcta
@@ -50,9 +50,8 @@ public class MotorWarp {
     
     /** 
      * <b>POST</b>
-     * - Devuelve Devuelve un String no nulo ni vacío que describe el estado actual
-     * - "Disponible", "Preparando Salto", "Salto warp", "Enfriamiento".
-     * @return 
+     * Devuelve un String no nulo ni vacío que describe el estado actual
+     * "Disponible", "Preparando Salto", "Salto warp", "Enfriamiento".
      */
     public String getNombreEstado(){
         return this.estado.getNombre();
@@ -60,8 +59,7 @@ public class MotorWarp {
     
     /** 
      * <b>POST</b>
-     * - Devuelve true si y solo si el estado actual es DisponibleState; false en cualquier otro estado.
-     * @return 
+     * Devuelve true si y solo si el estado actual es DisponibleState; false en cualquier otro estado.
      */
     public boolean estaDisponible(){
         return this.estado.estaDisponible();
