@@ -9,7 +9,8 @@ import modelo.nave.Nave;
 public class MisionIntercepcionAsistencia extends Mision{
     
     @Override
-    public void cerrar(){
+    public void cerrar(Nave nave){
+        nave.getRecursos().cargaEnergia(5);
         System.out.println("Se añaden 5 de energia adicional");
     }
     

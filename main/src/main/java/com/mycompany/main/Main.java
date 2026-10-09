@@ -10,6 +10,6 @@ public class Main {
 
     public static void main(String[] args) {
        AsistenteComando asistente = new AsistenteComando();
-       Nave nave = getNave();
+       
     }
 }

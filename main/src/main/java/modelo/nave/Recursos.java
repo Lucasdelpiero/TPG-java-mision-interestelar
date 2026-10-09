@@ -23,6 +23,16 @@ public class Recursos {
         this.desgaste = desgaste;
         //mantenimiento = ?
     }
+    /**
+     *<b>Pre:</b> Nave != nulo <br>
+     *<b>Post:</b> Crea objeto recursos con la cantidad actual que guarda la nave<br>  
+     * @param nave 
+     */
+    public Recursos(Nave nave) {
+        this.combustible = nave.recursos.getCombustible();
+        this.energia = nave.recursos.getEnergia();
+        this.desgaste = nave.recursos.getDesgaste();
+    }
     
     //-------------------------------------------
     //          ADICIONALES
@@ -63,6 +73,22 @@ public class Recursos {
         this.desgaste = desgaste;
     }
     
+    public void consumeCombustible(int consumo){
+        this.combustible -= consumo;
+    }
+    
+    public void consumeEnergia(int consumo){
+        this.energia -= consumo;
+    }
+    
+    public void consumeDesgaste(int consumo){
+        this.desgaste -= consumo;
+    }
+    
+    
+    public void cargaEnergia(int carga){
+        this.energia += carga;
+    }
     
     
 }
