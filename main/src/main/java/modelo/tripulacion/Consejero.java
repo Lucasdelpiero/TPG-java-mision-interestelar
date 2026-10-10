@@ -40,8 +40,4 @@ public class Consejero extends Cargo {
     public String getCargoTripulante() {
         return "Consejero" ;
     }
-    
-    public String toString() {
-        return "Consejero , Numero de consejos durante el periodo actual :" + getConsejos() ;
-    }
 }
