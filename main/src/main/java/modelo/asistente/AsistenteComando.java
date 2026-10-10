@@ -15,10 +15,10 @@ public class AsistenteComando {
     //-------------------------------------------
     //          CONSTRUCTOR
     //-------------------------------------------
-    public AsistenteComando(String nombre, Bitacora bitacora){
+    public AsistenteComando(Nave nave, String nombre){
+        this.nave = nave;
         this.nombre = nombre;
-        //this.nave = nave;
-        this.bitacora = bitacora;
+        this.bitacora = new Bitacora();
     }
     
     //-------------------------------------------
@@ -30,18 +30,19 @@ public class AsistenteComando {
     
     //Esta mision es invocada desde MAIN
     /**
-    * <b>Pre:</b> Mision no es nula<br>
-    * <b>Post:</b> Devuelve un informe de mision a la bitacora<br>  
+    * PRE: Mision no es nula<br>
+    * POST: Devuelve un informe de mision a la bitacora<br>  
     * @param m una clase hija de mision
     */
     public void iniciaMision(Mision m){
-        assert (m != null) : "Mision es nulo";
+        assert (m != null) : "Mision no puede ser nula";
+        this.bitacora.registrar(TipoEvento.ORDEN, "Orden recibida: Iniciar mision " + m.getIdMision());
         try {
             m.hacerMision(this);
         }
-        finally{
-        
-        };  
+        catch (Exception e){
+            this.bitacora.registrar(TipoEvento.ERROR, "Error al Iniciar Mision " + m.getIdMision());
+        }
     }
     
     public boolean consultaRecursos(int consumoCombustible,int consumoEnergia, int consumoDesgaste){
@@ -65,7 +66,6 @@ public class AsistenteComando {
     
     public void sumaDesgaste(int consumoDesgaste){
         nave.getRecursos().consumeDesgaste(consumoDesgaste);
-    
     }
     
  
@@ -79,14 +79,14 @@ public class AsistenteComando {
      * @param evento va a ser eventualmente un evento<br>
      * 
      */
-    public void registrarMision(TipoEvento e, String descripcion, String idMision){
-        //bitacora.registrar(e, descripcion, idMision);
+    
+    public void registrarMision(TipoEvento e, String descripcion, int idMision){
+        this.bitacora.registrar(e, descripcion, idMision);
     }
     
     public void registrarEvento(TipoEvento e, String descripcion){
-        //bitacora.registrar(e, descripcion);
+        this.bitacora.registrar(e, descripcion);
     }
-    
     
     //-------------------------------------------
     //          GETTERS / SETTERS
@@ -102,14 +102,12 @@ public class AsistenteComando {
     public void setNave(Nave nave){
         this.nave = nave;
     }
+    
+    public Bitacora getBitacora(){
+        return this.bitacora;
+    }
     //public Recursos getRecursos(){
     //    return nave.getRecursos();
     //}
     
 }   
-/*
-public void registrarMision(String descripcion, String idMision){
-        //assert(evento == null) : "Evento es nulo"; // Se va a cambiar por un nulo 
-        bitacora.registrar(TipoEvento.MISION, descripcion, idMision);
-    }
-*/

@@ -48,8 +48,7 @@ public abstract class Nave {
      */
     public void addTripulante(PlanetaOrigen t){
         assert(t != null): "Error: tripulando es null";
-        assert(t.getTripulante().getCargo().equals("Capitan") || getTripulantesCargo("Capitan").isEmpty()):"Error : Ya hay un capitan";
-        
+        assert(t.getTripulante().getCargo().equals("Capitan") || tripulacion.getTripulantesCargo("Capitan").isEmpty()):"Error : Ya hay un capitan";
         tripulacion.addTripulante(t);
     }
     
@@ -71,8 +70,8 @@ public abstract class Nave {
         return motorwarp;
     }
 
-    public ArrayList<Tripulante> getTripulacion() {
-        return tripulacion;
+    public ArrayList<PlanetaOrigen> getTripulacion() {
+        return tripulacion.getTripulantes();
     }
 
     public Componentes getComponentes() {

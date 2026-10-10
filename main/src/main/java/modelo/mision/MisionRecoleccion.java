@@ -7,7 +7,7 @@ import modelo.bitacora.TipoEvento;
 public class MisionRecoleccion extends Mision{
 
     public MisionRecoleccion() {
-        consumoEnergia = 5;
+        this.consumoEnergia = 5;
         tipo = Mision.tipoMision.RECOLECCION;
     }
     

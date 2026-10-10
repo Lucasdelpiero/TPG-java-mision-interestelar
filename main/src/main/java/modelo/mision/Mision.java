@@ -20,6 +20,17 @@ public abstract class Mision{
     protected int consumoEnergia = 0;
     protected boolean puedeIniciarMision;
     protected boolean misionCumplida = false;
+    protected Integer idMision;
+    protected static int idMisionSiguiente = 1;
+
+    //-------------------------------------------
+    //          CONSTRUCTOR
+    //-------------------------------------------
+
+    public Mision(){
+        this.idMision = generarIdMision();
+    }
+
     //-------------------------------------------
     //          CICLO PRINCIPAL
     //-------------------------------------------
@@ -37,9 +48,7 @@ public abstract class Mision{
         ejecutar();
         evaluar();
         cerrar();
- 
     }
-    
     
     //-------------------------------------------
     //          DESARROLLO MISIONES
@@ -105,27 +114,23 @@ public abstract class Mision{
         informe.recursosFinales = AC.getNave().getRecursos();
         System.out.println("[MISION] Evaluando resultados...");
         
-        
         String idMision = "null";
         String descripcionMision = "null";
         
         if (tipo == Mision.tipoMision.INTERCEPCION){
-            idMision = "M-01";
             descripcionMision = "Mision: INTERCEPCION Y ASISTENCIA";
         } else
             if (tipo == Mision.tipoMision.RECOLECCION){
-                idMision = "M-02";
                 descripcionMision = "Mision: RECOLECCION";
         } else
             if (tipo == Mision.tipoMision.RETORNO_SEGURO){
-                idMision = "M-03";
                 descripcionMision = "Mision: RETORNO SEGURO";
             }
         
         AC.registrarMision(
             TipoEvento.MISION,
             descripcionMision,         // agregar descripcion sobre la mision realizada
-            idMision
+            this.idMision
         );
         
         //  Para cada recurso:
@@ -145,7 +150,7 @@ public abstract class Mision{
         );
         //informe.addConsumoDesgaste(consumoDesgaste);
         
-        AC.restaEnergia(consumoEnergia);    // !!!  ESTA MISION RESTA 5 puntos de energia
+        // AC.restaEnergia(consumoEnergia);    // !!!  ESTA MISION RESTA 5 puntos de energia
         AC.registrarEvento(                 
             TipoEvento.RECURSOS,
             "Reduccion de energia en "+idMision+" : "+"-"+consumoEnergia
@@ -163,7 +168,19 @@ public abstract class Mision{
         System.out.println("---------------------------------");
     }
     
-    
+    //-------------------------------------------
+    //          ADICIONALES
+    //-------------------------------------------
+
+    private int generarIdMision(){
+        int aux = Mision.idMisionSiguiente;
+        Mision.idMisionSiguiente += 1;
+        return aux;
+    }
+
+    public Integer getIdMision(){
+        return this.idMision;
+    }
 
 }
 

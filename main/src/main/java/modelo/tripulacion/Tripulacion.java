@@ -11,6 +11,10 @@ import java.util.ArrayList;
 public class Tripulacion {
 
     private ArrayList<PlanetaOrigen> tripulantes;
+
+    public ArrayList<PlanetaOrigen> getTripulantes() {
+        return tripulantes;
+    }
     
     public Tripulacion() {
         this.tripulantes = new ArrayList<>();
@@ -51,11 +55,11 @@ public class Tripulacion {
         Cargo c;
         Tripulante t;
         ArrayList<Tripulante> tripulantesCargo = new ArrayList<>();
-        assert cargo == null || !cargo.isBlank() : "Cargo invalido";
+        assert cargo != null && !cargo.isBlank() : "Cargo invalido";
         for (PlanetaOrigen po : this.tripulantes) {
             t = po.getTripulante();
             c = t.getCargo();
-            if (cargo == null || c.getCargoTripulante().equals(cargo))
+            if (c.getCargoTripulante().equals(cargo))
                 tripulantesCargo.add(t);
         }
         return tripulantesCargo;
