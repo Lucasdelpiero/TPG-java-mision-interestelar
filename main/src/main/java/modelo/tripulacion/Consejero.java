@@ -19,6 +19,12 @@ public class Consejero extends Cargo {
             throw new IllegalArgumentException("ERROR :Numero de consejos invalido");
         this.consejos += consejos;
     }
+
+    public void setConsejos(int consejos) {
+        if (consejos < 0)
+            throw new IllegalArgumentException("ERROR :Numero de consejos invalido");
+        this.consejos = consejos;
+    }
     
     public int getConsejos() {
         return this.consejos; 
