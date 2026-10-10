@@ -12,25 +12,24 @@ public class PreparandoSaltoState implements EstadoMotor {
         return false;
     }
     
-    public boolean prepararSalto(MotorWarp motor){
-        return false;
+    public void prepararSalto(MotorWarp motor) throws MotorTransicionException{
+        throw new MotorTransicionException("No puede transicionar");
     }
     
-    public boolean saltar(MotorWarp motor){
+    public void saltar(MotorWarp motor) throws MotorTransicionException{
         motor.setEstado(new SaltoWarpState());
-        return true;
     }
     
-    public boolean enfriar(MotorWarp motor){
-        return false;
+    public void enfriar(MotorWarp motor) throws MotorTransicionException{
+        throw new MotorTransicionException("No puede transicionar");
     }
     
-    public boolean terminarSalto(MotorWarp motor){
-        return false;
+    public void terminarSalto(MotorWarp motor) throws MotorTransicionException{
+        throw new MotorTransicionException("No puede transicionar");
     }
     
-    public boolean terminarEnfriamiento(MotorWarp motor){
-        return false;
+    public void terminarEnfriamiento(MotorWarp motor) throws MotorTransicionException{
+        throw new MotorTransicionException("No puede transicionar");
     }
     
 }

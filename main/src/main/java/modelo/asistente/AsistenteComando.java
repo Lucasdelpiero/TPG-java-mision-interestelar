@@ -6,6 +6,7 @@ import modelo.bitacora.Bitacora;
 import modelo.bitacora.TipoEvento; // !!!
 import modelo.mision.InformeMision;
 import modelo.mision.Mision;
+import modelo.motorwarp.MotorTransicionException;
 
 public class AsistenteComando {
     private String nombre;
@@ -30,8 +31,8 @@ public class AsistenteComando {
     
     //Esta mision es invocada desde MAIN
     /**
-    * <b>Pre:</b> Mision no es nula<br>
-    * <b>Post:</b> Devuelve un informe de mision a la bitacora<br>  
+    * PRE: Mision no es nula<br>
+    * POST: Devuelve un informe de mision a la bitacora<br>  
     * @param m una clase hija de mision
     */
     public void iniciaMision(Mision m){
@@ -67,19 +68,50 @@ public class AsistenteComando {
         nave.getRecursos().consumeDesgaste(consumoDesgaste);
     
     }
+        //---------------   MOTOR WARP    -----------------
+    /**
+     * PRE: nave y motor no son nulos
+     * POST: ejecuta cambio en motor warp si es posible
+     * Pide al motor que ejecute un salto
+     */
+    public void motor_secuencia_salto(){
+        try {
+            getNave().getMotor().secuencia_salto();
+        }
+        catch(MotorTransicionException e){
+            System.out.println(e.descripcion);
+        }
+        
+    }
     
- 
+    public void motor_preparar_salto() throws MotorTransicionException{
+        getNave().getMotor().prepararSalto();
+        System.out.println(getNave().getMotor().getNombreEstado());
+    }
+    
+    public void motor_saltar() throws MotorTransicionException{
+        getNave().getMotor().saltar();
+        System.out.println(getNave().getMotor().getNombreEstado());
+    }
+    
+    /**
+     * PRE: nave y motor no son nulos
+     * POST: cancela el salto del motor warp
+     */
+    public void motor_cancelar_salto() throws MotorTransicionException{
+        getNave().getMotor().terminarSalto();
+    }
     
         //---------------   BITACORA    -----------------
     
     /**
-     * <b>Pre:</b> debe ser un evento no nulo<br>
-     * <b>Post:</b> agrega un evento a la bitacora<br>
+     * PRE: debe ser un evento no nulo, descripcion != 0 <br>
+     * POST: agrega un evento a la bitacora<br>
      * 
      * @param evento va a ser eventualmente un evento<br>
      * 
      */
-    public void registrarMision(TipoEvento e, String descripcion, String idMision){
+    public void registrarMision(TipoEvento e, String descripcion, int id){
         //bitacora.registrar(e, descripcion, idMision);
     }
     

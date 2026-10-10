@@ -1,11 +1,11 @@
 package modelo.motorwarp;
 
 public interface EstadoMotor {
-    boolean prepararSalto(MotorWarp motor);
-    boolean saltar(MotorWarp motor);
-    boolean enfriar(MotorWarp motor);
-    boolean terminarSalto(MotorWarp motor);
-    boolean terminarEnfriamiento(MotorWarp motor);
+    void prepararSalto(MotorWarp motor) throws MotorTransicionException;
+    void saltar(MotorWarp motor) throws MotorTransicionException;
+    void enfriar(MotorWarp motor) throws MotorTransicionException;
+    void terminarSalto(MotorWarp motor) throws MotorTransicionException;
+    void terminarEnfriamiento(MotorWarp motor) throws MotorTransicionException;
     boolean estaDisponible();
     String getNombre();
 }

@@ -28,24 +28,37 @@ public class MotorWarp {
         this.estado = estado;
     }
     
-    public boolean prepararSalto(){
-        return this.estado.prepararSalto(this);
+    public void secuencia_salto() throws MotorTransicionException{
+        try {
+            prepararSalto();
+            saltar();
+            enfriar();
+            prepararSalto();
+        }
+        catch(MotorTransicionException e){
+            
+        }
+        
     }
     
-    public boolean saltar(){
-        return this.estado.saltar(this);
+    public void prepararSalto() throws MotorTransicionException{
+        this.estado.prepararSalto(this);
     }
     
-    public boolean enfriar(){
-        return this.estado.enfriar(this);
+    public void saltar()throws MotorTransicionException{
+        this.estado.saltar(this);
     }
     
-    public boolean terminarSalto(){
-        return this.estado.terminarSalto(this);
+    public void enfriar()throws MotorTransicionException{
+        this.estado.enfriar(this);
     }
     
-    public boolean terminarEnfriamiento(){
-        return this.estado.terminarEnfriamiento(this);
+    public void terminarSalto()throws MotorTransicionException{
+        this.estado.terminarSalto(this);
+    }
+    
+    public void terminarEnfriamiento()throws MotorTransicionException{
+        this.estado.terminarEnfriamiento(this);
     }
     
     /** 
