@@ -7,7 +7,7 @@ import modelo.bitacora.TipoEvento;
 public class MisionIntercepcionAsistencia extends Mision{
 
     public MisionIntercepcionAsistencia() {
-        int consumoEnergia = 5;
+        this. consumoEnergia = 5;
         tipo = Mision.tipoMision.INTERCEPCION;
     }
     

@@ -8,15 +8,25 @@ import modelo.nave.*;
 import modelo.mision.*;
 import modelo.bitacora.*;
 import modelo.universo.CentroDeControl;
+import modelo.tripulacion.*;
 
 public class Main {
 
     public static void main(String[] args) {
+
         CentroDeControl GGCC = new CentroDeControl();
         
         Nave nave = NaveFactory.getNave(NaveFactory.tipoNave.EXPLORADORA);
-        Bitacora bitacora = new Bitacora();
-        AsistenteComando AC1 = new AsistenteComando("JARVIS", bitacora);
+        AsistenteComando AC1 = new AsistenteComando(nave, "JARVIS");
+        
+        FactoryPlanetaOrigen factoryOrigen = new FactoryPlanetaOrigen();
+        FactoryCargo factoryCargo = new FactoryCargo();
+        Cargo c1 = factoryCargo.crearCargo("Capitan");
+        Tripulante tripulante = new Tripulante("Jorge", c1, 13);
+        PlanetaOrigen oUno = factoryOrigen.factoryPlanetaOrigen("Terricola", tripulante);
+        
+        nave.addTripulante(oUno);
+        
         
         AsistenteComando AC2 = null;
         
@@ -29,7 +39,6 @@ public class Main {
         GGCC.setNave(nave, "JAVIER");
         
         Mision mision = new MisionIntercepcionAsistencia();
-       
        
     }
 }

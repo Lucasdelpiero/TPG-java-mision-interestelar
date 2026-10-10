@@ -3,15 +3,15 @@ import java.util.Date;
 
 /**
  * <b>PRE</b>
- * - Tipo debe ser algunos de los tipos soportados por el Enum TipoEvento
- * - La descripcion no debe estar vacia
- * - El idMision puede ser null pero de no serlo no puede estar vacio
+ * Tipo debe ser algunos de los tipos soportados por el Enum TipoEvento
+ * La descripcion no debe estar vacia
+ * El idMision puede ser null pero de no serlo no puede estar vacio
  */
 public class Evento {
     private final Date momento;
     private final TipoEvento tipo;
     private final String descripcion;
-    private final String idMision; // Podria ser null si el evento no esta relacionado a una mision
+    private final Integer idMision; // Podria ser null si el evento no esta relacionado a una mision
 
     //-------------------------------------------
     //          CONSTRUCTOR / VALIDACION
@@ -21,7 +21,7 @@ public class Evento {
         this(tipo, descripcion, null);
     }
     
-    public Evento(TipoEvento tipo, String descripcion, String idMision) {
+    public Evento(TipoEvento tipo, String descripcion, Integer idMision) {
         validar(tipo, descripcion, idMision);
         this.momento = new Date();
         this.tipo = tipo;
@@ -29,12 +29,12 @@ public class Evento {
         this.idMision = idMision;
     }
     
-    private void validar(TipoEvento tipo, String descripcion, String idMision){
+    private void validar(TipoEvento tipo, String descripcion, Integer idMision){
         if (tipo == null || 
             descripcion == null ||
             descripcion.trim().isEmpty() ||
-            (idMision != null && idMision.trim().isEmpty())) {
-            
+            idMision != null && idMision <= 0) {
+
             throw new IllegalArgumentException("El evento que se intenta registrar tiene datos invalidos");
         }
     }
@@ -47,7 +47,7 @@ public class Evento {
      * 
      * @return Devuelve el tiempo actual al Date creado en el constructor
      */
-    private Date getMomento(){
+    public Date getMomento(){
         return new Date(this.momento.getTime()); // Se crea un nuevo Date() no se devuelve la referencia al atributo
     }
     
@@ -59,7 +59,7 @@ public class Evento {
         return descripcion;
     }
 
-    public String getIdMision() {
+    public Integer getIdMision() {
         return idMision;
     }
 }
