@@ -7,6 +7,9 @@ import modelo.bitacora.TipoEvento;
 public class MisionRetornoSeguro extends Mision{
 
     public MisionRetornoSeguro() {
+        id = idSiguiente++;
+        nombreMision = "M-03";
+        descripcion = "Mision: RETORNO SEGURO";
         tipo = Mision.tipoMision.RETORNO_SEGURO;
     }
     

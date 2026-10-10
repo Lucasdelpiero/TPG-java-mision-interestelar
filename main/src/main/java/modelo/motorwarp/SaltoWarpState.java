@@ -15,30 +15,28 @@ public class SaltoWarpState implements EstadoMotor {
     }
     
     @Override
-    public boolean prepararSalto(MotorWarp motor){
-        return false;
+    public void prepararSalto(MotorWarp motor) throws MotorTransicionException{
+        throw new MotorTransicionException("No puede transicionar");
     }
     
     @Override
-    public boolean saltar(MotorWarp motor){
-        return false;
+    public void saltar(MotorWarp motor) throws MotorTransicionException{
+        throw new MotorTransicionException("No puede transicionar");
     }
     
     @Override
-    public boolean enfriar(MotorWarp motor){
+    public void enfriar(MotorWarp motor) throws MotorTransicionException{
         motor.setEstado(new EnfriamientoState());
-        return true;
     }
     
     @Override
-    public boolean terminarSalto(MotorWarp motor){
+    public void terminarSalto(MotorWarp motor) throws MotorTransicionException{
         motor.setEstado(new DisponibleState());
-        return true;
     }
     
     @Override
-    public boolean terminarEnfriamiento(MotorWarp motor){
-        return false;
+    public void terminarEnfriamiento(MotorWarp motor) throws MotorTransicionException{
+        throw new MotorTransicionException("No puede transicionar");
     }
     
 }

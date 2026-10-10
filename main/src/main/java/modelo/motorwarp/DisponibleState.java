@@ -14,30 +14,31 @@ public class DisponibleState implements EstadoMotor {
         return true;
     }
     
+
     @Override
-    public boolean prepararSalto(MotorWarp motor){
+    public void prepararSalto(MotorWarp motor) throws MotorTransicionException{
         motor.setEstado(new PreparandoSaltoState());
-        return true;
+    }
+    
+
+    @Override
+    public void saltar(MotorWarp motor) throws MotorTransicionException{
+        throw new MotorTransicionException("No puede transicionar");
     }
     
     @Override
-    public boolean saltar(MotorWarp motor){
-        return false;
+    public void enfriar(MotorWarp motor) throws MotorTransicionException{
+        throw new MotorTransicionException("No puede transicionar");
     }
     
     @Override
-    public boolean enfriar(MotorWarp motor){
-        return false;
+    public void terminarSalto(MotorWarp motor) throws MotorTransicionException{
+        throw new MotorTransicionException("No puede transicionar");
     }
     
-    @Override
-    public boolean terminarSalto(MotorWarp motor){
-        return false;
-    }
-    
-    @Override
-    public boolean terminarEnfriamiento(MotorWarp motor){
-        return false;
+    public void terminarEnfriamiento(MotorWarp motor) throws MotorTransicionException{
+        throw new MotorTransicionException("No puede transicionar");
+
     }
     
 }

@@ -5,9 +5,13 @@ import modelo.bitacora.TipoEvento;
 
 // Mision M-02
 public class MisionRecoleccion extends Mision{
-
+    
     public MisionRecoleccion() {
-        this.consumoEnergia = 5;
+        id = idSiguiente++;
+        nombreMision = "M-02";
+        descripcion = "Mision: RECOLECCION";
+        consumoEnergia = 5;
+
         tipo = Mision.tipoMision.RECOLECCION;
     }
     

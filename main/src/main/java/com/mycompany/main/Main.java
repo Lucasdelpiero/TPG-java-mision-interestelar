@@ -43,6 +43,10 @@ public class Main {
         GGCC.setNave(nave, "JAVIER");
         
         Mision mision = new MisionIntercepcionAsistencia();
+        
+        AC1.iniciaMision(mision);
+        AC1.motor_secuencia_salto();
+        //AC1.motor_secuencia_salto();
        
     }
 }

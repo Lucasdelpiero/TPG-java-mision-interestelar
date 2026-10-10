@@ -13,8 +13,14 @@ public abstract class Mision{
     }
     
     protected tipoMision tipo;
+    protected int id;
+    protected static int idSiguiente = 1;
+    protected String nombreMision = "no asignado";
+    protected String descripcion = "no asignado";
+    
     protected AsistenteComando AC;
     protected InformeMision informe;
+    
     protected int consumoCombustible = 4;
     protected int consumoDesgaste = 4;
     protected int consumoEnergia = 0;
@@ -28,8 +34,9 @@ public abstract class Mision{
     //-------------------------------------------
 
     public Mision(){
-        this.idMision = generarIdMision();
+        this.idMision = idMisionSiguiente++;
     }
+
 
     //-------------------------------------------
     //          CICLO PRINCIPAL
@@ -64,15 +71,7 @@ public abstract class Mision{
         puedeIniciarMision = (AC.consultaRecursos(consumoCombustible, consumoEnergia,consumoDesgaste));
         
         informe = new InformeMision();
-        if (tipo == Mision.tipoMision.INTERCEPCION){
-            informe.misionEjecutada = "M-01";
-        } else 
-            if (tipo == Mision.tipoMision.RECOLECCION){
-            informe.misionEjecutada = "M-02";
-        } else 
-            if (tipo == Mision.tipoMision.RETORNO_SEGURO){
-            informe.misionEjecutada = "M-03";
-        } 
+        informe.misionEjecutada = nombreMision;
         
         Recursos resViejos = AC.getNave().getRecursos();
         
@@ -114,49 +113,12 @@ public abstract class Mision{
         informe.recursosFinales = AC.getNave().getRecursos();
         System.out.println("[MISION] Evaluando resultados...");
         
-        String idMision = "null";
-        String descripcionMision = "null";
-        
-        if (tipo == Mision.tipoMision.INTERCEPCION){
-            descripcionMision = "Mision: INTERCEPCION Y ASISTENCIA";
-        } else
-            if (tipo == Mision.tipoMision.RECOLECCION){
-                descripcionMision = "Mision: RECOLECCION";
-        } else
-            if (tipo == Mision.tipoMision.RETORNO_SEGURO){
-                descripcionMision = "Mision: RETORNO SEGURO";
-            }
-        
+
         AC.registrarMision(
             TipoEvento.MISION,
-            descripcionMision,         // agregar descripcion sobre la mision realizada
-            this.idMision
-        );
-        
-        //  Para cada recurso:
-        //  -   Se resta el recurso (lo que consume la mision) de la nave
-        //  -   Se registra la reduccion del recurso en la bitacora
-        //  -   Se agrega el consumo (lo que consume la mision) para el informe
-
-        AC.registrarEvento(
-            TipoEvento.RECURSOS,
-                "Reduccion de combustible en "+idMision+" : "+"-"+consumoCombustible
-        );
-        //informe.addConsumoCombustible(consumoCombustible);
-
-        AC.registrarEvento(
-            TipoEvento.RECURSOS,
-            "Incremento de desgaste en "+idMision+" : "+"+"+consumoDesgaste
-        );
-        //informe.addConsumoDesgaste(consumoDesgaste);
-        
-        // AC.restaEnergia(consumoEnergia);    // !!!  ESTA MISION RESTA 5 puntos de energia
-        AC.registrarEvento(                 
-            TipoEvento.RECURSOS,
-            "Reduccion de energia en "+idMision+" : "+"-"+consumoEnergia
-        );
-        //informe.addConsumoCombustible(consumoEnergia);
-        
+            descripcion,         // agregar descripcion sobre la mision realizada
+            id
+        );   
         
         informe.getInforme();
         
@@ -172,102 +134,11 @@ public abstract class Mision{
     //          ADICIONALES
     //-------------------------------------------
 
-    private int generarIdMision(){
-        int aux = Mision.idMisionSiguiente;
-        Mision.idMisionSiguiente += 1;
-        return aux;
-    }
 
     public Integer getIdMision(){
         return this.idMision;
     }
 
+
 }
 
-/*
-//----------------------LUCAS PART-------------------------
-
-//import modelo.nave.Nave;
-//import modelo.nave.Recursos;
-
-public abstract class Mision {
-    //protected Nave nave;                    // A la nave le consultara sobre los recursos
-    //protected EstadoNave estadoNaveInicial, estadoNaveFinal;
-    protected AsistenteComando AC;
-    protected int consumoCombustible = 4;
-    protected int consumoDesgaste = 4;
-    protected int consumoEnergia = 0;
-    protected boolean puedeHacerMision = true;
-   
-    //-------------------------------------------
-    //          CONSTRUCTOR/VALIDADOR
-    //-------------------------------------------
-    public Mision(AsistenteComando AC) {
-        this.AC = AC;
-    }
-
-    //-------------------------------------------
-    //          CICLO PRINCIPAL
-    //-------------------------------------------
-    
-    public void hacerMision(AsistenteComando AC){
-        preparar(AC);
-        ejecutar(AC);
-        evaluar(AC);
-        cerrar(AC);
-    }
-
-    //-------------------------------------------
-    //          DESARROLLO DE MISIONES
-    //-------------------------------------------
-    
-    
-     <b>Pre:</b> Nave != null<br>
-     <b>Post:</b> Se guarda en una variable si hay recursos suficientes o no<br>  
-      @param AC : Pregunta al Asistente de Comandos la informacion que
-      contiene la nave.
-     
-
-    public void preparar(AsistenteComando AC){
-        assert (AC.getNave() == null) : "Nave es null";
-        //Recursos recursos = new Recursos(nave);
-        assert (AC.getRecursos() == null): "Recursos es null";
-
-        if (AC.preguntaRecursos(consumoCombustible, consumoDesgaste)){
-            System.out.println("Nave lista para comenzar mision");
-        }
-        else {
-            System.out.println("No hay recursos suficientes");
-            puedeHacerMision = false;
-        }
-   }
-   
-    public abstract void ejecutar(AsistenteComando AC); 
-        //{
-        //   RESTA DE COMBUSTIBLE?
-        //   SUMA DE DESGASTE
-        //if (puedeHacerMision)
-        //    System.out.println("Se gastaron 4 de combustible y 4 de desgaste");     
-        //else
-        //    System.out.println("No se pudo ejecutar la mision");
-        //}
-   
-*/
-//----------------------------------------------
-    /*
-        <b>Pre:</b> recursos != null<br>
-        <b>Post:</b> devuelve si puede o no hacer la mision<br>  
-         @param recursos la cantidad de recursos actual de la nave
-    */
-    
-    /*
-    public boolean tieneRecursosSuficientes(Recursos recursos){
-       return (recursos.getCombustible() >= consumoCombustible &&
-               recursos.getEnergia() >= consumoEnergia  &&
-               recursos.getDesgaste() >= consumoDesgaste
-               );
-    }
-    
-
-   
-*/
