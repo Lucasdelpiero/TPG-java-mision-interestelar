@@ -68,9 +68,28 @@ public class AsistenteComando {
         nave.getRecursos().consumeDesgaste(consumoDesgaste);
     }
     
- 
+    //---------------   RECURSOS    -----------------
+    public Recursos getRecursos(){
+        return nave.getRecursos();
+    }
     
-        //---------------   BITACORA    -----------------
+    public void imprimeRecursos(){
+        nave.getRecursos().imprimeRecursos();
+    }
+    
+    //---------------   Tripulacion    -----------------
+    
+    // Devuelve objeto tripulacion que contiene metodos para relacionarse con la lista tripulacion
+    public void getTripulante(){
+        nave.getTripulacion();
+    }
+    
+    // Devuelve la lista en un array de los tripulantes
+    public void getTripulacion(){
+        nave.getTripulantes();
+    }
+    
+   //---------------   BITACORA    -----------------
     
     /**
      * <b>Pre:</b> debe ser un evento no nulo<br>

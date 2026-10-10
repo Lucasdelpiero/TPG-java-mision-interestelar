@@ -21,12 +21,16 @@ public class Main {
         
         FactoryPlanetaOrigen factoryOrigen = new FactoryPlanetaOrigen();
         FactoryCargo factoryCargo = new FactoryCargo();
+        
         Cargo c1 = factoryCargo.crearCargo("Capitan");
+        
         Tripulante tripulante = new Tripulante("Jorge", c1, 13);
         PlanetaOrigen oUno = factoryOrigen.factoryPlanetaOrigen("Terricola", tripulante);
         
         nave.addTripulante(oUno);
         
+        System.out.println(oUno.sueldo());
+        System.out.println(oUno.detalleHaber());
         
         AsistenteComando AC2 = null;
         

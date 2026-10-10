@@ -69,8 +69,12 @@ public abstract class Nave {
     public MotorWarp getMotor() {
         return motorwarp;
     }
-
-    public ArrayList<PlanetaOrigen> getTripulacion() {
+    
+    public Tripulacion getTripulacion(){
+        return tripulacion;
+    }
+    
+    public ArrayList<PlanetaOrigen> getTripulantes() {
         return tripulacion.getTripulantes();
     }
 
