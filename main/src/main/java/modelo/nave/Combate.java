@@ -1,11 +1,12 @@
 package modelo.nave;
 
-import modelo.motorwarp.*;
-
 public class Combate extends Nave {
+    private static final int combustibleInicial = 80;
+    private static final int energiaInicial = 100;
+    private static final int desgasteInicial = 0;
     
-    public Combate(String id, MotorWarp motorwarp, int combustible, int energia, int desgaste){
-        super(id, motorwarp, combustible, energia, desgaste);
+    public Combate(){
+        super(combustibleInicial, energiaInicial, desgasteInicial);
     }
     
 }

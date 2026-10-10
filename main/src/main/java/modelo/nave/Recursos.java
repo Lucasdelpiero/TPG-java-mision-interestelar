@@ -37,7 +37,12 @@ public class Recursos {
     //-------------------------------------------
     //          ADICIONALES
     //-------------------------------------------
-
+    
+    public void imprimeRecursos(){
+        System.out.println("Combustible: " + combustible);
+        System.out.println("Energia: " + energia);
+        System.out.println("Desgaste " + desgaste);
+    }
     
     
     
@@ -82,7 +87,7 @@ public class Recursos {
     }
     
     public void consumeDesgaste(int consumo){
-        this.desgaste -= consumo;
+        this.desgaste += consumo;
     }
     
     

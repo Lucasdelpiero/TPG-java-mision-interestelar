@@ -1,9 +1,18 @@
 package modelo.mision;
 
 import modelo.asistente.AsistenteComando;
+import modelo.bitacora.TipoEvento;
+import modelo.nave.Recursos;
 
 public abstract class Mision{
     
+    public static enum tipoMision {
+        INTERCEPCION,
+        RECOLECCION,
+        RETORNO_SEGURO
+    }
+    
+    protected tipoMision tipo;
     protected AsistenteComando AC;
     protected InformeMision informe;
     protected int consumoCombustible = 4;
@@ -20,10 +29,14 @@ public abstract class Mision{
     // Posibles excepciones (ejemplo):
     //  - Nave con recursos insuficientes
     public void hacerMision(AsistenteComando AC){
-        preparar(AC);
-        ejecutar(AC);
-        evaluar(AC);
-        cerrar(AC);
+        assert (AC == null): "Error: AC es null" ;
+        this.AC = AC;
+        
+        preparar();
+        ejecutar();
+        evaluar();
+        cerrar();
+ 
     }
     
     
@@ -37,7 +50,24 @@ public abstract class Mision{
         // LA EJECUCION DIRECTAMENTE Y PROPAGAR LA EXCEPCION AL
         // METODO hacerMision().
         // CON ESO, IGNORAR EL USO DEL BOOLEANO 'puedeHacerMision'
-    protected void preparar(AsistenteComando AC){
+    protected void preparar(){
+        informe = new InformeMision();
+        if (tipo == Mision.tipoMision.INTERCEPCION){
+            informe.misionEjecutada = "M-01";
+        } else 
+            if (tipo == Mision.tipoMision.RECOLECCION){
+            informe.misionEjecutada = "M-02";
+        } else 
+            if (tipo == Mision.tipoMision.RETORNO_SEGURO){
+            informe.misionEjecutada = "M-03";
+        } 
+        
+        Recursos resViejos = AC.getNave().getRecursos();
+        
+        informe.recursosIniciales.setCombustible(resViejos.getCombustible());
+        informe.recursosIniciales.setEnergia(resViejos.getEnergia());
+        informe.recursosIniciales.setDesgaste(resViejos.getDesgaste());
+        
         System.out.println("[MISION] Iniciando mision...");
         
         assert (AC.getNave() == null) :    "[MISION] ERROR: Nave es null";
@@ -46,11 +76,12 @@ public abstract class Mision{
         if (AC.consultaRecursos(consumoCombustible, consumoDesgaste))
             System.out.println("[MISION] Nave lista.");
         else {
+            informe.resultadoExitoso = false;
             System.out.println("[MISION] ERROR: Recursos insuficientes");
         }
     }
     
-    protected abstract void ejecutar(AsistenteComando AC);
+    protected abstract void ejecutar();
     
     // EVAULAR: idea
     //  CADA MISION TIENE SU PROPIO INFORME Y DISTINTOS
@@ -65,10 +96,68 @@ public abstract class Mision{
         //      Aplicar diferencias entre el estado inicial y el
         //  estado final para poder registrarlo.
         //  - Agregar Desgaste, disminuir Combustible, energia?
-    protected abstract void evaluar(AsistenteComando AC);
+    protected void evaluar(){  
+        informe.recursosFinales = AC.getNave().getRecursos();
+        System.out.println("[MISION] Evaluando resultados...");
+        
+        
+        String idMision = "null";
+        String descripcionMision = "null";
+        
+        if (tipo == Mision.tipoMision.INTERCEPCION){
+            idMision = "M-01";
+            descripcionMision = "Mision: INTERCEPCION Y ASISTENCIA";
+        } else
+            if (tipo == Mision.tipoMision.RECOLECCION){
+                idMision = "M-02";
+                descripcionMision = "Mision: RECOLECCION";
+        } else
+            if (tipo == Mision.tipoMision.RETORNO_SEGURO){
+                idMision = "M-03";
+                descripcionMision = "Mision: RETORNO SEGURO";
+            }
+        
+        AC.registrarMision(
+            TipoEvento.MISION,
+            descripcionMision,         // agregar descripcion sobre la mision realizada
+            idMision
+        );
+        
+        //  Para cada recurso:
+        //  -   Se resta el recurso (lo que consume la mision) de la nave
+        //  -   Se registra la reduccion del recurso en la bitacora
+        //  -   Se agrega el consumo (lo que consume la mision) para el informe
+        
+        AC.restaCombustible(consumoCombustible);
+        AC.registrarEvento(
+            TipoEvento.RECURSOS,
+                "Reduccion de combustible en "+idMision+" : "+"-"+consumoCombustible
+        );
+        //informe.addConsumoCombustible(consumoCombustible);
+        
+        AC.sumaDesgaste(consumoDesgaste);
+        AC.registrarEvento(
+            TipoEvento.RECURSOS,
+            "Incremento de desgaste en "+idMision+" : "+"+"+consumoDesgaste
+        );
+        //informe.addConsumoDesgaste(consumoDesgaste);
+        
+        AC.restaEnergia(consumoEnergia);    // !!!  ESTA MISION RESTA 5 puntos de energia
+        AC.registrarEvento(                 
+            TipoEvento.RECURSOS,
+            "Reduccion de energia en "+idMision+" : "+"-"+consumoEnergia
+        );
+        //informe.addConsumoCombustible(consumoEnergia);
+        
+        
+        informe.getInforme();
+        
+        System.out.println("[MISION] Cerrando...");
+    }
     
-    protected void cerrar(AsistenteComando AC){
+    protected void cerrar(){
         System.out.println("[MISION] Mision terminada.");
+        System.out.println("---------------------------------");
     }
     
     

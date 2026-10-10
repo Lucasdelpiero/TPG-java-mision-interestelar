@@ -5,6 +5,7 @@
 package modelo.mision;
 
 import java.util.ArrayList;
+import modelo.nave.Recursos;
 
 public class InformeMision {
     //protected EstadoNave estadoFinalNave;        // Por ahora se entiende como recursos al final de la mision
@@ -12,37 +13,63 @@ public class InformeMision {
     //protected ArrayList<String> observacinesImportantes; // Tipo es temporal
     
     protected String misionEjecutada;
-    //protected boolean resultadoExitoso;
-    protected RecursosConsumidos recursosConsumidos;                 
+    protected boolean resultadoExitoso = true;
+    protected RecursosConsumidos recursosConsumidos;   
+    
+    protected Recursos recursosIniciales;
+    protected Recursos recursosFinales;
     
     //-------------------------------------------
     //          CONSTRUCTOR
     //-------------------------------------------
     
+    public InformeMision(){
+        recursosIniciales = new Recursos(0, 0, 0);
+        recursosFinales = new Recursos(0, 0, 0);
+    }
+    
     public InformeMision(String idMision){
         misionEjecutada = idMision;
+        
         //this.resultadoExitoso = resultadoExitoso;
-        recursosConsumidos = new RecursosConsumidos();
+        //recursosConsumidos = new RecursosConsumidos();
     }
     
     //-------------------------------------------
     //          ADICIONAL
     //-------------------------------------------
-    public void getInforme(int actCombustible, int actDesgaste, int actEnergia, boolean misionCumplida){
-        int prevCombustible = recursosConsumidos.getCombustibleConsumido() + actCombustible;
-        int prevDesgaste = recursosConsumidos.getDesgasteConsumido() + actDesgaste;
-        int prevEnergia = recursosConsumidos.getEnergiaConsumida() + actEnergia;
+    // PARA BORRAR DESPUES
+    public void getInforme(){
+        //int prevCombustible = recursosConsumidos.getCombustibleConsumido() + actCombustible;
+        //int prevDesgaste = recursosConsumidos.getDesgasteConsumido() + actDesgaste;
+        //int prevEnergia = recursosConsumidos.getEnergiaConsumida() + actEnergia;
         
         System.out.println(":: Mision: "+ misionEjecutada);
-        System.out.println(":: Resultado: "+ misionCumplida);
-        System.out.println(":: Recursos consumidos totales (acumulado): ");
-        System.out.println("    * Combustible: +"+ recursosConsumidos.getCombustibleConsumido() );
-        System.out.println("    * Desgaste: -"+ recursosConsumidos.getDesgasteConsumido() );
-        System.out.println("    * Energia: -"+ recursosConsumidos.getEnergiaConsumida() );
+        System.out.println(":: Resultado: "+ (resultadoExitoso ? "Exito" : "Fracaso") );
+        
+        
+        System.out.println(":: Recursos consumidos totales (acumulado): ");    
+        System.out.println("    * Combustible: "+ 
+                                (recursosIniciales.getCombustible() -
+                                recursosFinales.getCombustible() ) );
+        System.out.println("    * Energia: "+ 
+                                (recursosIniciales.getEnergia() -
+                                recursosFinales.getEnergia() ) );
+        System.out.println("    * Desgaste: "+ 
+                                (recursosFinales.getDesgaste() -
+                                recursosIniciales.getDesgaste() ) );
+        
+        
         System.out.println(":: Estado de recursos (Antes // Despues):");
-        System.out.println("    * Combustible: "+ prevCombustible +" --> "+ actCombustible);
-        System.out.println("    * Desgaste: "+ prevDesgaste +" --> "+ actDesgaste);
-        System.out.println("    * Energia: "+ prevEnergia +" --> "+ actEnergia);
+        System.out.println("    * Combustible: "+ 
+                            recursosIniciales.getCombustible() +" --> "+ 
+                            recursosFinales.getCombustible());
+        System.out.println("    * Desgaste: "+ 
+                            recursosIniciales.getDesgaste() +" --> "+ 
+                            recursosFinales.getDesgaste());
+        System.out.println("    * Energia: "+ 
+                            recursosIniciales.getEnergia() +" --> "+
+                            recursosFinales.getEnergia());
     }
     
     
@@ -62,6 +89,9 @@ public class InformeMision {
     //          GETTERS/SETTERS
     //-------------------------------------------    
     
+    public void setMisionEjecutada(String id){
+        this.misionEjecutada = id;
+    }
     //public void setResultadoExitoso(boolean resultado){
     //    resultadoExitoso = resultado;
     //}
