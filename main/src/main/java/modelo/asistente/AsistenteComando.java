@@ -57,14 +57,14 @@ public class AsistenteComando {
     
     public void restaEnergia(int consumoEnergia){
         nave.getRecursos().consumeEnergia(consumoEnergia);
-    }    
+    }
     
     public void sumaDesgaste(int consumoDesgaste){
         nave.getRecursos().consumeDesgaste(consumoDesgaste);
     
     }
     
-    
+ 
     
         //---------------   BITACORA    -----------------
     

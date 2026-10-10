@@ -16,6 +16,7 @@ public class MisionIntercepcionAsistencia extends Mision{
     @Override
     public void ejecutar(){
         System.out.println("[MISION] Ejecutando M-01: ASISTENCIA");
+        AC.restaEnergia(consumoEnergia);
         //informe = new InformeMision(idMision);
         //Si se gasta algun recurso de por medio, entonces:
         //  informe.set[recurso](valor que se consume)
