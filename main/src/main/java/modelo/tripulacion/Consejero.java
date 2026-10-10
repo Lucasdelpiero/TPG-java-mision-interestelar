@@ -15,7 +15,8 @@ public class Consejero extends Cargo {
     }
     
     public void addConsejo(int consejos) {
-        assert consejos > 0 : "Numero de consejos invalido";
+        if (consejos <= 0)
+            throw new IllegalArgumentException("ERROR :Numero de consejos invalido");
         this.consejos += consejos;
     }
     
