@@ -59,6 +59,21 @@ public class Tripulante implements Haber {
             return "Sueldo base: " + base
                 + "\nAdicional por antiguedad: " + adicionalAntiguedad ;
     }
+
+    public void setCargo(Cargo cargo) {
+        assert cargo != null : "ERROR: Cargo null";
+        this.cargo = cargo;
+    }
+    
+    public void setAntiguedad(int antiguedad) {
+        assert antiguedad >= 0 : "ERROR : Antiguedad negativa";
+        this.antiguedad = antiguedad;
+    }
+    
+    public void setId(String id) {
+        assert (!id.isBlank()) : "ERROR : Identificador invalido";
+        this.identidad = id;
+    }
     
     public Cargo getCargo() {
         return this.cargo;
