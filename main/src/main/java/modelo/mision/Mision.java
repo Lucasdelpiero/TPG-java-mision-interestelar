@@ -18,6 +18,7 @@ public abstract class Mision{
     protected int consumoCombustible = 4;
     protected int consumoDesgaste = 4;
     protected int consumoEnergia = 0;
+    protected boolean puedeIniciarMision;
     protected boolean misionCumplida = false;
     //-------------------------------------------
     //          CICLO PRINCIPAL
@@ -51,6 +52,8 @@ public abstract class Mision{
         // METODO hacerMision().
         // CON ESO, IGNORAR EL USO DEL BOOLEANO 'puedeHacerMision'
     protected void preparar(){
+        puedeIniciarMision = (AC.consultaRecursos(consumoCombustible, consumoEnergia,consumoDesgaste));
+        
         informe = new InformeMision();
         if (tipo == Mision.tipoMision.INTERCEPCION){
             informe.misionEjecutada = "M-01";
@@ -73,10 +76,12 @@ public abstract class Mision{
         assert (AC.getNave() == null) :    "[MISION] ERROR: Nave es null";
         assert (AC.getNave().getRecursos() == null): "[MISION] ERROR: Recursos es null";
         
-        if (AC.consultaRecursos(consumoCombustible, consumoDesgaste))
+        if (AC.consultaRecursos(consumoCombustible, consumoEnergia,consumoDesgaste)){
             System.out.println("[MISION] Nave lista.");
+            puedeIniciarMision = true;
+        }
         else {
-            informe.resultadoExitoso = false;
+            puedeIniciarMision = false;
             System.out.println("[MISION] ERROR: Recursos insuficientes");
         }
     }
@@ -127,15 +132,13 @@ public abstract class Mision{
         //  -   Se resta el recurso (lo que consume la mision) de la nave
         //  -   Se registra la reduccion del recurso en la bitacora
         //  -   Se agrega el consumo (lo que consume la mision) para el informe
-        
-        AC.restaCombustible(consumoCombustible);
+
         AC.registrarEvento(
             TipoEvento.RECURSOS,
                 "Reduccion de combustible en "+idMision+" : "+"-"+consumoCombustible
         );
         //informe.addConsumoCombustible(consumoCombustible);
-        
-        AC.sumaDesgaste(consumoDesgaste);
+
         AC.registrarEvento(
             TipoEvento.RECURSOS,
             "Incremento de desgaste en "+idMision+" : "+"+"+consumoDesgaste
