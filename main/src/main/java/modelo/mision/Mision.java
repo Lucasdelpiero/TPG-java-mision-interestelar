@@ -30,7 +30,7 @@ public abstract class Mision{
     // Posibles excepciones (ejemplo):
     //  - Nave con recursos insuficientes
     public void hacerMision(AsistenteComando AC){
-        assert (AC == null): "Error: AC es null" ;
+        assert (AC != null): "Error: AC es null" ;
         this.AC = AC;
         
         preparar();
@@ -73,8 +73,8 @@ public abstract class Mision{
         
         System.out.println("[MISION] Iniciando mision...");
         
-        assert (AC.getNave() == null) :    "[MISION] ERROR: Nave es null";
-        assert (AC.getNave().getRecursos() == null): "[MISION] ERROR: Recursos es null";
+        assert (AC.getNave() != null) :    "[MISION] ERROR: Nave es null";
+        assert (AC.getNave().getRecursos() != null): "[MISION] ERROR: Recursos es null";
         
         if (AC.consultaRecursos(consumoCombustible, consumoEnergia,consumoDesgaste)){
             System.out.println("[MISION] Nave lista.");

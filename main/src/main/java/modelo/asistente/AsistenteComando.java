@@ -33,7 +33,7 @@ public class AsistenteComando {
     * @param m una clase hija de mision
     */
     public void iniciaMision(Mision m){
-        assert (m == null) : "Mision es nulo";
+        assert (m != null) : "Mision es nulo";
         try {
             m.hacerMision(this);
         }

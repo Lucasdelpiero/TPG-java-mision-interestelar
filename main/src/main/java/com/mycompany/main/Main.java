@@ -14,7 +14,6 @@ public class Main {
        Nave nave = NaveFactory.getNave(NaveFactory.tipoNave.EXPLORADORA);
        asistente.setNave(nave);
        Mision mision = new MisionIntercepcionAsistencia();
-       
        asistente.iniciaMision(mision);
        
        mision = new MisionRecoleccion();
