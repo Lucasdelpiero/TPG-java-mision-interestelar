@@ -8,7 +8,7 @@ public abstract class Nave {
     
     protected Recursos recursos;
     protected MotorWarp motorwarp;
-    protected ArrayList<Tripulante>tripulacion;
+    protected Tripulacion tripulacion;
     protected Componentes componentes;
     protected int id;
     protected static int idSiguiente = 1;
@@ -30,7 +30,7 @@ public abstract class Nave {
         assert(energia >= 0 && energia <= 100): "Error: energia no valida";
         assert(desgaste >= 0 && desgaste <= 100): "Error: desgaste no valido";
         
-        tripulacion = new ArrayList<>();
+        tripulacion = new Tripulacion();
         recursos = new Recursos(combustible, energia, desgaste);
         this.id = idSiguiente++;
         this.motorwarp = new MotorWarp();
@@ -46,10 +46,11 @@ public abstract class Nave {
      * POST: se agrega tripulante a la tripulacion
      * @param t es el tripulante que se quiere añadir a la tripulacion 
      */
-    public void addTripulante(Tripulante t){
+    public void addTripulante(PlanetaOrigen t){
         assert(t != null): "Error: tripulando es null";
+        assert(t.getTripulante().getCargo().equals("Capitan") || getTripulantesCargo("Capitan").isEmpty()):"Error : Ya hay un capitan";
         
-        tripulacion.add(t);
+        tripulacion.addTripulante(t);
     }
     
     //public void removeTripulante(Tripulante t){
@@ -94,7 +95,7 @@ public abstract class Nave {
         this.motorwarp = motor;
     }
 
-    public void setTripulacion(ArrayList<Tripulante> tripulacion) {
+    public void setTripulacion(Tripulacion tripulacion) {
         this.tripulacion = tripulacion;
     }
 
@@ -103,3 +104,4 @@ public abstract class Nave {
     }
     
 }
+
