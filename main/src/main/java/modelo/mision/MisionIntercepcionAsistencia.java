@@ -5,9 +5,9 @@ import modelo.bitacora.TipoEvento;
 
 // Mision M-01
 public class MisionIntercepcionAsistencia extends Mision{
-    private int consumoEnergia = 5;
 
     public MisionIntercepcionAsistencia() {
+        int consumoEnergia = 5;
         tipo = Mision.tipoMision.INTERCEPCION;
     }
     
@@ -15,11 +15,19 @@ public class MisionIntercepcionAsistencia extends Mision{
     
     @Override
     public void ejecutar(){
-        System.out.println("[MISION] Ejecutando M-01: ASISTENCIA");
-        AC.restaEnergia(consumoEnergia);
-        //informe = new InformeMision(idMision);
-        //Si se gasta algun recurso de por medio, entonces:
-        //  informe.set[recurso](valor que se consume)
+        if (puedeIniciarMision){
+            System.out.println("[MISION] Ejecutando M-01: ASISTENCIA");
+            AC.restaCombustible(consumoCombustible);
+            AC.restaEnergia(consumoEnergia);
+            AC.sumaDesgaste(consumoDesgaste);
+            informe.resultadoExitoso = true;
+            //Si se gasta algun recurso de por medio, entonces:
+            //  informe.set[recurso](valor que se consume)
+        
+        } else {
+            System.out.println("[MISION] ABORTANDO M-01: ASISTENCIA");
+            informe.resultadoExitoso = false;
+        }
         
         //Si ocurre algo ... 
         //  misionCumplida = false (queda como esta);

@@ -42,11 +42,13 @@ public class AsistenteComando {
         };  
     }
     
-    public boolean consultaRecursos(int consumoCombustible, int consumoDesgaste){
+    public boolean consultaRecursos(int consumoCombustible,int consumoEnergia, int consumoDesgaste){
         return 
-            (nave.getRecursos().getCombustible() - consumoCombustible > 0) 
+            (nave.getRecursos().getCombustible() - consumoCombustible >= 0) 
                 && 
-            (nave.getRecursos().getDesgaste() + consumoDesgaste < 100);
+            (nave.getRecursos().getDesgaste() + consumoDesgaste <= 100) &&
+            (nave.getRecursos().getEnergia() + consumoEnergia >= 0)    
+                ;
     }   
     
         //---------------   MODIF RECURSOS    -----------------

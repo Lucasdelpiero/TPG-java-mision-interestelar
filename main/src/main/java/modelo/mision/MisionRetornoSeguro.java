@@ -5,16 +5,26 @@ import modelo.bitacora.TipoEvento;
 
 // Mision M-03
 public class MisionRetornoSeguro extends Mision{
-    private int consumoEnergia = 0;
 
     public MisionRetornoSeguro() {
         tipo = Mision.tipoMision.RETORNO_SEGURO;
     }
     
     @Override
-    public void ejecutar(){
+    public void ejecutar(){  
+       if (puedeIniciarMision){
+            System.out.println("[MISION] Ejecutando M-03: RETORNO SEGURO");
+            AC.restaCombustible(consumoCombustible);
+            AC.restaEnergia(consumoEnergia);
+            AC.sumaDesgaste(consumoDesgaste);
+            informe.resultadoExitoso = true;
+            //Si se gasta algun recurso de por medio, entonces:
+            //  informe.set[recurso](valor que se consume)
         
-        System.out.println("[MISION] Ejecutando M-03: RETORNO SEGURO");
+        } else {
+            System.out.println("[MISION] ABORTANDO M-03: RETORNO SEGURO");
+            informe.resultadoExitoso = false;
+        }
         //informe = new InformeMision(idMision);
         //Si se gasta algun recurso de por medio, entonces:
         //  informe.set[recurso](valor que se consume)
