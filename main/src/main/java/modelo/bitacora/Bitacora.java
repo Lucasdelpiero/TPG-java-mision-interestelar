@@ -3,11 +3,18 @@ import java.util.ArrayList;
 
 public class Bitacora {
     private ArrayList<Evento> eventos;
-    
+
+    //-------------------------------------------
+    //          CONSTRUCTOR
+    //------------------------------------------- 
     public Bitacora(){
         this.eventos = new ArrayList<Evento>();
     }
-    
+
+    //-------------------------------------------
+    //          ADICIONALES
+    //-------------------------------------------
+
     // Sobrecarga
     public void registrar(TipoEvento tipo, String descripcion){
         this.registrar(tipo, descripcion, null);
@@ -18,7 +25,7 @@ public class Bitacora {
      * <b>POST</b>
      * Crea un evento y lo añade al arrayList de eventos
      */
-    public void registrar(TipoEvento tipo, String descripcion, String idMision){
+    public void registrar(TipoEvento tipo, String descripcion, Integer idMision){
         Evento evento = new Evento(tipo, descripcion, idMision);
         this.eventos.add(evento);
     }
@@ -44,15 +51,19 @@ public class Bitacora {
      * si no hay coincidencias o el id es nulo, devuelve una lista vacía
      */
 
-    public ArrayList<Evento> getEventosDeMision(String idMision){
+    public ArrayList<Evento> getEventosDeMision(Integer idMision){
         ArrayList<Evento> resultado = new ArrayList<Evento>();
         for(Evento e: this.eventos){
-            if (e.getIdMision() != null && e.getIdMision().equals(idMision)){
+            if (e.getIdMision() != null && e.getIdMision().equals(idMision)){ //Se usa equals porque Integer es Objeto
                 resultado.add(e);
             }
         }
         return resultado;
     }
+
+    //-------------------------------------------
+    //          GETTERS / SETTERS
+    //-------------------------------------------
 
     /**
      * <b>POST</b>

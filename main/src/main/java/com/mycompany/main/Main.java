@@ -3,10 +3,48 @@
  */
 
 package com.mycompany.main;
+import modelo.asistente.AsistenteComando;
+import modelo.nave.*;
+import modelo.mision.*;
 
 public class Main {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+       AsistenteComando asistente = new AsistenteComando();
+       Nave nave = NaveFactory.getNave(NaveFactory.tipoNave.EXPLORADORA);
+       asistente.setNave(nave);
+       Mision mision = new MisionIntercepcionAsistencia();
+       
+       asistente.iniciaMision(mision);
+       
+       mision = new MisionRecoleccion();
+       asistente.iniciaMision(mision);
+       
+       mision = new MisionRetornoSeguro();
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       
     }
 }

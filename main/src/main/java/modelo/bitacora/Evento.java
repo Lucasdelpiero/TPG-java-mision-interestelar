@@ -11,14 +11,17 @@ public class Evento {
     private final Date momento;
     private final TipoEvento tipo;
     private final String descripcion;
-    private final String idMision; // Podria ser null si el evento no esta relacionado a una mision
+    private final Integer idMision; // Podria ser null si el evento no esta relacionado a una mision
 
+    //-------------------------------------------
+    //          CONSTRUCTOR / VALIDACION
+    //-------------------------------------------    
     // Sobrecarga
     public Evento(TipoEvento tipo, String descripcion) {
         this(tipo, descripcion, null);
     }
     
-    public Evento(TipoEvento tipo, String descripcion, String idMision) {
+    public Evento(TipoEvento tipo, String descripcion, Integer idMision) {
         validar(tipo, descripcion, idMision);
         this.momento = new Date();
         this.tipo = tipo;
@@ -26,15 +29,19 @@ public class Evento {
         this.idMision = idMision;
     }
     
-    private void validar(TipoEvento tipo, String descripcion, String idMision){
+    private void validar(TipoEvento tipo, String descripcion, Integer idMision){
         if (tipo == null || 
             descripcion == null ||
             descripcion.trim().isEmpty() ||
-            (idMision != null && idMision.trim().isEmpty())) {
+            idMision != null && idMision <= 0) {
 
             throw new IllegalArgumentException("El evento que se intenta registrar tiene datos invalidos");
         }
     }
+    
+    //-------------------------------------------
+    //          GETTERS / SETTERS
+    //-------------------------------------------    
     
     /**
      * 
@@ -52,7 +59,7 @@ public class Evento {
         return descripcion;
     }
 
-    public String getIdMision() {
+    public Integer getIdMision() {
         return idMision;
     }
 }
