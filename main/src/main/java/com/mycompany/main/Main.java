@@ -11,10 +11,40 @@ public class Main {
 
     public static void main(String[] args) {
        AsistenteComando asistente = new AsistenteComando();
-       Nave nave = NaveFactory.getNave(NaveFactory.tipoNave.CARGUERA);
+       Nave nave = NaveFactory.getNave(NaveFactory.tipoNave.EXPLORADORA);
        asistente.setNave(nave);
        Mision mision = new MisionIntercepcionAsistencia();
        
        asistente.iniciaMision(mision);
+       
+       mision = new MisionRecoleccion();
+       asistente.iniciaMision(mision);
+       
+       mision = new MisionRetornoSeguro();
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       asistente.iniciaMision(mision);
+       
     }
 }

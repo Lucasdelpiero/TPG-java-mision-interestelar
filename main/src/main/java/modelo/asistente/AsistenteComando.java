@@ -4,6 +4,7 @@ import modelo.nave.Nave;
 import modelo.nave.Recursos;
 import modelo.bitacora.Bitacora;
 import modelo.bitacora.TipoEvento; // !!!
+import modelo.mision.InformeMision;
 import modelo.mision.Mision;
 
 public class AsistenteComando {
@@ -51,23 +52,19 @@ public class AsistenteComando {
         //---------------   MODIF RECURSOS    -----------------
     
     public void restaCombustible(int consumoCombustible){
-        //Recursos r = nave.getRecursos();
-        //r.setCombustible(r.getCombustible() - consumoCombustible);
-        nave.getRecursos().setCombustible(nave.getRecursos().getCombustible() - consumoCombustible);
-    }
-    
-    public void sumaDesgaste(int consumoDesgaste){
-        //Recursos r = nave.getRecursos();
-        //r.setDesgaste( r.getDesgaste() - consumoDesgaste);
-        nave.getRecursos().setDesgaste(nave.getRecursos().getDesgaste() - consumoDesgaste);
-    
+        nave.getRecursos().consumeCombustible(consumoCombustible);
     }
     
     public void restaEnergia(int consumoEnergia){
-        //Recursos r = nave.getRecursos();
-        //r.setEnergia(r.getEnergia() - consumoEnergia);
-        nave.getRecursos().setEnergia(nave.getRecursos().getEnergia() - consumoEnergia);//testing
+        nave.getRecursos().consumeEnergia(consumoEnergia);
     }    
+    
+    public void sumaDesgaste(int consumoDesgaste){
+        nave.getRecursos().consumeDesgaste(consumoDesgaste);
+    
+    }
+    
+    
     
         //---------------   BITACORA    -----------------
     
