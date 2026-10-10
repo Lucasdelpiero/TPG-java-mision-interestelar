@@ -8,15 +8,17 @@ import modelo.mision.InformeMision;
 import modelo.mision.Mision;
 
 public class AsistenteComando {
+    private String nombre;
     private Nave nave;
     private Bitacora bitacora;
     
     //-------------------------------------------
     //          CONSTRUCTOR
     //-------------------------------------------
-    public AsistenteComando(){
-        // nave
-        // bitacora
+    public AsistenteComando(String nombre, Bitacora bitacora){
+        this.nombre = nombre;
+        //this.nave = nave;
+        this.bitacora = bitacora;
     }
     
     //-------------------------------------------
@@ -89,6 +91,9 @@ public class AsistenteComando {
     //-------------------------------------------
     //          GETTERS / SETTERS
     //-------------------------------------------
+    public String getNombre(){
+        return nombre;
+    }
     
     public Nave getNave(){
         return nave;
