@@ -10,22 +10,22 @@ package modelo.motorwarp;
     */
 
 public interface EstadoMotor {
+
     // Si el estado actual es Disponible, cambia el estado a preparando salto
-    boolean prepararSalto(MotorWarp motor);
+    void prepararSalto(MotorWarp motor) throws MotorTransicionException;
     
     // Si el estado actual es Preparando Salto, cambia el estado a preparando SaltoWarp
-    boolean saltar(MotorWarp motor);
+    void saltar(MotorWarp motor) throws MotorTransicionException;
     
     // Si el estado actual es Saltando, cambia el estado a preparando Enfriando Estado
-    boolean enfriar(MotorWarp motor);
+    void enfriar(MotorWarp motor) throws MotorTransicionException;
     
     // Si el estado actual es Saltando, cambia el estado a preparando Disponible Estado
-    boolean terminarSalto(MotorWarp motor);
+    void terminarSalto(MotorWarp motor) throws MotorTransicionException;
     
     // Si el estado actual es Enfriamiento, cambia el estado a Disponible
-    boolean terminarEnfriamiento(MotorWarp motor);
-    
-    // Devuelve true si el estado es Disponible Estado
+    void terminarEnfriamiento(MotorWarp motor) throws MotorTransicionException;
+
     boolean estaDisponible();
     String getNombre();
 }
