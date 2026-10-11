@@ -67,33 +67,29 @@ public abstract class Mision{
         // METODO hacerMision().
         // CON ESO, IGNORAR EL USO DEL BOOLEANO 'puedeHacerMision'
     protected void preparar(){
-        puedeIniciarMision = (AC.consultaRecursos(consumoCombustible, consumoEnergia,consumoDesgaste));
-        
         informe = new InformeMision(idMision, nombreMision);
         
-        Recursos resViejos = AC.getNave().getRecursos();
+        assert (AC.getNave() != null) : ":: [MISION] ERROR: Nave es null";
+        assert (AC.getNave().getRecursos() != null) : ":: [MISION] ERROR: Recursos es null";
         
+        Recursos resViejos = AC.getNave().getRecursos();
         informe.recursosIniciales.setCombustible(resViejos.getCombustible());
         informe.recursosIniciales.setEnergia(resViejos.getEnergia());
         informe.recursosIniciales.setDesgaste(resViejos.getDesgaste());
-        
 
         System.out.println("[MISION] Iniciando mision...");
         AC.registrarMision(TipoEvento.MISION, "[MISION] Iniciando mision...", idMision);
         
-        assert (AC.getNave() != null) :    ":: [MISION] ERROR: Nave es null";
-        assert (AC.getNave().getRecursos() != null): ":: [MISION] ERROR: Recursos es null";
+        boolean recursosOk = AC.consultaRecursos(consumoCombustible, consumoEnergia, consumoDesgaste);
         
-        if (AC.consultaRecursos(consumoCombustible, consumoEnergia,consumoDesgaste)){
-            System.out.println("[MISION] Nave lista.");
-            AC.registrarMision(TipoEvento.MISION, "[MISION] Nave lista.", idMision);
-
-            puedeIniciarMision = true;
-        }
-        else {
+        if (!recursosOk) {
             puedeIniciarMision = false;
             System.out.println("[MISION] ERROR: Recursos insuficientes");
             AC.registrarMision(TipoEvento.MISION, "[MISION] ERROR: Recursos insuficientes", idMision);
+        } else {
+            puedeIniciarMision = true;
+            System.out.println("[MISION] Nave lista.");
+            AC.registrarMision(TipoEvento.MISION, "[MISION] Nave lista.", idMision);
         }
     }
     
@@ -112,8 +108,9 @@ public abstract class Mision{
         //      Aplicar diferencias entre el estado inicial y el
         //  estado final para poder registrarlo.
         //  - Agregar Desgaste, disminuir Combustible, energia?
-    protected void evaluar(){  
-        informe.recursosFinales = AC.getNave().getRecursos();
+    protected void evaluar(){
+        Recursos resFinal = AC.getNave().getRecursos();
+        informe.recursosFinales = new Recursos(resFinal.getCombustible(), resFinal.getEnergia(), resFinal.getDesgaste());
         System.out.println("[MISION] Evaluando resultados...");
         AC.registrarMision(TipoEvento.MISION, "[MISION] Evaluando resultados: " + descripcion, idMision);
         

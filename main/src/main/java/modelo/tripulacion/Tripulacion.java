@@ -55,11 +55,11 @@ public class Tripulacion {
         Cargo c;
         Tripulante t;
         ArrayList<Tripulante> tripulantesCargo = new ArrayList<>();
-        assert cargo != null && !cargo.isBlank() : "Cargo invalido";
+        assert cargo == null || !cargo.isBlank() : "Cargo invalido";
         for (PlanetaOrigen po : this.tripulantes) {
             t = po.getTripulante();
             c = t.getCargo();
-            if (c.getCargoTripulante().equals(cargo))
+            if (cargo == null || c.getCargoTripulante().equalsIgnoreCase(cargo))
                 tripulantesCargo.add(t);
         }
         return tripulantesCargo;
