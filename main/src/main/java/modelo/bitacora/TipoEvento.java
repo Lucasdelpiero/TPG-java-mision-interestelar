@@ -5,5 +5,5 @@ package modelo.bitacora;
  * Un enum es una lista de valores, es como una constante que contiene los valores permitidos
  */
 public enum TipoEvento {
-    ORDEN, WARP, MISION, RECURSOS, ERROR
+    ORDEN, WARP, MISION, RECURSOS, ERROR, TRIPULACION
 }

@@ -7,10 +7,9 @@ import modelo.bitacora.TipoEvento;
 public class MisionIntercepcionAsistencia extends Mision{
 
     public MisionIntercepcionAsistencia() {
-        id = idSiguiente++;
         nombreMision = "M-01";
         descripcion = "Mision: INTERCEPCION Y ASISTENCIA";
-        int consumoEnergia = 5;
+        consumoEnergia = 5;
         tipo = Mision.tipoMision.INTERCEPCION;
     }
     
@@ -20,22 +19,19 @@ public class MisionIntercepcionAsistencia extends Mision{
     public void ejecutar(){
         if (puedeIniciarMision){
             System.out.println("[MISION] Ejecutando M-01: ASISTENCIA");
-            AC.getBitacora().registrar(TipoEvento.MISION, "[MISION] Ejecutando M-01: ASISTENCIA", id);
+            AC.registrarMision(TipoEvento.MISION, "[MISION] Ejecutando M-01: ASISTENCIA", idMision);
             
             AC.restaCombustible(consumoCombustible);
-            String descConsumo = "Consume %d de combustible";
-            descConsumo = String.format(descConsumo, consumoCombustible);
-            AC.getBitacora().registrar(TipoEvento.RECURSOS, descConsumo, id);
+            String descConsumo = String.format("Consume %d de combustible", consumoCombustible);
+            AC.registrarMision(TipoEvento.RECURSOS, descConsumo, idMision);
             
             AC.restaEnergia(consumoEnergia);
-            descConsumo = "Consume %d de energia";
-            descConsumo = String.format(descConsumo, consumoCombustible);
-            AC.getBitacora().registrar(TipoEvento.RECURSOS, descConsumo, id);
+            descConsumo = String.format("Consume %d de energia", consumoEnergia);
+            AC.registrarMision(TipoEvento.RECURSOS, descConsumo, idMision);
             
             AC.sumaDesgaste(consumoDesgaste);
-            descConsumo = "Consume %d de desgaste";
-            descConsumo = String.format(descConsumo, consumoCombustible);
-            AC.getBitacora().registrar(TipoEvento.RECURSOS, descConsumo, id);
+            descConsumo = String.format("Consume %d de desgaste", consumoDesgaste);
+            AC.registrarMision(TipoEvento.RECURSOS, descConsumo, idMision);
             
             informe.resultadoExitoso = true;
             //Si se gasta algun recurso de por medio, entonces:
@@ -43,7 +39,7 @@ public class MisionIntercepcionAsistencia extends Mision{
         
         } else {
             System.out.println("[MISION] ABORTANDO M-01: ASISTENCIA");
-            AC.getBitacora().registrar(TipoEvento.MISION, "[MISION] ABORTANDO M-01: ASISTENCIA", id);
+            AC.registrarMision(TipoEvento.MISION, "[MISION] ABORTANDO M-01: ASISTENCIA", idMision);
             informe.resultadoExitoso = false;
         }
         
