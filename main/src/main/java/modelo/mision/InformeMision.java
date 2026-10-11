@@ -12,7 +12,7 @@ public class InformeMision {
     //protected ArrayList<String> accionesPrincipales ; // Tipo es temporal
     //protected ArrayList<String> observacinesImportantes; // Tipo es temporal
     
-    protected int id;
+    protected Integer idMision;
     protected String nombreMision;
     protected boolean resultadoExitoso = true;
     protected RecursosConsumidos recursosConsumidos;   
@@ -25,11 +25,11 @@ public class InformeMision {
     //-------------------------------------------
  
     
-    public InformeMision(int id ,String nombre){
-        nombreMision = nombre;
-        this.id = id;
-        recursosIniciales = new Recursos(0, 0, 0);
-        recursosFinales = new Recursos(0, 0, 0);
+    public InformeMision(Integer idMision, String nombre){
+        this.nombreMision = nombre;
+        this.idMision = idMision;
+        this.recursosIniciales = new Recursos(0, 0, 0);
+        this.recursosFinales = new Recursos(0, 0, 0);
     }
     
     //-------------------------------------------
@@ -40,16 +40,10 @@ public class InformeMision {
         //int prevCombustible = recursosConsumidos.getCombustibleConsumido() + actCombustible;
         //int prevDesgaste = recursosConsumidos.getDesgasteConsumido() + actDesgaste;
         //int prevEnergia = recursosConsumidos.getEnergiaConsumida() + actEnergia;
-<<<<<<< HEAD
-
-        System.out.println(":: Mision: "+ nombreMision);
-=======
         System.out.println("______________________________________________");
-        System.out.println(":: Mision: "+ misionEjecutada);
+        System.out.println(":: Mision: " + nombreMision);
         System.out.println("----------------------------------------------");
->>>>>>> 03f8b26eba35d7ea9f747ee0b527a0303b0871c1
         System.out.println(":: Resultado: "+ (resultadoExitoso ? "Exito" : "Fracaso") );
-        
         
         System.out.println(":: Recursos consumidos totales (acumulado): ");    
         System.out.println("    * Combustible: "+ 
