@@ -16,12 +16,12 @@ public class SaltoWarpState implements EstadoMotor {
     
     @Override
     public void prepararSalto(MotorWarp motor) throws MotorTransicionException{
-        throw new MotorTransicionException("No puede transicionar");
+        throw new MotorTransicionException("No se puede preparar otro salto: el motor ya está saltando.");
     }
     
     @Override
     public void saltar(MotorWarp motor) throws MotorTransicionException{
-        throw new MotorTransicionException("No puede transicionar");
+        throw new MotorTransicionException("No se puede iniciar otro salto: ya hay uno en curso.");
     }
     
     @Override
@@ -36,7 +36,7 @@ public class SaltoWarpState implements EstadoMotor {
     
     @Override
     public void terminarEnfriamiento(MotorWarp motor) throws MotorTransicionException{
-        throw new MotorTransicionException("No puede transicionar");
+        throw new MotorTransicionException("No se puede terminar el enfriamiento: el motor está realizando un salto.");
     }
     
 }
