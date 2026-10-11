@@ -40,14 +40,10 @@ public class InformeMision {
         //int prevCombustible = recursosConsumidos.getCombustibleConsumido() + actCombustible;
         //int prevDesgaste = recursosConsumidos.getDesgasteConsumido() + actDesgaste;
         //int prevEnergia = recursosConsumidos.getEnergiaConsumida() + actEnergia;
-<<<<<<< HEAD
-
-        System.out.println(":: Mision: "+ nombreMision);
-=======
+		
         System.out.println("______________________________________________");
-        System.out.println(":: Mision: "+ misionEjecutada);
+        System.out.println(":: Mision: "+ nombreMision);
         System.out.println("----------------------------------------------");
->>>>>>> 03f8b26eba35d7ea9f747ee0b527a0303b0871c1
         System.out.println(":: Resultado: "+ (resultadoExitoso ? "Exito" : "Fracaso") );
         
         
