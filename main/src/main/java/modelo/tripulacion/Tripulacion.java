@@ -51,16 +51,16 @@ public class Tripulacion {
 //       Si cargo es null, devuelve a todos.
 //       Si no hay coincidencias, devuelve una lista vacia.
 //       No modifica la tripulacion.    
-    public ArrayList<Tripulante> getTripulantesCargo(String cargo) {
+    public ArrayList<PlanetaOrigen> getTripulantesCargo(String cargo) {
         Cargo c;
         Tripulante t;
-        ArrayList<Tripulante> tripulantesCargo = new ArrayList<>();
+        ArrayList<PlanetaOrigen> tripulantesCargo = new ArrayList<>();
         assert cargo != null && !cargo.isBlank() : "Cargo invalido";
         for (PlanetaOrigen po : this.tripulantes) {
             t = po.getTripulante();
             c = t.getCargo();
             if (c.getCargoTripulante().equals(cargo))
-                tripulantesCargo.add(t);
+                tripulantesCargo.add(po);
         }
         return tripulantesCargo;
     }
@@ -69,7 +69,7 @@ public class Tripulacion {
 // POST: devuelve el primer tripulante con ese identificador.
 //       Si no existe, devuelve null, incluso si la lista esta vacia.
 //       No modifica la tripulacion.    
-    public Tripulante getTripulante(String id) {
+    public PlanetaOrigen getTripulante(String id) {
         int i = 0 , n = this.tripulantes.size();
         assert id != null && !id.isBlank(): "Identificador invalido";        
         while (i < n && !this.tripulantes.get(i).getTripulante().getId().equals(id)) {
@@ -78,7 +78,7 @@ public class Tripulacion {
         if (i >= n)
             return null;
         else
-            return this.tripulantes.get(i).getTripulante();
+            return this.tripulantes.get(i);
     }
     
     public void reiniciarPeriodo() {
