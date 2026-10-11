@@ -38,11 +38,19 @@ public class AsistenteComando {
     public void iniciaMision(Mision m){
         assert (m != null) : "Mision no puede ser nula";
         this.bitacora.registrar(TipoEvento.ORDEN, "Orden recibida: Iniciar mision " + m.getIdMision());
+        this.bitacora.registrar(TipoEvento.MISION, m.getNombreMision(), m.getIdMision());
         try {
             m.hacerMision(this);
+            // Si la mision es exitosa, va a hacer un salto warp
+            if (m.getInforme().esResultadoExitoso()){
+                //bitacora.registrar(TipoEvento.WARP, "Hace warp");
+                motor_secuencia_salto();
+            }
         }
         catch (Exception e){
             this.bitacora.registrar(TipoEvento.ERROR, "Error al Iniciar Mision " + m.getIdMision());
+        } finally {
+            
         }
     }
     

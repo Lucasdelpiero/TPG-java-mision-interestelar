@@ -33,7 +33,7 @@ public class MotorWarp {
             prepararSalto();
             saltar();
             enfriar();
-            prepararSalto();
+            terminarEnfriamiento();
         }
         catch(MotorTransicionException e){
             
