@@ -93,8 +93,9 @@ public class Tripulante implements Haber {
     
     public String toString() {
         
-        return "Cargo :" + this.cargo.toString() + " Identidad :" + this.identidad + 
-                " anios en servicio :" + this.antiguedad ;
+        return "Cargo :" + this.cargo.getCargoTripulante() + "\n Identidad :" + this.identidad + 
+                "\n anios en servicio :" + this.antiguedad + "\n Sueldo : " + sueldo() + "\n" + 
+                detalleHaber() ;
     }
     
 }
