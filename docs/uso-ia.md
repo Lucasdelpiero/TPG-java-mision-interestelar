@@ -1,6 +1,4 @@
-
-
-# Martin
+# USO IA
 
 Se uso la inteligencia artificial para:
 1. Revisar el correcto cumplimiento de la especificacion al terminar de escribir el codigo.
@@ -8,7 +6,3 @@ Se uso la inteligencia artificial para:
 3. Obtener ventajas y desventajas entre diferentes enfoques para poder decidir entre multiples enfoques cual es el que mas conviene.
 
 ---
-
-# Santiago
-Nada.
-Odio la IA.
