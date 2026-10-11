@@ -18,7 +18,7 @@ public class MisionRetornoSeguro extends Mision{
        if (puedeIniciarMision){
             System.out.println("[MISION] Ejecutando M-03: RETORNO SEGURO");
             AC.getBitacora().registrar(TipoEvento.MISION, "[MISION] Ejecutando M-03: RETORNO SEGURO", id);
-            
+
             AC.restaCombustible(consumoCombustible);
             String descConsumo = "Consume %d de combustible";
             descConsumo = String.format(descConsumo, consumoCombustible);

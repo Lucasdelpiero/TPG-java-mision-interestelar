@@ -79,15 +79,17 @@ public abstract class Mision{
         informe.recursosIniciales.setEnergia(resViejos.getEnergia());
         informe.recursosIniciales.setDesgaste(resViejos.getDesgaste());
         
+
         System.out.println("[MISION] Iniciando mision...");
         AC.getBitacora().registrar(TipoEvento.MISION, "[MISION] Iniciando mision...", id);
         
-        assert (AC.getNave() != null) :    "[MISION] ERROR: Nave es null";
-        assert (AC.getNave().getRecursos() != null): "[MISION] ERROR: Recursos es null";
+        assert (AC.getNave() != null) :    ":: [MISION] ERROR: Nave es null";
+        assert (AC.getNave().getRecursos() != null): ":: [MISION] ERROR: Recursos es null";
         
         if (AC.consultaRecursos(consumoCombustible, consumoEnergia,consumoDesgaste)){
             System.out.println("[MISION] Nave lista.");
             AC.getBitacora().registrar(TipoEvento.MISION, "[MISION] Nave lista.", id);
+
             puedeIniciarMision = true;
         }
         else {

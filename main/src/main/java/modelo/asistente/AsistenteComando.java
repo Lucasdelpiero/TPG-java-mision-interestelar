@@ -76,6 +76,32 @@ public class AsistenteComando {
     public void sumaDesgaste(int consumoDesgaste){
         nave.getRecursos().consumeDesgaste(consumoDesgaste);
     }
+    
+    public void cargaCombustible(int valor){
+        System.out.println(":: ["+nombre+"] CARGA DE COMBUSTIBLE");
+        System.out.println(":: ["+nombre+"] Actual: "+nave.getRecursos().getCombustible());
+        nave.getRecursos().cargaCombustible(valor);
+        System.out.println(":: ["+nombre+"] Cargando combustible...");
+        System.out.println(":: ["+nombre+"] Nuevo: "+nave.getRecursos().getCombustible()+"\n");
+    }
+    
+    public void cargaEnergia(int valor){
+        System.out.println(":: ["+nombre+"] CARGA DE ENERGIA");
+        System.out.println(":: ["+nombre+"] Actual: "+nave.getRecursos().getEnergia());
+        nave.getRecursos().cargaEnergia(valor);
+        System.out.println(":: ["+nombre+"] Cargando energia...");
+        System.out.println(":: ["+nombre+"] Nuevo: "+nave.getRecursos().getEnergia()+"\n");
+    }
+    
+    public void realizaMantenimiento(){
+        System.out.println(":: ["+nombre+"] MANTENIMIENTO A LA NAVE");
+        System.out.println(":: ["+nombre+"] Desgaste: "+nave.getRecursos().getDesgaste());
+        nave.getRecursos().realizaMantenimiento();
+        System.out.println(":: ["+nombre+"] Realizando mantenimiento...");
+        System.out.println(":: ["+nombre+"] Desgaste: "+nave.getRecursos().getDesgaste()+"\n");
+    }
+    
+    
         //---------------   MOTOR WARP    -----------------
     /**
      * PRE: nave y motor no son nulos

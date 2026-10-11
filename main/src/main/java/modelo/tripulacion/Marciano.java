@@ -20,7 +20,7 @@ public class Marciano extends PlanetaOrigen {
     @Override
     public String detalleHaber() {
         return this.tripulante.detalleHaber()
-         + "\n Subsidio 18\n";
+        +"\n:: [HABER] Subsidio: 18\n";
     }
     
     public String toString() {

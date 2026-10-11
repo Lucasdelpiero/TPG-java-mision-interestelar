@@ -22,10 +22,10 @@ public class Main {
         FactoryPlanetaOrigen factoryOrigen = new FactoryPlanetaOrigen();
         FactoryCargo factoryCargo = new FactoryCargo();
         
-        Cargo c1 = factoryCargo.crearCargo("Capitan");
+        Cargo c1 = factoryCargo.crearCargo("Consejero");
         
         Tripulante tripulante = new Tripulante("Jorge", c1, 13);
-        PlanetaOrigen oUno = factoryOrigen.factoryPlanetaOrigen("Terricola", tripulante);
+        PlanetaOrigen oUno = factoryOrigen.factoryPlanetaOrigen("Vulcano", tripulante);
         
         nave.addTripulante(oUno);
         
@@ -47,6 +47,22 @@ public class Main {
         AC1.iniciaMision(mision);
         //AC1.motor_secuencia_salto();
         //AC1.motor_secuencia_salto();
+        
+        AC1.cargaCombustible(10);
+        AC1.cargaCombustible(10);
+        AC1.cargaCombustible(10);
+        AC1.cargaCombustible(10);
+        AC1.cargaCombustible(10);
+        AC1.cargaCombustible(10);
+        AC1.cargaCombustible(10);
+        
+        AC1.cargaEnergia(20);
+        AC1.cargaEnergia(20);
+        AC1.cargaEnergia(20);
+        AC1.cargaEnergia(20);
        
+        AC1.realizaMantenimiento();
+        AC1.realizaMantenimiento();
+        AC1.realizaMantenimiento();
     }
 }

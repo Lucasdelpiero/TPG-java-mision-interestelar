@@ -20,7 +20,7 @@ public class Terricola extends PlanetaOrigen {
     @Override
     public String detalleHaber() {
         return this.tripulante.detalleHaber()
-         + "\n Subsidio 20\n";
+         + "\n:: [HABER] Subsidio: 20\n";
     }
     
     
