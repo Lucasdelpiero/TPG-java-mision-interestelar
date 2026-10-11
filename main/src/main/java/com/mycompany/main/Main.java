@@ -47,6 +47,22 @@ public class Main {
         AC1.iniciaMision(mision);
         AC1.motor_secuencia_salto();
         //AC1.motor_secuencia_salto();
+        
+        AC1.cargaCombustible(10);
+        AC1.cargaCombustible(10);
+        AC1.cargaCombustible(10);
+        AC1.cargaCombustible(10);
+        AC1.cargaCombustible(10);
+        AC1.cargaCombustible(10);
+        AC1.cargaCombustible(10);
+        
+        AC1.cargaEnergia(20);
+        AC1.cargaEnergia(20);
+        AC1.cargaEnergia(20);
+        AC1.cargaEnergia(20);
        
+        AC1.realizaMantenimiento();
+        AC1.realizaMantenimiento();
+        AC1.realizaMantenimiento();
     }
 }
