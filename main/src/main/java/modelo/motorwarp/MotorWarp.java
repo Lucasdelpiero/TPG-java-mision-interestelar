@@ -1,4 +1,6 @@
 package modelo.motorwarp;
+import modelo.asistente.AsistenteComando;
+import modelo.bitacora.TipoEvento;
 
 /**
  * <b>INVARIANTE</b>
@@ -10,6 +12,7 @@ package modelo.motorwarp;
  */
 public class MotorWarp {
     private EstadoMotor estado;
+    private AsistenteComando AC;
     
     public MotorWarp(){
         this.estado = new DisponibleState();
@@ -43,22 +46,37 @@ public class MotorWarp {
     
     public void prepararSalto() throws MotorTransicionException{
         this.estado.prepararSalto(this);
+        if (AC != null) {
+            AC.registrarEvento(TipoEvento.WARP, "Pasando de estado Disponible a Preparando Salto");
+        }
     }
     
-    public void saltar()throws MotorTransicionException{
+    public void saltar() throws MotorTransicionException{
         this.estado.saltar(this);
+        if (AC != null) {
+            AC.registrarEvento(TipoEvento.WARP, "Pasando de estado Preparando Salto a Salto warp");
+        }
     }
     
-    public void enfriar()throws MotorTransicionException{
+    public void enfriar() throws MotorTransicionException{
         this.estado.enfriar(this);
+        if (AC != null) {
+            AC.registrarEvento(TipoEvento.WARP, "Pasando de estado Salto warp a Enfriamiento");
+        }
     }
     
-    public void terminarSalto()throws MotorTransicionException{
+    public void terminarSalto() throws MotorTransicionException{
         this.estado.terminarSalto(this);
+        if (AC != null) {
+            AC.registrarEvento(TipoEvento.WARP, "Pasando de estado Salto warp a Disponible");
+        }
     }
     
-    public void terminarEnfriamiento()throws MotorTransicionException{
+    public void terminarEnfriamiento() throws MotorTransicionException{
         this.estado.terminarEnfriamiento(this);
+        if (AC != null) {
+            AC.registrarEvento(TipoEvento.WARP, "Pasando de estado Enfriamiento a Disponible");
+        }
     }
     
     /** 

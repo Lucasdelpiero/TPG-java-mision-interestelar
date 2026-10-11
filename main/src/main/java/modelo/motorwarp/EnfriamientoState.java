@@ -27,7 +27,7 @@ public class EnfriamientoState implements EstadoMotor {
     
     @Override
     public void enfriar(MotorWarp motor) throws MotorTransicionException{
-        throw new MotorTransicionException("No se puede enfriar nuevamente: el motor ya está enfriándose.")
+        throw new MotorTransicionException("No se puede enfriar nuevamente: el motor ya está enfriándose.");
     }
     
     @Override

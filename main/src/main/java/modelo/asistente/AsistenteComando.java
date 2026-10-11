@@ -4,9 +4,9 @@ import modelo.nave.Nave;
 import modelo.nave.Recursos;
 import modelo.bitacora.Bitacora;
 import modelo.bitacora.TipoEvento; // !!!
-import modelo.mision.InformeMision;
 import modelo.mision.Mision;
 import modelo.motorwarp.MotorTransicionException;
+import modelo.tripulacion.*;
 
 public class AsistenteComando {
     private String nombre;
@@ -37,8 +37,8 @@ public class AsistenteComando {
     */
     public void iniciaMision(Mision m){
         assert (m != null) : "Mision no puede ser nula";
-        this.bitacora.registrar(TipoEvento.ORDEN, "Orden recibida: Iniciar mision " + m.getIdMision());
-        this.bitacora.registrar(TipoEvento.MISION, m.getNombreMision(), m.getIdMision());
+        this.bitacora.registrar(TipoEvento.ORDEN, "Orden recibida: Iniciar mision " + m.getIdMision(), m.getIdMision());
+        this.bitacora.registrar(TipoEvento.MISION, "Iniciando mision " + m.getNombreMision(), m.getIdMision());
         try {
             m.hacerMision(this);
             // Si la mision es exitosa, va a hacer un salto warp
@@ -83,6 +83,8 @@ public class AsistenteComando {
         nave.getRecursos().cargaCombustible(valor);
         System.out.println(":: ["+nombre+"] Cargando combustible...");
         System.out.println(":: ["+nombre+"] Nuevo: "+nave.getRecursos().getCombustible()+"\n");
+        
+        this.registrarEvento(TipoEvento.RECURSOS, "Carga " + valor + " de combustible");
     }
     
     public void cargaEnergia(int valor){
@@ -91,6 +93,8 @@ public class AsistenteComando {
         nave.getRecursos().cargaEnergia(valor);
         System.out.println(":: ["+nombre+"] Cargando energia...");
         System.out.println(":: ["+nombre+"] Nuevo: "+nave.getRecursos().getEnergia()+"\n");
+        
+        this.registrarEvento(TipoEvento.RECURSOS, "Carga " + valor + " de energia");
     }
     
     public void realizaMantenimiento(){
@@ -115,19 +119,19 @@ public class AsistenteComando {
         catch(MotorTransicionException e){
             System.out.println(e.descripcion);
         }
-        
+
     }
-    
+
     public void motor_preparar_salto() throws MotorTransicionException{
         getNave().getMotor().prepararSalto();
         System.out.println(getNave().getMotor().getNombreEstado());
     }
-    
+
     public void motor_saltar() throws MotorTransicionException{
         getNave().getMotor().saltar();
         System.out.println(getNave().getMotor().getNombreEstado());
     }
-    
+
     /**
      * PRE: nave y motor no son nulos
      * POST: cancela el salto del motor warp
@@ -154,6 +158,25 @@ public class AsistenteComando {
     // Devuelve la lista en un array de los tripulantes
     public void getTripulacion(){
         nave.getTripulantes();
+    }
+
+    /**
+     * PRE: tripulante t != null<br>
+     * POST: se agrega tripulante a la tripulacion
+     * @param t es el tripulante que se quiere añadir a la tripulacion 
+     */
+    public void addTripulante(PlanetaOrigen t){
+        assert(t != null): "Error: tripulando es null";
+        assert(t.getTripulante().getCargo().equals("Capitan") || nave.getTripulacion().getTripulantesCargo("Capitan").isEmpty()):"Error : Ya hay un capitan";
+        nave.getTripulacion().addTripulante(t);
+        this.registrarEvento(TipoEvento.TRIPULACION, "Tripulante " + t.getTripulante().getId() + "añadido");
+    }
+    
+    public void removeTripulante(PlanetaOrigen t){
+        assert(t != null): "Error: tripulando es null";
+        assert(!t.getTripulante().getCargo().equals("Capitan")) :"Error : No se puede eliminar el tripulante";
+        nave.getTripulacion().removeTripulante(t.getTripulante().getId());
+        this.registrarEvento(TipoEvento.TRIPULACION, "Tripulante " + t.getTripulante().getId() + "removido");
     }
     
    //---------------   BITACORA    -----------------

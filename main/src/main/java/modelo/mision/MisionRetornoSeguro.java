@@ -7,7 +7,6 @@ import modelo.bitacora.TipoEvento;
 public class MisionRetornoSeguro extends Mision{
 
     public MisionRetornoSeguro() {
-        id = idSiguiente++;
         nombreMision = "M-03";
         descripcion = "Mision: RETORNO SEGURO";
         tipo = Mision.tipoMision.RETORNO_SEGURO;
@@ -17,22 +16,19 @@ public class MisionRetornoSeguro extends Mision{
     public void ejecutar(){  
        if (puedeIniciarMision){
             System.out.println("[MISION] Ejecutando M-03: RETORNO SEGURO");
-            AC.getBitacora().registrar(TipoEvento.MISION, "[MISION] Ejecutando M-03: RETORNO SEGURO", id);
+            AC.registrarMision(TipoEvento.MISION, "[MISION] Ejecutando M-03: RETORNO SEGURO", idMision);
 
             AC.restaCombustible(consumoCombustible);
-            String descConsumo = "Consume %d de combustible";
-            descConsumo = String.format(descConsumo, consumoCombustible);
-            AC.getBitacora().registrar(TipoEvento.RECURSOS, descConsumo, id);
+            String descConsumo = String.format("Consume %d de combustible", consumoCombustible);
+            AC.registrarMision(TipoEvento.RECURSOS, descConsumo, idMision);
             
             AC.restaEnergia(consumoEnergia);
-            descConsumo = "Consume %d de energia";
-            descConsumo = String.format(descConsumo, consumoCombustible);
-            AC.getBitacora().registrar(TipoEvento.RECURSOS, descConsumo, id);
+            descConsumo = String.format("Consume %d de energia", consumoEnergia);
+            AC.registrarMision(TipoEvento.RECURSOS, descConsumo, idMision);
             
             AC.sumaDesgaste(consumoDesgaste);
-            descConsumo = "Consume %d de desgaste";
-            descConsumo = String.format(descConsumo, consumoCombustible);
-            AC.getBitacora().registrar(TipoEvento.RECURSOS, descConsumo, id);
+            descConsumo = String.format("Consume %d de desgaste", consumoDesgaste);
+            AC.registrarMision(TipoEvento.RECURSOS, descConsumo, idMision);
             
             informe.resultadoExitoso = true;
             //Si se gasta algun recurso de por medio, entonces:
@@ -40,7 +36,7 @@ public class MisionRetornoSeguro extends Mision{
         
         } else {
             System.out.println("[MISION] ABORTANDO M-03: RETORNO SEGURO");
-            AC.getBitacora().registrar(TipoEvento.MISION, "[MISION] ABORTANDO M-03: RETORNO SEGURO", id);
+            AC.registrarMision(TipoEvento.MISION, "[MISION] ABORTANDO M-03: RETORNO SEGURO", idMision);
             informe.resultadoExitoso = false;
         }
         //informe = new InformeMision(idMision);
