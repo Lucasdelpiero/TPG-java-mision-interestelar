@@ -16,7 +16,7 @@ public class MisionRetornoSeguro extends Mision{
     @Override
     public void ejecutar(){  
        if (puedeIniciarMision){
-            System.out.println("[MISION] Ejecutando M-03: RETORNO SEGURO");
+            System.out.println(":: [MISION] Ejecutando M-03: RETORNO SEGURO");
             AC.restaCombustible(consumoCombustible);
             AC.restaEnergia(consumoEnergia);
             AC.sumaDesgaste(consumoDesgaste);

@@ -79,18 +79,18 @@ public abstract class Mision{
         informe.recursosIniciales.setEnergia(resViejos.getEnergia());
         informe.recursosIniciales.setDesgaste(resViejos.getDesgaste());
         
-        System.out.println("[MISION] Iniciando mision...");
+        System.out.println(":: [MISION] Iniciando mision...");
         
-        assert (AC.getNave() != null) :    "[MISION] ERROR: Nave es null";
-        assert (AC.getNave().getRecursos() != null): "[MISION] ERROR: Recursos es null";
+        assert (AC.getNave() != null) :    ":: [MISION] ERROR: Nave es null";
+        assert (AC.getNave().getRecursos() != null): ":: [MISION] ERROR: Recursos es null";
         
         if (AC.consultaRecursos(consumoCombustible, consumoEnergia,consumoDesgaste)){
-            System.out.println("[MISION] Nave lista.");
+            System.out.println(":: [MISION] Nave lista.");
             puedeIniciarMision = true;
         }
         else {
             puedeIniciarMision = false;
-            System.out.println("[MISION] ERROR: Recursos insuficientes");
+            System.out.println(":: [MISION] ERROR: Recursos insuficientes");
         }
     }
     
@@ -111,7 +111,7 @@ public abstract class Mision{
         //  - Agregar Desgaste, disminuir Combustible, energia?
     protected void evaluar(){  
         informe.recursosFinales = AC.getNave().getRecursos();
-        System.out.println("[MISION] Evaluando resultados...");
+        System.out.println(":: [MISION] Evaluando resultados...");
         
 
         AC.registrarMision(

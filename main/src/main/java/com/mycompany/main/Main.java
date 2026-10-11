@@ -22,10 +22,10 @@ public class Main {
         FactoryPlanetaOrigen factoryOrigen = new FactoryPlanetaOrigen();
         FactoryCargo factoryCargo = new FactoryCargo();
         
-        Cargo c1 = factoryCargo.crearCargo("Capitan");
+        Cargo c1 = factoryCargo.crearCargo("Consejero");
         
         Tripulante tripulante = new Tripulante("Jorge", c1, 13);
-        PlanetaOrigen oUno = factoryOrigen.factoryPlanetaOrigen("Terricola", tripulante);
+        PlanetaOrigen oUno = factoryOrigen.factoryPlanetaOrigen("Vulcano", tripulante);
         
         nave.addTripulante(oUno);
         

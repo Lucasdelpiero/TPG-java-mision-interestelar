@@ -20,7 +20,7 @@ public class Vulcano extends PlanetaOrigen {
     @Override
     public String detalleHaber() {
         return this.tripulante.detalleHaber()
-         + "\n Subsidio 30\n";
+        +"\n:: [HABER] Subsidio: 30\n";
     }
     
     public String toString() {

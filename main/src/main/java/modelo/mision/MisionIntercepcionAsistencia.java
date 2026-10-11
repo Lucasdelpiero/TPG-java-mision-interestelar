@@ -19,7 +19,7 @@ public class MisionIntercepcionAsistencia extends Mision{
     @Override
     public void ejecutar(){
         if (puedeIniciarMision){
-            System.out.println("[MISION] Ejecutando M-01: ASISTENCIA");
+            System.out.println(":: [MISION] Ejecutando M-01: ASISTENCIA");
             AC.restaCombustible(consumoCombustible);
             AC.restaEnergia(consumoEnergia);
             AC.sumaDesgaste(consumoDesgaste);
