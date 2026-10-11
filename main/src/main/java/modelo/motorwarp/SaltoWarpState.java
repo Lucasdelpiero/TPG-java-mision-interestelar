@@ -26,6 +26,7 @@ public class SaltoWarpState implements EstadoMotor {
     
     @Override
     public void enfriar(MotorWarp motor) throws MotorTransicionException{
+        System.out.println("Motor warp: enfriando");
         motor.setEstado(new EnfriamientoState());
     }
     

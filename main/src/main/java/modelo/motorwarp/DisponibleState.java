@@ -17,6 +17,7 @@ public class DisponibleState implements EstadoMotor {
 
     @Override
     public void prepararSalto(MotorWarp motor) throws MotorTransicionException{
+        System.out.println("Motor warp: preparando salto");
         motor.setEstado(new PreparandoSaltoState());
     }
     

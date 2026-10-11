@@ -90,10 +90,28 @@ public class Recursos {
         this.desgaste += consumo;
     }
     
-    
-    public void cargaEnergia(int carga){
-        this.energia += carga;
+    public void cargaCombustible(int valor){
+        if(valor + combustible <= 100)
+            combustible += valor;
+        else
+            System.out.println("[ERROR] Imposible cargar");
     }
+    
+    public void cargaEnergia(int valor){
+        if(valor + energia <= 100)
+            energia += valor;
+        else
+            System.out.println("[ERROR] Imposible cargar");
+    }
+    
+    public void realizaMantenimiento(){
+        desgaste = 0;
+    }
+    
+    //
+    //public void cargaEnergia(int carga){
+    //    this.energia += carga;
+    //}
     
     
 }

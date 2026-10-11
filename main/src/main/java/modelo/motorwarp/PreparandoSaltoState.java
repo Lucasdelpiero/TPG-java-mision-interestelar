@@ -22,7 +22,7 @@ public class PreparandoSaltoState implements EstadoMotor {
     
     @Override
     public void saltar(MotorWarp motor) throws MotorTransicionException{
-
+        System.out.println("Motor warp: saltando");
         motor.setEstado(new SaltoWarpState());
     }
     

@@ -36,7 +36,7 @@ public class EnfriamientoState implements EstadoMotor {
     }
     
     public void terminarEnfriamiento(MotorWarp motor) throws MotorTransicionException{
-
+        System.out.println("Motor warp: disponible");
         motor.setEstado(new DisponibleState());
     }
     

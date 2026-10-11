@@ -1,6 +1,7 @@
 package modelo.mision;
 
 import modelo.asistente.AsistenteComando;
+import modelo.bitacora.Bitacora;
 import modelo.bitacora.TipoEvento;
 import modelo.nave.Recursos;
 
@@ -70,8 +71,7 @@ public abstract class Mision{
     protected void preparar(){
         puedeIniciarMision = (AC.consultaRecursos(consumoCombustible, consumoEnergia,consumoDesgaste));
         
-        informe = new InformeMision();
-        informe.misionEjecutada = nombreMision;
+        informe = new InformeMision(id, nombreMision);
         
         Recursos resViejos = AC.getNave().getRecursos();
         
@@ -79,18 +79,23 @@ public abstract class Mision{
         informe.recursosIniciales.setEnergia(resViejos.getEnergia());
         informe.recursosIniciales.setDesgaste(resViejos.getDesgaste());
         
+
         System.out.println("[MISION] Iniciando mision...");
+        AC.getBitacora().registrar(TipoEvento.MISION, "[MISION] Iniciando mision...", id);
         
-        assert (AC.getNave() != null) :    "[MISION] ERROR: Nave es null";
-        assert (AC.getNave().getRecursos() != null): "[MISION] ERROR: Recursos es null";
+        assert (AC.getNave() != null) :    ":: [MISION] ERROR: Nave es null";
+        assert (AC.getNave().getRecursos() != null): ":: [MISION] ERROR: Recursos es null";
         
         if (AC.consultaRecursos(consumoCombustible, consumoEnergia,consumoDesgaste)){
             System.out.println("[MISION] Nave lista.");
+            AC.getBitacora().registrar(TipoEvento.MISION, "[MISION] Nave lista.", id);
+
             puedeIniciarMision = true;
         }
         else {
             puedeIniciarMision = false;
             System.out.println("[MISION] ERROR: Recursos insuficientes");
+            AC.getBitacora().registrar(TipoEvento.MISION, "[MISION] ERROR: Recursos insuficientes", id);
         }
     }
     
@@ -112,6 +117,7 @@ public abstract class Mision{
     protected void evaluar(){  
         informe.recursosFinales = AC.getNave().getRecursos();
         System.out.println("[MISION] Evaluando resultados...");
+        AC.getBitacora().registrar(TipoEvento.MISION, "[MISION] Evaluando resultados...", id);
         
 
         AC.registrarMision(
@@ -120,13 +126,15 @@ public abstract class Mision{
             id
         );   
         
-        informe.getInforme();
+        informe.imprimirInforme();
         
         System.out.println("[MISION] Cerrando...");
+        AC.getBitacora().registrar(TipoEvento.MISION, "[MISION] Cerrando...", id);
     }
     
     protected void cerrar(){
         System.out.println("[MISION] Mision terminada.");
+        AC.getBitacora().registrar(TipoEvento.MISION, "[MISION] Mision terminada.", id);
         System.out.println("---------------------------------");
     }
     
@@ -134,10 +142,23 @@ public abstract class Mision{
     //          ADICIONALES
     //-------------------------------------------
 
-
+    public InformeMision getInforme() {
+        return informe;
+    }
+    
     public Integer getIdMision(){
         return this.idMision;
     }
+
+    public String getNombreMision() {
+        return nombreMision;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+    
+    
 
 
 }
