@@ -19,6 +19,12 @@ public class Consejero extends Cargo {
             throw new IllegalArgumentException("ERROR :Numero de consejos invalido");
         this.consejos += consejos;
     }
+
+    public void setConsejero(int consejos) {
+        if (consejos <= 0)
+            throw new IllegalArgumentException("ERROR :Numero de consejos invalido");
+        this.consejos += consejos;
+    }
     
     public int getConsejos() {
         return this.consejos; 
@@ -40,8 +46,5 @@ public class Consejero extends Cargo {
     public String getCargoTripulante() {
         return "Consejero" ;
     }
-    
-    public String toString() {
-        return "Consejero , Numero de consejos durante el periodo actual :" + getConsejos() ;
-    }
+
 }
