@@ -12,7 +12,8 @@ public class InformeMision {
     //protected ArrayList<String> accionesPrincipales ; // Tipo es temporal
     //protected ArrayList<String> observacinesImportantes; // Tipo es temporal
     
-    protected String misionEjecutada;
+    protected int id;
+    protected String nombreMision;
     protected boolean resultadoExitoso = true;
     protected RecursosConsumidos recursosConsumidos;   
     
@@ -22,29 +23,31 @@ public class InformeMision {
     //-------------------------------------------
     //          CONSTRUCTOR
     //-------------------------------------------
+ 
     
-    public InformeMision(){
+    public InformeMision(int id ,String nombre){
+        nombreMision = nombre;
+        this.id = id;
         recursosIniciales = new Recursos(0, 0, 0);
         recursosFinales = new Recursos(0, 0, 0);
-    }
-    
-    public InformeMision(String idMision){
-        misionEjecutada = idMision;
-        
-        //this.resultadoExitoso = resultadoExitoso;
-        //recursosConsumidos = new RecursosConsumidos();
     }
     
     //-------------------------------------------
     //          ADICIONAL
     //-------------------------------------------
     // PARA BORRAR DESPUES
-    public void getInforme(){
+    public void imprimirInforme(){
         //int prevCombustible = recursosConsumidos.getCombustibleConsumido() + actCombustible;
         //int prevDesgaste = recursosConsumidos.getDesgasteConsumido() + actDesgaste;
         //int prevEnergia = recursosConsumidos.getEnergiaConsumida() + actEnergia;
-        
+<<<<<<< HEAD
+
+        System.out.println(":: Mision: "+ nombreMision);
+=======
+        System.out.println("______________________________________________");
         System.out.println(":: Mision: "+ misionEjecutada);
+        System.out.println("----------------------------------------------");
+>>>>>>> 03f8b26eba35d7ea9f747ee0b527a0303b0871c1
         System.out.println(":: Resultado: "+ (resultadoExitoso ? "Exito" : "Fracaso") );
         
         
@@ -70,6 +73,7 @@ public class InformeMision {
         System.out.println("    * Energia: "+ 
                             recursosIniciales.getEnergia() +" --> "+
                             recursosFinales.getEnergia());
+        System.out.println("______________________________________________");
     }
     
     
@@ -89,12 +93,12 @@ public class InformeMision {
     //          GETTERS/SETTERS
     //-------------------------------------------    
     
-    public void setMisionEjecutada(String id){
-        this.misionEjecutada = id;
+    public void setNombreMision(String id){
+        this.nombreMision = id;
     }
-    //public void setResultadoExitoso(boolean resultado){
-    //    resultadoExitoso = resultado;
-    //}
-    
+
+    public boolean esResultadoExitoso() {
+        return resultadoExitoso;
+    }
     
 }

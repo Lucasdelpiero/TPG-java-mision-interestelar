@@ -38,11 +38,19 @@ public class AsistenteComando {
     public void iniciaMision(Mision m){
         assert (m != null) : "Mision no puede ser nula";
         this.bitacora.registrar(TipoEvento.ORDEN, "Orden recibida: Iniciar mision " + m.getIdMision());
+        this.bitacora.registrar(TipoEvento.MISION, m.getNombreMision(), m.getIdMision());
         try {
             m.hacerMision(this);
+            // Si la mision es exitosa, va a hacer un salto warp
+            if (m.getInforme().esResultadoExitoso()){
+                //bitacora.registrar(TipoEvento.WARP, "Hace warp");
+                motor_secuencia_salto();
+            }
         }
         catch (Exception e){
             this.bitacora.registrar(TipoEvento.ERROR, "Error al Iniciar Mision " + m.getIdMision());
+        } finally {
+            
         }
     }
     
@@ -68,6 +76,32 @@ public class AsistenteComando {
     public void sumaDesgaste(int consumoDesgaste){
         nave.getRecursos().consumeDesgaste(consumoDesgaste);
     }
+    
+    public void cargaCombustible(int valor){
+        System.out.println(":: ["+nombre+"] CARGA DE COMBUSTIBLE");
+        System.out.println(":: ["+nombre+"] Actual: "+nave.getRecursos().getCombustible());
+        nave.getRecursos().cargaCombustible(valor);
+        System.out.println(":: ["+nombre+"] Cargando combustible...");
+        System.out.println(":: ["+nombre+"] Nuevo: "+nave.getRecursos().getCombustible()+"\n");
+    }
+    
+    public void cargaEnergia(int valor){
+        System.out.println(":: ["+nombre+"] CARGA DE ENERGIA");
+        System.out.println(":: ["+nombre+"] Actual: "+nave.getRecursos().getEnergia());
+        nave.getRecursos().cargaEnergia(valor);
+        System.out.println(":: ["+nombre+"] Cargando energia...");
+        System.out.println(":: ["+nombre+"] Nuevo: "+nave.getRecursos().getEnergia()+"\n");
+    }
+    
+    public void realizaMantenimiento(){
+        System.out.println(":: ["+nombre+"] MANTENIMIENTO A LA NAVE");
+        System.out.println(":: ["+nombre+"] Desgaste: "+nave.getRecursos().getDesgaste());
+        nave.getRecursos().realizaMantenimiento();
+        System.out.println(":: ["+nombre+"] Realizando mantenimiento...");
+        System.out.println(":: ["+nombre+"] Desgaste: "+nave.getRecursos().getDesgaste()+"\n");
+    }
+    
+    
         //---------------   MOTOR WARP    -----------------
     /**
      * PRE: nave y motor no son nulos

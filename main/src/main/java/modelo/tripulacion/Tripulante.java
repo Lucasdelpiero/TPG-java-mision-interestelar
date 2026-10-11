@@ -51,13 +51,17 @@ public class Tripulante implements Haber {
         double adicionalAntiguedad = base * cargo.adicionalCargo() * antiguedad;
         if (this.cargo.getCargoTripulante().equals("Consejero")) {
             double adicionalConsejos = ((Consejero) this.cargo).getConsejos() * 2;
-            return "Sueldo base: " + base
-                + "\nAdicional por antiguedad: " + adicionalAntiguedad 
-                + "\nAdicional por numero de consejos " + adicionalConsejos + "\n";
+            return ":: [HABER] CALCULO DE HABERES"
+               + "\n:: [HABER] Cargo: " + this.cargo.getCargoTripulante()
+               + "\n:: [HABER] Sueldo base: " + base
+               + "\n:: [HABER] Adicional por antiguedad: " + adicionalAntiguedad 
+               + "\n:: [HABER] Adicional por numero de consejos " + adicionalConsejos + "\n";
         }
         else
-            return "Sueldo base: " + base
-                + "\nAdicional por antiguedad: " + adicionalAntiguedad ;
+            return ":: [HABER] CALCULO DE HABERES:"
+               + "\n:: [HABER] Cargo: " + this.cargo.getCargoTripulante()
+               + "\n:: [HABER] Sueldo base: " + base
+               + "\n:: [HABER] Adicional por antiguedad: " + adicionalAntiguedad ;
     }
 
     public void setCargo(Cargo cargo) {
@@ -89,8 +93,9 @@ public class Tripulante implements Haber {
     
     public String toString() {
         
-        return "Cargo :" + this.cargo.toString() + " Identidad :" + this.identidad + 
-                " anios en servicio :" + this.antiguedad ;
+        return "Cargo :" + this.cargo.getCargoTripulante() + "\n Identidad :" + this.identidad + 
+                "\n anios en servicio :" + this.antiguedad + "\n Sueldo : " + sueldo() + "\n" + 
+                detalleHaber() ;
     }
     
 }
