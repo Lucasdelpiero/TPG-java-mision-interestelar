@@ -48,7 +48,7 @@ public abstract class Nave {
      */
     public void addTripulante(PlanetaOrigen t){
         assert(t != null): "Error: tripulando es null";
-        assert(t.getTripulante().getCargo().equals("Capitan") || tripulacion.getTripulantesCargo("Capitan").isEmpty()):"Error : Ya hay un capitan";
+        assert(!t.getTripulante().getCargo().getCargoTripulante().equalsIgnoreCase("Capitan") || tripulacion.getTripulantesCargo("Capitan").isEmpty()): "Error : Ya hay un capitan";
         tripulacion.addTripulante(t);
     }
     

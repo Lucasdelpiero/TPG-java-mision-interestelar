@@ -29,7 +29,6 @@ public class MisionRetornoSeguro extends Mision{
             AC.sumaDesgaste(consumoDesgaste);
             descConsumo = String.format("Consume %d de desgaste", consumoDesgaste);
             AC.registrarMision(TipoEvento.RECURSOS, descConsumo, idMision);
-            
             informe.resultadoExitoso = true;
             //Si se gasta algun recurso de por medio, entonces:
             //  informe.set[recurso](valor que se consume)
@@ -46,7 +45,6 @@ public class MisionRetornoSeguro extends Mision{
         //Si ocurre algo ... 
         //  misionCumplida = false (queda como esta);
         //Si se cumple la mision normalmente, entonces...
-        misionCumplida = true;
     }
  
         // (Dependiendo de la ENTREGA 2, la mision ejecutada

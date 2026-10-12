@@ -28,6 +28,7 @@ public class InformeMision {
     public InformeMision(Integer idMision, String nombre){
         this.nombreMision = nombre;
         this.idMision = idMision;
+        this.recursosConsumidos = new RecursosConsumidos();
         this.recursosIniciales = new Recursos(0, 0, 0);
         this.recursosFinales = new Recursos(0, 0, 0);
     }
@@ -95,5 +96,4 @@ public class InformeMision {
     public boolean esResultadoExitoso() {
         return resultadoExitoso;
     }
-    
 }

@@ -46,7 +46,6 @@ public class MisionIntercepcionAsistencia extends Mision{
         //Si ocurre algo ... 
         //  misionCumplida = false (queda como esta);
         //Si se cumple la mision normalmente, entonces...
-        misionCumplida = true;
     }
  
         // (Dependiendo de la ENTREGA 2, la mision ejecutada

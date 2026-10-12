@@ -22,6 +22,10 @@ public class Tripulante implements Haber {
             throw new IllegalArgumentException("Antiguedad invalida");
         }
       
+        if (cargo == null) {
+            throw new IllegalArgumentException("Cargo no puede ser nulo");
+        }
+
         this.cargo = cargo;
     
         this.identidad = identidad;
