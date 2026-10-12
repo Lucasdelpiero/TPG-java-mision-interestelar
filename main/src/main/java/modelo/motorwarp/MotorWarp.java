@@ -17,7 +17,10 @@ public class MotorWarp {
     public MotorWarp(){
         this.estado = new DisponibleState();
     }
-    
+
+    public void setAC(AsistenteComando AC) {
+        this.AC = AC;
+    }
     /**
      * Sirve para setear el estado del motor warp
      * <b>PRE</b>

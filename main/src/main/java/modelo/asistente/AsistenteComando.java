@@ -8,6 +8,8 @@ import modelo.mision.Mision;
 import modelo.motorwarp.MotorTransicionException;
 import modelo.tripulacion.*;
 
+import java.util.ArrayList;
+
 public class AsistenteComando {
     private String nombre;
     private Nave nave;
@@ -20,6 +22,9 @@ public class AsistenteComando {
         this.nave = nave;
         this.nombre = nombre;
         this.bitacora = new Bitacora();
+        if (nave != null && nave.getMotor() != null) {
+            nave.getMotor().setAC(this);
+        }
     }
     
     //-------------------------------------------
@@ -43,7 +48,6 @@ public class AsistenteComando {
             m.hacerMision(this);
             // Si la mision es exitosa, va a hacer un salto warp
             if (m.getInforme().esResultadoExitoso()){
-                //bitacora.registrar(TipoEvento.WARP, "Hace warp");
                 motor_secuencia_salto();
             }
         }
@@ -55,11 +59,12 @@ public class AsistenteComando {
     }
     
     public boolean consultaRecursos(int consumoCombustible,int consumoEnergia, int consumoDesgaste){
+        if (nave == null || nave.getRecursos() == null) return false;
         return 
             (nave.getRecursos().getCombustible() - consumoCombustible >= 0) 
                 && 
             (nave.getRecursos().getDesgaste() + consumoDesgaste <= 100) &&
-            (nave.getRecursos().getEnergia() + consumoEnergia >= 0)    
+            (nave.getRecursos().getEnergia() - consumoEnergia >= 0)    
                 ;
     }   
     
@@ -80,29 +85,41 @@ public class AsistenteComando {
     public void cargaCombustible(int valor){
         System.out.println(":: ["+nombre+"] CARGA DE COMBUSTIBLE");
         System.out.println(":: ["+nombre+"] Actual: "+nave.getRecursos().getCombustible());
+        int prev = nave.getRecursos().getCombustible();
         nave.getRecursos().cargaCombustible(valor);
         System.out.println(":: ["+nombre+"] Cargando combustible...");
         System.out.println(":: ["+nombre+"] Nuevo: "+nave.getRecursos().getCombustible()+"\n");
         
-        this.registrarEvento(TipoEvento.RECURSOS, "Carga " + valor + " de combustible");
+        if (nave.getRecursos().getCombustible() > prev) {
+            this.registrarEvento(TipoEvento.RECURSOS, "Carga " + valor + " de combustible");
+        } else {
+            this.registrarEvento(TipoEvento.RECURSOS, "RECHAZADA: Carga " + valor + " de combustible excede capacidad o es invalida");
+        }
     }
     
     public void cargaEnergia(int valor){
         System.out.println(":: ["+nombre+"] CARGA DE ENERGIA");
         System.out.println(":: ["+nombre+"] Actual: "+nave.getRecursos().getEnergia());
+        int prev = nave.getRecursos().getEnergia();
         nave.getRecursos().cargaEnergia(valor);
         System.out.println(":: ["+nombre+"] Cargando energia...");
         System.out.println(":: ["+nombre+"] Nuevo: "+nave.getRecursos().getEnergia()+"\n");
         
-        this.registrarEvento(TipoEvento.RECURSOS, "Carga " + valor + " de energia");
+        if (nave.getRecursos().getEnergia() > prev) {
+            this.registrarEvento(TipoEvento.RECURSOS, "Carga " + valor + " de energia");
+        } else {
+            this.registrarEvento(TipoEvento.RECURSOS, "RECHAZADA: Carga " + valor + " de energia excede capacidad o es invalida");
+        }
     }
     
     public void realizaMantenimiento(){
         System.out.println(":: ["+nombre+"] MANTENIMIENTO A LA NAVE");
         System.out.println(":: ["+nombre+"] Desgaste: "+nave.getRecursos().getDesgaste());
+        int prev = nave.getRecursos().getDesgaste();
         nave.getRecursos().realizaMantenimiento();
         System.out.println(":: ["+nombre+"] Realizando mantenimiento...");
         System.out.println(":: ["+nombre+"] Desgaste: "+nave.getRecursos().getDesgaste()+"\n");
+        this.registrarEvento(TipoEvento.RECURSOS, "Mantenimiento realizado. Desgaste: " + prev + " -> " + nave.getRecursos().getDesgaste());
     }
     
     
@@ -151,13 +168,13 @@ public class AsistenteComando {
     //---------------   Tripulacion    -----------------
     
     // Devuelve objeto tripulacion que contiene metodos para relacionarse con la lista tripulacion
-    public void getTripulante(){
-        nave.getTripulacion();
+    public Tripulacion getTripulacion(){
+        return nave.getTripulacion();
     }
     
     // Devuelve la lista en un array de los tripulantes
-    public void getTripulacion(){
-        nave.getTripulantes();
+    public ArrayList<PlanetaOrigen> getTripulantes(){
+        return nave.getTripulantes();
     }
 
     /**
@@ -167,16 +184,16 @@ public class AsistenteComando {
      */
     public void addTripulante(PlanetaOrigen t){
         assert(t != null): "Error: tripulando es null";
-        assert(t.getTripulante().getCargo().equals("Capitan") || nave.getTripulacion().getTripulantesCargo("Capitan").isEmpty()):"Error : Ya hay un capitan";
+        assert(!t.getTripulante().getCargo().getCargoTripulante().equalsIgnoreCase("Capitan") || nave.getTripulacion().getTripulantesCargo("Capitan").isEmpty()):"Error : Ya hay un capitan";
         nave.getTripulacion().addTripulante(t);
-        this.registrarEvento(TipoEvento.TRIPULACION, "Tripulante " + t.getTripulante().getId() + "añadido");
+        this.registrarEvento(TipoEvento.TRIPULACION, "Tripulante " + t.getTripulante().getId() + " añadido");
     }
     
     public void removeTripulante(PlanetaOrigen t){
         assert(t != null): "Error: tripulando es null";
-        assert(!t.getTripulante().getCargo().equals("Capitan")) :"Error : No se puede eliminar el tripulante";
+        assert(!t.getTripulante().getCargo().getCargoTripulante().equalsIgnoreCase("Capitan")) :"Error : No se puede eliminar el capitan";
         nave.getTripulacion().removeTripulante(t.getTripulante().getId());
-        this.registrarEvento(TipoEvento.TRIPULACION, "Tripulante " + t.getTripulante().getId() + "removido");
+        this.registrarEvento(TipoEvento.TRIPULACION, "Tripulante " + t.getTripulante().getId() + " removido");
     }
     
    //---------------   BITACORA    -----------------
@@ -209,6 +226,9 @@ public class AsistenteComando {
     
     public void setNave(Nave nave){
         this.nave = nave;
+        if (nave != null && nave.getMotor() != null) {
+            nave.getMotor().setAC(this);
+        }
     }
     
     public Bitacora getBitacora(){

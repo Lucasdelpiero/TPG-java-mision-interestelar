@@ -56,9 +56,7 @@ public class CentroDeControl {
         catch(IndexOutOfBoundsException e){
             System.out.println(":: ["+nombre+"] ERROR: ASISTENTE DE COMANDO inexistente");
         }
-        finally{
-            return n;
-        }
+        return n;
     }
     
     //-------------------------------

@@ -51,16 +51,16 @@ public class Tripulacion {
 //       Si cargo es null, devuelve a todos.
 //       Si no hay coincidencias, devuelve una lista vacia.
 //       No modifica la tripulacion.    
-    public ArrayList<PlanetaOrigen> getTripulantesCargo(String cargo) {
+    public ArrayList<Tripulante> getTripulantesCargo(String cargo) {
         Cargo c;
         Tripulante t;
-        ArrayList<PlanetaOrigen> tripulantesCargo = new ArrayList<>();
-        assert cargo != null && !cargo.isBlank() : "Cargo invalido";
+        ArrayList<Tripulante> tripulantesCargo = new ArrayList<>();
+        assert cargo == null || !cargo.isBlank() : "Cargo invalido";
         for (PlanetaOrigen po : this.tripulantes) {
             t = po.getTripulante();
             c = t.getCargo();
-            if (c.getCargoTripulante().equals(cargo))
-                tripulantesCargo.add(po);
+            if (cargo == null || c.getCargoTripulante().equalsIgnoreCase(cargo))
+                tripulantesCargo.add(t);
         }
         return tripulantesCargo;
     }

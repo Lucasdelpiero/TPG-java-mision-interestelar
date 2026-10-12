@@ -91,19 +91,19 @@ public class Recursos {
     }
     
     public void cargaCombustible(int valor){
-        if(valor + combustible <= 100) {
+        if (valor > 0 && valor + combustible <= 100) {
             combustible += valor;
-        }
-        else
+        } else {
             System.out.println("[ERROR] Imposible cargar");
+        }
     }
     
     public void cargaEnergia(int valor){
-        if(valor + energia <= 100){
+        if (valor > 0 && valor + energia <= 100){
             energia += valor;
-        }
-        else
+        } else {
             System.out.println("[ERROR] Imposible cargar");
+        }
     }
     
     public void realizaMantenimiento(){
