@@ -173,7 +173,7 @@ public class AsistenteComando {
     }
     
     // Devuelve la lista en un array de los tripulantes
-    public ArrayList<PlanetaOrigen> getTripulantes(){
+    public ArrayList<Haber> getTripulantes(){
         return nave.getTripulantes();
     }
 
@@ -182,14 +182,14 @@ public class AsistenteComando {
      * POST: se agrega tripulante a la tripulacion
      * @param t es el tripulante que se quiere añadir a la tripulacion 
      */
-    public void addTripulante(PlanetaOrigen t){
+    public void addTripulante(Haber t){
         assert(t != null): "Error: tripulando es null";
         assert(!t.getTripulante().getCargo().getCargoTripulante().equalsIgnoreCase("Capitan") || nave.getTripulacion().getTripulantesCargo("Capitan").isEmpty()):"Error : Ya hay un capitan";
         nave.getTripulacion().addTripulante(t);
         this.registrarEvento(TipoEvento.TRIPULACION, "Tripulante " + t.getTripulante().getId() + " añadido");
     }
     
-    public void removeTripulante(PlanetaOrigen t){
+    public void removeTripulante(Haber t){
         assert(t != null): "Error: tripulando es null";
         assert(!t.getTripulante().getCargo().getCargoTripulante().equalsIgnoreCase("Capitan")) :"Error : No se puede eliminar el capitan";
         nave.getTripulacion().removeTripulante(t.getTripulante().getId());
@@ -238,4 +238,4 @@ public class AsistenteComando {
     //    return nave.getRecursos();
     //}
     
-}   
+}

@@ -46,7 +46,7 @@ public abstract class Nave {
      * POST: se agrega tripulante a la tripulacion
      * @param t es el tripulante que se quiere añadir a la tripulacion 
      */
-    public void addTripulante(PlanetaOrigen t){
+    public void addTripulante(Haber t){
         assert(t != null): "Error: tripulando es null";
         assert(!t.getTripulante().getCargo().getCargoTripulante().equalsIgnoreCase("Capitan") || tripulacion.getTripulantesCargo("Capitan").isEmpty()): "Error : Ya hay un capitan";
         tripulacion.addTripulante(t);
@@ -74,7 +74,7 @@ public abstract class Nave {
         return tripulacion;
     }
     
-    public ArrayList<PlanetaOrigen> getTripulantes() {
+    public ArrayList<Haber> getTripulantes() {
         return tripulacion.getTripulantes();
     }
 
@@ -107,4 +107,3 @@ public abstract class Nave {
     }
     
 }
-

@@ -39,6 +39,11 @@ public class Tripulante implements Haber {
     }
     
     @Override
+    public Tripulante getTripulante() {
+        return this;
+    }
+
+    @Override
     public double sueldo() {
         double sueldo = this.cargo.sueldoBase();
         
