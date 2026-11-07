@@ -1,0 +1,130 @@
+package modelo.persistencia;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+/**
+ * Implementación concreta de UsuarioDAO para SQLite siguiendo las convenciones de JDBC de la cátedra:
+ * - Uso de getConexion()
+ * - Sentencias parametrizadas (PreparedStatement) para prevenir inyección SQL
+ * - Try-with-resources para garantizar el cierre de conexiones, sentencias y resultados
+ */
+public class UsuarioDAOSQLite implements UsuarioDAO {
+
+    private final ConexionDBSQLite conexion;
+
+    public UsuarioDAOSQLite(ConexionDBSQLite conexion) {
+        if (conexion == null) {
+            throw new IllegalArgumentException("La conexión no puede ser nula");
+        }
+        this.conexion = conexion;
+    }
+
+    @Override
+    public void registrar(UsuarioDTO usuario) throws DAOException {
+        if (usuario == null || usuario.getUsername() == null || usuario.getPassword() == null) {
+            throw new IllegalArgumentException("El usuario y sus credenciales no pueden ser nulos");
+        }
+        if (existeUsuario(usuario.getUsername())) {
+            throw new SQLiteDAOException("El nombre de usuario '" + usuario.getUsername() + "' ya está registrado");
+        }
+
+        String sql = "INSERT INTO usuarios (username, password) VALUES(?, ?)";
+
+        // 2) Conexión, 3) Crear sentencia, 4) Ejecutar sentencia, 5) Cerrar recursos
+        try (Connection conn = conexion.getConexion();
+             PreparedStatement sentencia = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            sentencia.setString(1, usuario.getUsername()); // 1er '?'
+            sentencia.setString(2, usuario.getPassword()); // 2do '?'
+            sentencia.executeUpdate();
+
+            try (ResultSet resultado = sentencia.getGeneratedKeys()) {
+                if (resultado.next()) {
+                    usuario.setId(resultado.getInt(1));
+                }
+            }
+        } catch (SQLException e) {
+            throw new SQLiteDAOException("Error al registrar usuario", e);
+        }
+    }
+
+    private boolean existeUsuario(String username) throws SQLiteDAOException {
+        if (username == null || username.trim().isEmpty()) {
+            return false;
+        }
+        String sql = "SELECT 1 FROM usuarios WHERE usuarios.username = ?";
+        try (Connection conn = conexion.getConexion();
+             PreparedStatement sentencia = conn.prepareStatement(sql)) {
+            sentencia.setString(1, username); // 1er '?'
+            try (ResultSet resultado = sentencia.executeQuery()) {
+                return resultado.next(); // true si hay fila disponible
+            }
+        } catch (SQLException e) {
+            throw new SQLiteDAOException("Error al obtener si el usuario existe", e);
+        }
+    }
+    
+    @Override
+    public UsuarioDTO obtenerPorUsername(String username) throws DAOException {
+        try {
+            return obtenerPorUsernameSQLite(username);
+        } catch (SQLiteDAOException e) {
+            throw new DAOException("Error al obtener usuario por username", e);
+        }
+    }
+
+    private UsuarioDTO obtenerPorUsernameSQLite(String username) throws SQLiteDAOException {
+        if (username == null || username.trim().isEmpty()) {
+            return null;
+        }
+        String sql = "SELECT id, username, password FROM usuarios WHERE username = ?";
+        try (Connection conn = conexion.getConexion();
+             PreparedStatement sentencia = conn.prepareStatement(sql)) {
+            sentencia.setString(1, username.trim());
+            try (ResultSet resultado = sentencia.executeQuery()) {
+                if (resultado.next()) {
+                    return new UsuarioDTO(
+                        resultado.getInt("id"),
+                        resultado.getString("username"),
+                        resultado.getString("password")
+                    );
+                }
+                return null;
+            }
+        } catch (SQLException e) {
+            throw new SQLiteDAOException("Error al consultar usuario en SQLite", e);
+        }
+    }
+    
+    // Sobrecarga
+    @Override
+    public boolean autenticar(UsuarioDTO usuario) throws DAOException {
+        if (usuario == null) {
+            return false;
+        }
+        return autenticar(usuario.getUsername(), usuario.getPassword());
+    }
+    
+    @Override
+    public boolean autenticar(String username, String password) throws DAOException {
+        if (username == null || password == null) {
+            return false;
+        }
+        String sql = "SELECT password FROM usuarios WHERE username = ?";
+        try (Connection conn = conexion.getConexion();
+             PreparedStatement sentencia = conn.prepareStatement(sql)) {
+            sentencia.setString(1, username);
+            try (ResultSet resultado = sentencia.executeQuery()) {
+                if (resultado.next()) {
+                    String passwordAlmacenada = resultado.getString("password");
+                    return password.equals(passwordAlmacenada);
+                }
+                return false;
+            }
+        } catch (SQLException e) {
+            throw new SQLiteDAOException("Error al autenticar usuario", e);
+        }
+    }
+}

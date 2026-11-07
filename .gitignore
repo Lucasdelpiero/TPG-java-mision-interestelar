@@ -26,3 +26,10 @@ replay_pid*
 /temp
 /.history
 /main/target/
+
+# SQLite databases
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+/database/
