@@ -20,6 +20,10 @@ public class Tripulacion {
         this.tripulantes = new ArrayList<>();
     }
     
+    public void matarTripulacion(){
+        tripulantes.clear();
+    }
+    
 // PRE: h no es null y contiene un Tripulante valido.
 // POST: h queda agregado al final de la lista.
 //       La cantidad de elementos aumenta en uno.

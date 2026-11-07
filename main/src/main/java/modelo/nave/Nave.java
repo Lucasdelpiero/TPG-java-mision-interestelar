@@ -3,6 +3,7 @@ package modelo.nave;
 import java.util.ArrayList;
 import modelo.tripulacion.*;
 import modelo.motorwarp.*;
+import modelo.universo.Asteroide;
 import modelo.universo.ElementoDelUniverso;
 
 public abstract class Nave implements ElementoDelUniverso {
@@ -41,6 +42,19 @@ public abstract class Nave implements ElementoDelUniverso {
     //-------------------------------------------
     //          ADICIONALES
     //-------------------------------------------    
+    
+    public abstract void choque(ElementoDelUniverso elemento);
+    
+    // Al perder la pelea con una nave, se destruye y pierde todo
+    /**
+     * PRE: tripulacion y recursos != null
+     * POST: tripulacion es una lista vacia y desgaste al maximo
+     * 
+    */
+    public void destruirNave(){
+        tripulacion.matarTripulacion();
+        recursos.setDesgaste(100);
+    }
     
     /**
      * PRE: tripulante t != null<br>

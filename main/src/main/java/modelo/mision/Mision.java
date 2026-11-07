@@ -8,6 +8,8 @@ import modelo.universo.Universo;
 import modelo.destinoytablero.Posicion;
 import modelo.universo.ElementoDelUniverso;
 import java.util.ArrayList;
+import modelo.motorwarp.MotorWarp;
+import modelo.nave.Nave;
 import modelo.universo.Asteroide;
 
 public abstract class Mision{
@@ -147,7 +149,10 @@ public abstract class Mision{
     }
     
     public boolean intentarSaltoWarp(Posicion p){
-        return true;
+        Nave nave = AC.getNave();
+        MotorWarp motor = nave.getMotor();
+        motor.saltoWarp();
+        return motor.getNombreEstado() == "Salto warp";
     }
     
     public void choque() {
@@ -157,7 +162,8 @@ public abstract class Mision{
     public boolean realizarRecorrido(Posicion objetivo) throws InterruptedException {
 
         int indice = 0;
-
+        MotorWarp motor = AC.getNave().getMotor();
+        
         while (!universo.getPosicionNave().equals(objetivo)) {
             ElementoDelUniverso elementoActual =universo.inspeccionarPosicion();
 
@@ -178,19 +184,19 @@ public abstract class Mision{
                 return false;
             
             Posicion siguiente = ruta.get(indice);
-
+            
+            // Si la zona es segura, si puede el motor hace salto simple y consume recursos
             if (esZonaSegura(siguiente)) {
-
-                if (!AC.consultaRecursos(2, 0, 0))
+                if (motor.puedeSaltar()){
+                    motor.saltar();
+                    universo.moverNave(siguiente);
+                    indice++;
+                    return true;
+                } else
                     return false;
-
-                AC.restaCombustible(2);
-
-                universo.moverNave(siguiente);
-                indice++;
-
+                
             } else {
-
+                // Si la zona no es segura trata de hacer un salto warp
                 if (indice + 1 >= ruta.size()) {
                     calcularRuta(objetivo);
                     indice = 0;

@@ -1,5 +1,8 @@
 package modelo.motorwarp;
 
+import modelo.asistente.AsistenteComando;
+import modelo.nave.Recursos;
+
     /**
      * <b>PRE</b>
      * El parametro motor no debe ser null
@@ -14,23 +17,6 @@ public interface EstadoMotor {
     
     public void saltoWarp(MotorWarp motor);
     
-    /*
-    // Si el estado actual es Disponible, cambia el estado a preparando salto
-    void prepararSalto(MotorWarp motor) throws MotorTransicionException;
-    
-    // Si el estado actual es Preparando Salto, cambia el estado a preparando SaltoWarp
-    //void saltar(MotorWarp motor) throws MotorTransicionException;
-    
-    // Si el estado actual es Saltando, cambia el estado a preparando Enfriando Estado
-    void enfriar(MotorWarp motor) throws MotorTransicionException;
-    
-    // Si el estado actual es Saltando, cambia el estado a preparando Disponible Estado
-    void terminarSalto(MotorWarp motor) throws MotorTransicionException;
-    
-    // Si el estado actual es Enfriamiento, cambia el estado a Disponible
-    void terminarEnfriamiento(MotorWarp motor) throws MotorTransicionException;
-    
-    */
     boolean estaDisponible();
     String getNombre();
 }
