@@ -1,13 +1,10 @@
 package modelo.persistencia;
+import java.io.Serializable;
 
-public class UsuarioDTO {
+public class UsuarioDTO implements Serializable{
     private int id;
     private String username;
     private String password;
-
-    // Constructor por defecto
-    public UsuarioDTO() {
-    }
 
     // Constructor usado para crear un usuario, el id lo asigna la db
     public UsuarioDTO(String username, String password) {

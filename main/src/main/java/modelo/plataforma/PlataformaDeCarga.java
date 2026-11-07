@@ -59,13 +59,4 @@ public class PlataformaDeCarga {
         notifyAll();
         return bat;
     }
-    
-    public int getCapacidadMaxima() {
-        return capacidadMaxima;
-    }
-    
-    // Conviene hacerlo synchronized tambien por si los demas hilos necesitan este dato
-    public synchronized int getCantBaterias() {
-        return baterias.size();
-    }
 }

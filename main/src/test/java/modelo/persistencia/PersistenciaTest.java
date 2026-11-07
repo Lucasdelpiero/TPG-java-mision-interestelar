@@ -1,8 +1,11 @@
 package modelo.persistencia;
 
+import modelo.usuario.ServicioUsuario;
+import modelo.usuario.UsuarioException;
+
 public class PersistenciaTest {
     public static void main(String[] args) {
-        System.out.println("=== INICIANDO PRUEBA DEL BLOQUE 1 (PERSISTENCIA) ===");
+        System.out.println("=== INICIANDO PRUEBA DEL BLOQUE 1 (PERSISTENCIA Y SERVICIO) ===");
         try {
             // Pasamos la URL explícitamente desde el Main/llamador
             String urlDB = "jdbc:sqlite:database/interestelar.db";
@@ -14,44 +17,56 @@ public class PersistenciaTest {
             System.out.println("2. Esquema inicializado correctamente.");
 
             UsuarioDAO dao = new UsuarioDAOSQLite(conexion);
+            ServicioUsuario servicio = new ServicioUsuario(dao);
 
-            // Generamos un usuario de prueba único
-            String usernamePrueba = "martin_" + System.currentTimeMillis();
+            // Generamos usuarios de prueba únicos
+            String usernameDAO = "martin_dao_" + System.currentTimeMillis();
+            String usernameServicio = "martin_srv_" + System.currentTimeMillis();
 
-            // 2. Verificar que el usuario no exista
-            boolean existeAntes = dao.existeUsuario(usernamePrueba);
-            assert !existeAntes : "El usuario no debería existir aún";
-            System.out.println("3. Verificación existeUsuario('" + usernamePrueba + "') antes de registrar: " + existeAntes);
+            // 2. Probar DAO directo
+            UsuarioDTO usuarioDTO = new UsuarioDTO(usernameDAO, "clave123");
+            dao.registrar(usuarioDTO);
+            assert usuarioDTO.getId() > 0 : "El ID generado debería ser mayor a 0";
+            System.out.println("3. DAO registrar OK. ID: " + usuarioDTO.getId());
 
-            // 3. Registrar usuario con password plana
-            UsuarioDTO usuario = new UsuarioDTO(usernamePrueba, "clave123");
-            dao.registrar(usuario);
-            System.out.println("4. Usuario registrado exitosamente. ID asignado: " + usuario.getId());
-            assert usuario.getId() > 0 : "El ID generado debería ser mayor a 0";
+            UsuarioDTO obtenido = dao.obtenerPorUsername(usernameDAO);
+            assert obtenido != null : "obtenerPorUsername debió encontrar el usuario";
+            assert obtenido.getUsername().equals(usernameDAO) : "El username no coincide";
+            System.out.println("4. DAO obtenerPorUsername OK: " + obtenido.getUsername());
 
-            // 4. Verificar que ahora existe
-            boolean existeDespues = dao.existeUsuario(usernamePrueba);
-            assert existeDespues : "El usuario debería existir";
-            System.out.println("5. Verificación existeUsuario('" + usernamePrueba + "') después de registrar: " + existeDespues);
+            // 3. Probar ServicioUsuario (BusinessObject): Registro
+            servicio.registrar(usernameServicio, "pass456");
+            System.out.println("5. Servicio registrar OK: " + usernameServicio);
 
-            // 5. Autenticar con credenciales correctas (ambas sobrecargas)
-            boolean loginExitosoDTO = dao.autenticar(new UsuarioDTO(usernamePrueba, "clave123"));
-            boolean loginExitosoStrings = dao.autenticar(usernamePrueba, "clave123");
-            assert loginExitosoDTO : "La autenticación con DTO falló";
-            assert loginExitosoStrings : "La autenticación con Strings falló";
-            System.out.println("6. Autenticación con credenciales correctas (DTO y Strings): OK");
+            // 4. Probar ServicioUsuario: Autenticar correcto
+            boolean loginOk = servicio.autenticar(usernameServicio, "pass456");
+            assert loginOk : "La autenticación correcta debió retornar true";
+            System.out.println("6. Servicio autenticar exitoso: " + loginOk);
 
-            // 6. Autenticar con contraseña incorrecta
-            boolean loginFallido = dao.autenticar(new UsuarioDTO(usernamePrueba, "password_invalida"));
-            assert !loginFallido : "La autenticación con contraseña incorrecta no debió pasar";
-            System.out.println("7. Autenticación con contraseña incorrecta rechazada: OK (retornó " + loginFallido + ")");
+            // 5. Probar ServicioUsuario: Autenticar incorrecto
+            boolean loginFail = servicio.autenticar(usernameServicio, "pass_erronea");
+            assert !loginFail : "La autenticación con clave errónea debió retornar false";
+            System.out.println("7. Servicio autenticar clave errónea rechazada: OK");
 
-            // 7. Intentar registrar duplicado (debe lanzar excepción)
+            // 6. Probar ServicioUsuario: Autenticar usuario inexistente
+            boolean loginInexistente = servicio.autenticar("no_existe_" + System.currentTimeMillis(), "pass456");
+            assert !loginInexistente : "Autenticar usuario inexistente debió retornar false";
+            System.out.println("8. Servicio autenticar usuario inexistente: OK (retornó false)");
+
+            // 7. Probar ServicioUsuario: Rechazo de usuario duplicado (UsuarioException)
             try {
-                dao.registrar(new UsuarioDTO(usernamePrueba, "otra_clave"));
-                throw new AssertionError("Debió lanzar SQLiteDAOException por usuario duplicado");
-            } catch (DAOException e) {
-                System.out.println("8. Rechazo de usuario duplicado verificado: " + e.getMessage());
+                servicio.registrar(usernameServicio, "otraClave");
+                throw new AssertionError("Debió lanzar UsuarioException por usuario duplicado");
+            } catch (UsuarioException e) {
+                System.out.println("9. Servicio rechazó usuario duplicado correctamente: " + e.getMessage());
+            }
+
+            // 8. Probar ServicioUsuario: Parámetros inválidos
+            try {
+                servicio.registrar("", "123");
+                throw new AssertionError("Debió lanzar UsuarioException por username vacío");
+            } catch (UsuarioException e) {
+                System.out.println("10. Servicio rechazó parámetros inválidos correctamente: " + e.getMessage());
             }
 
             System.out.println("=== TODAS LAS PRUEBAS DE PERSISTENCIA COMPLETADAS CON ÉXITO ===");

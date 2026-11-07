@@ -20,13 +20,11 @@ public class PlataformaConcurrenciaTest {
                 System.out.println("› " + mensaje);
             });
 
-            // 2. Verificar estado inicial
-            assert plataforma.getCapacidadMaxima() == capacidadMaxima : "Capacidad máxima no coincide";
-            assert plataforma.getCantBaterias() == 0 : "La plataforma debería iniciar vacía";
+            // 2. Verificar estado inicial del gestor
             assert universo.getCantGeneradoras() == 0 : "No debería haber generadoras iniciales";
             assert universo.getCantNavesConsumidoras() == 0 : "No debería haber naves iniciales";
 
-            System.out.println("1. Plataforma inicializada con capacidad " + plataforma.getCapacidadMaxima());
+            System.out.println("1. Plataforma e hilos inicializados.");
 
             // 3. Agregar generadoras y naves al universo paralelo
             universo.agregarGeneradora();
@@ -61,10 +59,6 @@ public class PlataformaConcurrenciaTest {
             assert hayDeposito : "Debe haber eventos de depósito";
             assert hayRetiro : "Debe haber eventos de retiro";
 
-            System.out.println("5. Baterías remanentes en plataforma: " + plataforma.getCantBaterias() + " / " + plataforma.getCapacidadMaxima());
-            assert plataforma.getCantBaterias() >= 0 && plataforma.getCantBaterias() <= capacidadMaxima
-                    : "La cantidad de baterías excede los límites válidos";
-
             System.out.println("=== TODAS LAS PRUEBAS DE CONCURRENCIA COMPLETADAS CON ÉXITO ===");
         } catch (Throwable e) {
             e.printStackTrace();
@@ -72,4 +66,3 @@ public class PlataformaConcurrenciaTest {
         }
     }
 }
-

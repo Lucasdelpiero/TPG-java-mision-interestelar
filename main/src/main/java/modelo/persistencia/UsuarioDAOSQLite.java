@@ -10,7 +10,6 @@ import java.sql.SQLException;
  * - Uso de getConexion()
  * - Sentencias parametrizadas (PreparedStatement) para prevenir inyección SQL
  * - Try-with-resources para garantizar el cierre de conexiones, sentencias y resultados
- * - Hashing seguro mediante SHA-256 (SeguridadUtil)
  */
 public class UsuarioDAOSQLite implements UsuarioDAO {
 
@@ -33,13 +32,12 @@ public class UsuarioDAOSQLite implements UsuarioDAO {
         }
 
         String sql = "INSERT INTO usuarios (username, password) VALUES(?, ?)";
-        String passwordHasheada = SeguridadUtil.hashear(usuario.getPassword());
 
         // 2) Conexión, 3) Crear sentencia, 4) Ejecutar sentencia, 5) Cerrar recursos
         try (Connection conn = conexion.getConexion();
              PreparedStatement sentencia = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
             sentencia.setString(1, usuario.getUsername()); // 1er '?'
-            sentencia.setString(2, passwordHasheada);       // 2do '?'
+            sentencia.setString(2, usuario.getPassword()); // 2do '?'
             sentencia.executeUpdate();
 
             try (ResultSet resultado = sentencia.getGeneratedKeys()) {
@@ -52,8 +50,7 @@ public class UsuarioDAOSQLite implements UsuarioDAO {
         }
     }
 
-    @Override
-    public boolean existeUsuario(String username) throws DAOException {
+    private boolean existeUsuario(String username) throws SQLiteDAOException {
         if (username == null || username.trim().isEmpty()) {
             return false;
         }
@@ -69,26 +66,45 @@ public class UsuarioDAOSQLite implements UsuarioDAO {
         }
     }
     
+    @Override
+    public UsuarioDTO obtenerPorUsername(String username) throws DAOException {
+        try {
+            return obtenerPorUsernameSQLite(username);
+        } catch (SQLiteDAOException e) {
+            throw new DAOException("Error al obtener usuario por username", e);
+        }
+    }
+
+    private UsuarioDTO obtenerPorUsernameSQLite(String username) throws SQLiteDAOException {
+        if (username == null || username.trim().isEmpty()) {
+            return null;
+        }
+        String sql = "SELECT id, username, password FROM usuarios WHERE username = ?";
+        try (Connection conn = conexion.getConexion();
+             PreparedStatement sentencia = conn.prepareStatement(sql)) {
+            sentencia.setString(1, username.trim());
+            try (ResultSet resultado = sentencia.executeQuery()) {
+                if (resultado.next()) {
+                    return new UsuarioDTO(
+                        resultado.getInt("id"),
+                        resultado.getString("username"),
+                        resultado.getString("password")
+                    );
+                }
+                return null;
+            }
+        } catch (SQLException e) {
+            throw new SQLiteDAOException("Error al consultar usuario en SQLite", e);
+        }
+    }
+    
     // Sobrecarga
     @Override
     public boolean autenticar(UsuarioDTO usuario) throws DAOException {
-        if (usuario == null || usuario.getUsername() == null || usuario.getPassword() == null) {
+        if (usuario == null) {
             return false;
         }
-        String sql = "SELECT password FROM usuarios WHERE username = ?";
-        try (Connection conn = conexion.getConexion();
-             PreparedStatement sentencia = conn.prepareStatement(sql)) {
-            sentencia.setString(1, usuario.getUsername());
-            try (ResultSet resultado = sentencia.executeQuery()) {
-                if (resultado.next()) {
-                    String hashAlmacenado = resultado.getString("password");
-                    return SeguridadUtil.verificar(usuario.getPassword(), hashAlmacenado);
-                }
-                return false;
-            }
-        } catch (SQLException e) {
-            throw new SQLiteDAOException("Error al autenticar usuario", e);
-        }
+        return autenticar(usuario.getUsername(), usuario.getPassword());
     }
     
     @Override
@@ -102,8 +118,8 @@ public class UsuarioDAOSQLite implements UsuarioDAO {
             sentencia.setString(1, username);
             try (ResultSet resultado = sentencia.executeQuery()) {
                 if (resultado.next()) {
-                    String hashAlmacenado = resultado.getString("password");
-                    return SeguridadUtil.verificar(password, hashAlmacenado);
+                    String passwordAlmacenada = resultado.getString("password");
+                    return password.equals(passwordAlmacenada);
                 }
                 return false;
             }
