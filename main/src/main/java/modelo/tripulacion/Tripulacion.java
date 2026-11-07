@@ -10,9 +10,9 @@ import java.util.ArrayList;
  */
 public class Tripulacion {
 
-    private ArrayList<PlanetaOrigen> tripulantes;
+    private ArrayList<Haber> tripulantes;
 
-    public ArrayList<PlanetaOrigen> getTripulantes() {
+    public ArrayList<Haber> getTripulantes() {
         return tripulantes;
     }
     
@@ -20,12 +20,13 @@ public class Tripulacion {
         this.tripulantes = new ArrayList<>();
     }
     
-// PRE: po no es null y contiene un Tripulante valido.
-// POST: po queda agregado al final de la lista.
+// PRE: h no es null y contiene un Tripulante valido.
+// POST: h queda agregado al final de la lista.
 //       La cantidad de elementos aumenta en uno.
 //       Los elementos anteriores conservan su orden.    
-    public void addTripulante(PlanetaOrigen po) {
-        tripulantes.add(po);
+    public void addTripulante(Haber h) {
+        assert h != null : "Error: tripulante es null";
+        tripulantes.add(h);
     }
     
     
@@ -56,8 +57,8 @@ public class Tripulacion {
         Tripulante t;
         ArrayList<Tripulante> tripulantesCargo = new ArrayList<>();
         assert cargo == null || !cargo.isBlank() : "Cargo invalido";
-        for (PlanetaOrigen po : this.tripulantes) {
-            t = po.getTripulante();
+        for (Haber h : this.tripulantes) {
+            t = h.getTripulante();
             c = t.getCargo();
             if (cargo == null || c.getCargoTripulante().equalsIgnoreCase(cargo))
                 tripulantesCargo.add(t);
@@ -69,7 +70,7 @@ public class Tripulacion {
 // POST: devuelve el primer tripulante con ese identificador.
 //       Si no existe, devuelve null, incluso si la lista esta vacia.
 //       No modifica la tripulacion.    
-    public PlanetaOrigen getTripulante(String id) {
+    public Haber getTripulante(String id) {
         int i = 0 , n = this.tripulantes.size();
         assert id != null && !id.isBlank(): "Identificador invalido";        
         while (i < n && !this.tripulantes.get(i).getTripulante().getId().equals(id)) {
@@ -93,9 +94,9 @@ public class Tripulacion {
     }
     
     public String toString() {
-        String tripulantes = "Tripulacion : \n";
-        for (PlanetaOrigen po : this.tripulantes)
-            tripulantes += po.toString() + "\n";
-        return tripulantes;
+        String tripulantesStr = "Tripulacion : \n";
+        for (Haber h : this.tripulantes)
+            tripulantesStr += h.toString() + "\n";
+        return tripulantesStr;
     }
 }

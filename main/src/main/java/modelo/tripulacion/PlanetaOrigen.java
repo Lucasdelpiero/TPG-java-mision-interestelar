@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package modelo.tripulacion;
+
 /**
  *
  * @author ASUS
@@ -15,9 +16,12 @@ public abstract class PlanetaOrigen implements Haber {
         this.tripulante = tripulante;
     }
     
+    @Override
     public Tripulante getTripulante() {
         return this.tripulante;
     }
+    
+    @Override
     public String toString() {
         return this.tripulante.toString();
     }
