@@ -3,8 +3,9 @@ package modelo.nave;
 import java.util.ArrayList;
 import modelo.tripulacion.*;
 import modelo.motorwarp.*;
+import modelo.universo.ElementoDelUniverso;
 
-public abstract class Nave {
+public abstract class Nave implements ElementoDelUniverso {
     
     protected Recursos recursos;
     protected MotorWarp motorwarp;

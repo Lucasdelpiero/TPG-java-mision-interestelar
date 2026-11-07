@@ -5,6 +5,7 @@ public class Recursos {
     int combustible;
     int energia;
     int desgaste;
+    int gemas;
     //int mantenimiento;
     
     //-------------------------------------------
@@ -21,6 +22,7 @@ public class Recursos {
         this.combustible = combustible;
         this.energia = energia;
         this.desgaste = desgaste;
+        gemas = 0;
         //mantenimiento = ?
     }
     /**
@@ -32,6 +34,7 @@ public class Recursos {
         this.combustible = nave.recursos.getCombustible();
         this.energia = nave.recursos.getEnergia();
         this.desgaste = nave.recursos.getDesgaste();
+        this.gemas = nave.recursos.getGemas();
     }
     
     //-------------------------------------------
@@ -42,6 +45,7 @@ public class Recursos {
         System.out.println("Combustible: " + combustible);
         System.out.println("Energia: " + energia);
         System.out.println("Desgaste " + desgaste);
+        System.out.println("Gemas " + gemas);
     }
     
     
@@ -61,6 +65,10 @@ public class Recursos {
     public int getDesgaste() {
         return desgaste;
     }
+    
+    public int getGemas() {
+        return gemas;
+    }
 
     
     //-----------------------------------
@@ -78,6 +86,10 @@ public class Recursos {
         this.desgaste = desgaste;
     }
     
+    public void setGemas(int gemas) {
+        this.gemas = gemas;
+    }
+    
     public void consumeCombustible(int consumo){
         this.combustible -= consumo;
     }
@@ -89,6 +101,7 @@ public class Recursos {
     public void consumeDesgaste(int consumo){
         this.desgaste += consumo;
     }
+    
     
     public void cargaCombustible(int valor){
         if (valor > 0 && valor + combustible <= 100) {
@@ -104,6 +117,13 @@ public class Recursos {
         } else {
             System.out.println("[ERROR] Imposible cargar");
         }
+    }
+    
+    public void cargaGemas(int valor) {
+        if (valor > 0)
+            gemas += valor;
+        else 
+            System.out.println("[ERROR] Imposible cargar");
     }
     
     public void realizaMantenimiento(){

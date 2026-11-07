@@ -5,7 +5,9 @@ import modelo.nave.Recursos;
 import modelo.bitacora.Bitacora;
 import modelo.bitacora.TipoEvento; // !!!
 import modelo.mision.Mision;
+import modelo.mision.FactoryMision;
 import modelo.motorwarp.MotorTransicionException;
+import modelo.universo.Universo;
 import modelo.tripulacion.*;
 
 import java.util.ArrayList;
@@ -15,10 +17,15 @@ public class AsistenteComando {
     private Nave nave;
     private Bitacora bitacora;
     
+    private final FactoryMision fm = new FactoryMision();
+    private Mision misionActual = null;
+    private Universo universo;
+    
     //-------------------------------------------
     //          CONSTRUCTOR
     //-------------------------------------------
-    public AsistenteComando(Nave nave, String nombre){
+    public AsistenteComando(Nave nave, String nombre, Universo universo){
+        this.universo = universo;
         this.nave = nave;
         this.nombre = nombre;
         this.bitacora = new Bitacora();
@@ -40,31 +47,36 @@ public class AsistenteComando {
     * POST: Devuelve un informe de mision a la bitacora<br>  
     * @param m una clase hija de mision
     */
-    public void iniciaMision(Mision m){
+    
+    public void realizarMision(String texto) {
+        if (misionActual != null)
+            this.bitacora.registrar(TipoEvento.ERROR, "Error otra mision en progreso " + misionActual.getIdMision());
+        else {
+            misionActual = fm.crearMision(texto,universo);
+            iniciaMision(misionActual);
+        }
+    }
+    private void iniciaMision(Mision m){
         assert (m != null) : "Mision no puede ser nula";
         this.bitacora.registrar(TipoEvento.ORDEN, "Orden recibida: Iniciar mision " + m.getIdMision(), m.getIdMision());
         this.bitacora.registrar(TipoEvento.MISION, "Iniciando mision " + m.getNombreMision(), m.getIdMision());
         try {
             m.hacerMision(this);
-            // Si la mision es exitosa, va a hacer un salto warp
-            if (m.getInforme().esResultadoExitoso()){
-                motor_secuencia_salto();
-            }
         }
         catch (Exception e){
             this.bitacora.registrar(TipoEvento.ERROR, "Error al Iniciar Mision " + m.getIdMision());
         } finally {
-            
+            misionActual = null;
         }
     }
     
     public boolean consultaRecursos(int consumoCombustible,int consumoEnergia, int consumoDesgaste){
         if (nave == null || nave.getRecursos() == null) return false;
         return 
-            (nave.getRecursos().getCombustible() - consumoCombustible >= 0) 
+            (nave.getRecursos().getCombustible() - consumoCombustible > 0) 
                 && 
-            (nave.getRecursos().getDesgaste() + consumoDesgaste <= 100) &&
-            (nave.getRecursos().getEnergia() - consumoEnergia >= 0)    
+            (nave.getRecursos().getDesgaste() + consumoDesgaste < 100) &&
+            (nave.getRecursos().getEnergia() - consumoEnergia > 0)    
                 ;
     }   
     
