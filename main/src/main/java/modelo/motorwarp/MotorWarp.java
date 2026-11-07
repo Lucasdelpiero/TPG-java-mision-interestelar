@@ -21,6 +21,16 @@ public class MotorWarp {
     public void setAC(AsistenteComando AC) {
         this.AC = AC;
     }
+    
+    public void saltar(){
+        this.estado.saltar(this);
+    }
+    
+    public void saltoWarp(){
+        this.estado.saltoWarp(this);
+    }
+    
+    
     /**
      * Sirve para setear el estado del motor warp
      * <b>PRE</b>
@@ -34,6 +44,39 @@ public class MotorWarp {
         this.estado = estado;
     }
     
+
+    
+    /** 
+     * <b>POST</b>
+     * Devuelve un String no nulo ni vacío que describe el estado actual
+     * "Disponible", "Preparando Salto", "Salto warp", "Enfriamiento".
+     */
+    public String getNombreEstado(){
+        return this.estado.getNombre();
+    }
+    
+    /** 
+     * <b>POST</b>
+     * Devuelve true si y solo si el estado actual es DisponibleState; false en cualquier otro estado.
+     */
+    public boolean estaDisponible(){
+        return this.estado.estaDisponible();
+    }
+    
+    
+    public AsistenteComando getAC() {
+        return AC;
+    }
+    
+    
+ 
+    
+    
+    
+    
+    /*
+    
+    
     public void secuencia_salto() throws MotorTransicionException{
         try {
             prepararSalto();
@@ -46,6 +89,9 @@ public class MotorWarp {
         }
         
     }
+    
+    
+    
     
     public void prepararSalto() throws MotorTransicionException{
         this.estado.prepararSalto(this);
@@ -82,20 +128,12 @@ public class MotorWarp {
         }
     }
     
-    /** 
-     * <b>POST</b>
-     * Devuelve un String no nulo ni vacío que describe el estado actual
-     * "Disponible", "Preparando Salto", "Salto warp", "Enfriamiento".
-     */
-    public String getNombreEstado(){
-        return this.estado.getNombre();
-    }
+    */
+
     
-    /** 
-     * <b>POST</b>
-     * Devuelve true si y solo si el estado actual es DisponibleState; false en cualquier otro estado.
-     */
-    public boolean estaDisponible(){
-        return this.estado.estaDisponible();
-    }
+    
+    
+    
+    
+    
 }

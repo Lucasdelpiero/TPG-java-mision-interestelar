@@ -142,23 +142,25 @@ public class AsistenteComando {
      * Pide al motor que ejecute un salto
      */
     public void motor_secuencia_salto(){
+        System.out.println("DEPRECIADO EL MOTOR SECUENCIA SALTO");
+        /*
         try {
             getNave().getMotor().secuencia_salto();
         }
         catch(MotorTransicionException e){
             System.out.println(e.descripcion);
         }
-
+        */
     }
 
     public void motor_preparar_salto() throws MotorTransicionException{
-        getNave().getMotor().prepararSalto();
-        System.out.println(getNave().getMotor().getNombreEstado());
+        //getNave().getMotor().prepararSalto();
+        //System.out.println(getNave().getMotor().getNombreEstado());
     }
 
     public void motor_saltar() throws MotorTransicionException{
-        getNave().getMotor().saltar();
-        System.out.println(getNave().getMotor().getNombreEstado());
+        //getNave().getMotor().saltar();
+        //System.out.println(getNave().getMotor().getNombreEstado());
     }
 
     /**
@@ -166,7 +168,7 @@ public class AsistenteComando {
      * POST: cancela el salto del motor warp
      */
     public void motor_cancelar_salto() throws MotorTransicionException{
-        getNave().getMotor().terminarSalto();
+        //getNave().getMotor().terminarSalto();
     }
     
     //---------------   RECURSOS    -----------------
