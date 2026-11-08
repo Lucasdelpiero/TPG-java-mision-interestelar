@@ -9,6 +9,7 @@ import modelo.destinoytablero.Posicion;
 import modelo.universo.ElementoDelUniverso;
 import java.util.ArrayList;
 import modelo.universo.Asteroide;
+import modelo.nave.Nave;
 
 public abstract class Mision{
     
@@ -115,6 +116,7 @@ public abstract class Mision{
     protected abstract void ejecutar();
     protected abstract Posicion obtenerPosicionObjetivo();
     
+    
     // EVAULAR: idea
     //  CADA MISION TIENE SU PROPIO INFORME Y DISTINTOS
     //  DATOS A GUARDAR EN BITACORA
@@ -146,7 +148,38 @@ public abstract class Mision{
         System.out.println("---------------------------------");
     }
     
-    public boolean intentarSaltoWarp(Posicion p){
+    public boolean intentarSaltoWarp(){
+        return true;
+    }
+    
+    private boolean realizarSaltoWarp(int indice) throws InterruptedException{
+        
+        universo.pasarTurnoDestino();
+        Thread.sleep(500);
+        if (!chequearChoque())
+            return false;
+        
+        universo.pasarTurnoDestino();
+        Thread.sleep(500);
+        if (!chequearChoque())
+            return false;
+        
+        Posicion p = ruta.get(indice + 1);
+        universo.moverNave(p);
+        if (!chequearChoque())
+            return false;
+        
+        return true;
+        
+    }
+    
+    private boolean chequearChoque() {
+        ElementoDelUniverso elementoActual = universo.inspeccionarPosicion();
+
+        if (elementoActual != null) {
+            choque();
+            return this.AC.getNave().estaOperativa();
+        }
         return true;
     }
     
@@ -156,70 +189,66 @@ public abstract class Mision{
     
     public boolean realizarRecorrido(Posicion objetivo) throws InterruptedException {
 
-        int indice = 0;
+    int indice = 0;
 
-        while (!universo.getPosicionNave().equals(objetivo)) {
-            ElementoDelUniverso elementoActual =universo.inspeccionarPosicion();
-
-            if (elementoActual != null) {
-                choque();
-            }
-            
-            if (indice >= ruta.size()) {
-                calcularRuta(objetivo);
-                indice = 0;
-
-                if (ruta.isEmpty())
-                    return false;
-            }
-            
-            int combustibleNecesario = (ruta.size() - indice) * 2;
-            if ( !AC.consultaRecursos(combustibleNecesario, 0, 0))
+    while (!universo.getPosicionNave().equals(objetivo)) {
+        
+        
+        // 1. Resolver encuentro en la posición 
+        if (!chequearChoque())
+            return false;
+            // Si el choque destruyó/inutilizó la nave,
+            // acá después podemos comprobarlo.
+        
+        if (!AC.consultaRecursos((ruta.size() - indice) * 2, 0, 0)) {
                 return false;
-            
-            Posicion siguiente = ruta.get(indice);
-
-            if (esZonaSegura(siguiente)) {
-
-                if (!AC.consultaRecursos(2, 0, 0))
-                    return false;
-
-                AC.restaCombustible(2);
-
-                universo.moverNave(siguiente);
-                indice++;
-
-            } else {
-
-                if (indice + 1 >= ruta.size()) {
-                    calcularRuta(objetivo);
-                    indice = 0;
-                    continue;
-                }
-
-                Posicion destinoWarp = ruta.get(indice + 1);
-
-                if (intentarSaltoWarp(destinoWarp)) {
-                    indice += 2;
-                } else {
-                    calcularRuta(objetivo);
-                    indice = 0;
-
-                    if (ruta.isEmpty())
-                        return false;
-                }
             }
 
-            universo.pasarTurnoDestino();
+       
 
-            calcularRuta(objetivo);
-            indice = 0;
-
-            Thread.sleep(500);
+        // 2. Si se terminó la ruta sin llegar, falla
+        if (indice >= ruta.size()) {
+            return false;
         }
 
-        return true;
+        Posicion siguiente = ruta.get(indice);
+
+        ElementoDelUniverso[][] tablero = universo.verTablero();
+
+        ElementoDelUniverso elementoSiguiente = tablero[siguiente.getX()][siguiente.getY()];
+
+        // 3. SIGUIENTE POSICIÓN LIBRE DE ASTEROIDE
+        if (!(elementoSiguiente instanceof Asteroide) || indice  == ruta.size() - 1){
+
+            AC.restaCombustible(2);
+
+            universo.moverNave(siguiente);
+            if (!chequearChoque())
+                return false;
+
+            indice++;
+        }
+
+        // 4. HAY ASTEROIDE -> WARP
+        else {
+
+            if (intentarSaltoWarp()) {
+                if (!realizarSaltoWarp(indice))
+                    return false;
+                indice += 2;
+            } else {
+                return false;
+            }
+        }
+
+        // 5. TURNO DEL UNIVERSO
+        universo.pasarTurnoDestino();
+
+        Thread.sleep(500);
     }
+    
+    return chequearChoque();
+}
     
     
     public boolean esZonaSegura(Posicion posicion) {

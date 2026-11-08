@@ -87,6 +87,12 @@ public abstract class Nave implements ElementoDelUniverso {
         return id;
     }
     
+    public boolean estaOperativa() {
+    return recursos.getEnergia() > 0
+        && recursos.getCombustible() > 0
+        && recursos.getDesgaste() < 100;
+    }
+    
     
     //---------------------------------------------
     
