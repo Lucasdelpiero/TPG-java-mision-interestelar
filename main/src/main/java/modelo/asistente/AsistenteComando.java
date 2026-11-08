@@ -133,41 +133,7 @@ public class AsistenteComando {
         System.out.println(":: ["+nombre+"] Desgaste: "+nave.getRecursos().getDesgaste()+"\n");
         this.registrarEvento(TipoEvento.RECURSOS, "Mantenimiento realizado. Desgaste: " + prev + " -> " + nave.getRecursos().getDesgaste());
     }
-    
-    
-        //---------------   MOTOR WARP    -----------------
-    /**
-     * PRE: nave y motor no son nulos
-     * POST: ejecuta cambio en motor warp si es posible
-     * Pide al motor que ejecute un salto
-     */
-    public void motor_secuencia_salto(){
-        try {
-            getNave().getMotor().secuencia_salto();
-        }
-        catch(MotorTransicionException e){
-            System.out.println(e.descripcion);
-        }
 
-    }
-
-    public void motor_preparar_salto() throws MotorTransicionException{
-        getNave().getMotor().prepararSalto();
-        System.out.println(getNave().getMotor().getNombreEstado());
-    }
-
-    public void motor_saltar() throws MotorTransicionException{
-        getNave().getMotor().saltar();
-        System.out.println(getNave().getMotor().getNombreEstado());
-    }
-
-    /**
-     * PRE: nave y motor no son nulos
-     * POST: cancela el salto del motor warp
-     */
-    public void motor_cancelar_salto() throws MotorTransicionException{
-        getNave().getMotor().terminarSalto();
-    }
     
     //---------------   RECURSOS    -----------------
     public Recursos getRecursos(){

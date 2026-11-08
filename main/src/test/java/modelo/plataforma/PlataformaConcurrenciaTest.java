@@ -2,6 +2,7 @@ package modelo.plataforma;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import modelo.plataforma.PlataformaDeCarga;
 
 public class PlataformaConcurrenciaTest {
 

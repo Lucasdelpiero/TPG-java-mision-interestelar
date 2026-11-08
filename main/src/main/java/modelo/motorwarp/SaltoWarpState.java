@@ -1,5 +1,8 @@
 package modelo.motorwarp;
 
+import modelo.asistente.AsistenteComando;
+import modelo.nave.Recursos;
+
 public class SaltoWarpState implements EstadoMotor {
     
     public SaltoWarpState(){ }
@@ -13,6 +16,28 @@ public class SaltoWarpState implements EstadoMotor {
     public boolean estaDisponible(){
         return false;
     }
+    
+    
+    @Override
+    public void saltar(MotorWarp motor){
+        AsistenteComando ac = motor.getAC();
+        Recursos recursos = ac.getRecursos();
+        if (recursos.getCombustible() >= 2)
+            recursos.consumeCombustible(2);
+        motor.setEstado(new PreparandoSaltoState());
+    }
+    
+    @Override
+    public void saltoWarp(MotorWarp motor){
+        AsistenteComando ac = motor.getAC();
+        Recursos recursos = ac.getRecursos();
+        if(recursos.getEnergia() >= 5){
+            motor.setEstado(new SaltoWarpState());
+            recursos.consumeEnergia(5);
+        }
+    }
+    
+    /*
     
     @Override
     public void prepararSalto(MotorWarp motor) throws MotorTransicionException{
@@ -39,5 +64,5 @@ public class SaltoWarpState implements EstadoMotor {
     public void terminarEnfriamiento(MotorWarp motor) throws MotorTransicionException{
         throw new MotorTransicionException("No se puede terminar el enfriamiento: el motor está realizando un salto.");
     }
-    
+    */
 }

@@ -1,5 +1,8 @@
 package modelo.motorwarp;
 
+import modelo.asistente.AsistenteComando;
+import modelo.nave.Recursos;
+
 public class EnfriamientoState implements EstadoMotor {
     
     public EnfriamientoState(){ }
@@ -14,6 +17,23 @@ public class EnfriamientoState implements EstadoMotor {
         return false;
     }
     
+    
+    @Override
+    public void saltar(MotorWarp motor){
+        AsistenteComando ac = motor.getAC();
+        Recursos recursos = ac.getRecursos();
+        if (recursos.getCombustible() >= 2)
+            recursos.consumeCombustible(2);
+        recursos.consumeDesgaste(3);
+        motor.setEstado(new DisponibleState());
+    }
+    
+    @Override
+    public void saltoWarp(MotorWarp motor){
+        saltar(motor);
+    }
+    
+    /*
 
     @Override
     public void prepararSalto(MotorWarp motor) throws MotorTransicionException{
@@ -39,5 +59,5 @@ public class EnfriamientoState implements EstadoMotor {
         System.out.println("Motor warp: disponible");
         motor.setEstado(new DisponibleState());
     }
-    
+    */
 }
