@@ -46,6 +46,10 @@ public class Universo extends Observable  {
         return tablero.obtenerObjetivo();
     }
     
+    public Posicion obtenerObjetivo(){
+        return tablero.obtenerObjetivo();
+    }
+    
     public void moverNave(Posicion posicion) {
         tablero.moverNave(posicion);
     }
