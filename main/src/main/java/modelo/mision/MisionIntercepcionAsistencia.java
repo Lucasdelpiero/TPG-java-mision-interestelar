@@ -90,7 +90,65 @@ public class MisionIntercepcionAsistencia extends Mision{
    
     
     public Posicion obtenerPosicionObjetivo() {
-        return universo.getObjetivo();
+        /*
+        ElementoDelUniverso[][] tablero = universo.verTablero();
+        Posicion nave = universo.getPosicionNave();
+        
+        int n = universo.getX();
+        int m = universo.getY();
+
+        int x0 = nave.getX();
+        int y0 = nave.getY();
+
+        int maxRadio = Math.max(n, m);
+
+        for (int radio = 0; radio <= maxRadio; radio++) {
+
+            int filaMin = x0 - radio;
+            int filaMax = x0 + radio;
+            int colMin = y0 - radio;
+            int colMax = y0 + radio;
+
+            // borde superior e inferior
+            for (int j = colMin; j <= colMax; j++) {
+
+                if (filaMin >= 0 && filaMin < n &&
+                    j >= 0 && j < m &&
+                    tablero[filaMin][j] instanceof Nave) {
+
+                    return new Posicion(filaMin, j);
+                }
+
+                if (filaMax >= 0 && filaMax < n &&
+                    j >= 0 && j < m &&
+                    tablero[filaMax][j] instanceof Nave) {
+
+                    return new Posicion(filaMax, j);
+                }
+            }
+
+            // borde izquierdo y derecho
+            for (int i = filaMin + 1; i < filaMax; i++) {
+
+                if (i >= 0 && i < n &&
+                    colMin >= 0 && colMin < m &&
+                    tablero[i][colMin] instanceof Nave) {
+
+                    return new Posicion(i, colMin);
+                }
+
+                if (i >= 0 && i < n &&
+                    colMax >= 0 && colMax < m &&
+                    tablero[i][colMax] instanceof Nave) {
+
+                    return new Posicion(i, colMax);
+                }
+            }
+        }
+
+        return null;
+        */
+        return universo.obtenerObjetivo();
     }
  
         // (Dependiendo de la ENTREGA 2, la mision ejecutada

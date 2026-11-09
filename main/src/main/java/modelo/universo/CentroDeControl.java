@@ -44,6 +44,18 @@ public class CentroDeControl {
         }
     }
     
+    public AsistenteComando getAC(String nombreAC){
+        AsistenteComando Asist = null;
+        try{
+            int i = buscaAC(nombreAC);
+            Asist = listaAC.get(i);    // Puede tirar excepcion si 'i' es una pos invalida
+        }
+        catch(IndexOutOfBoundsException e){
+            System.out.println(":: ["+nombre+"] ERROR: ASISTENTE DE COMANDO inexistente");
+        }
+        return Asist;
+    }
+    
     public Nave getNave(String nombreAC){
         Nave n = null;
         try{
