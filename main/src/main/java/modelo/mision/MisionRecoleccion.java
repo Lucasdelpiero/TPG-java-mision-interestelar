@@ -22,7 +22,8 @@ public class MisionRecoleccion extends Mision{
     }
     
     public Posicion obtenerPosicionObjetivo() {
-        return universo.getObjetivo();
+        return universo.obtenerObjetivo();
+        //return universo.getObjetivo();
     }
     
     @Override

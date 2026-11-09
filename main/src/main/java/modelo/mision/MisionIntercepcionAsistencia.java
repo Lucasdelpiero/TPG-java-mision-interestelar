@@ -88,9 +88,10 @@ public class MisionIntercepcionAsistencia extends Mision{
      }
     
     public Posicion obtenerPosicionObjetivo() {
+        /*
         ElementoDelUniverso[][] tablero = universo.verTablero();
         Posicion nave = universo.getPosicionNave();
-
+        
         int n = universo.getX();
         int m = universo.getY();
 
@@ -144,6 +145,8 @@ public class MisionIntercepcionAsistencia extends Mision{
         }
 
         return null;
+        */
+        return universo.obtenerObjetivo();
     }
  
         // (Dependiendo de la ENTREGA 2, la mision ejecutada

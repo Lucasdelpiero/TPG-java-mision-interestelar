@@ -1,6 +1,63 @@
 package com.mycompany.main;
 
 import java.util.ArrayList;
+import modelo.asistente.AsistenteComando;
+import modelo.destinoytablero.*;
+import modelo.mision.MisionRecoleccion;
+import modelo.nave.*;
+import modelo.universo.*;
+
+import Controlador.Controlador;
+import vista.*;
+
+public class Main {
+    public static void main(String[] args) {
+        // =====================================================
+        // 1. CREAR ELEMENTOS
+        // =====================================================
+        ArrayList<ElementoDelUniverso> elementos = new ArrayList<>();
+        Asteroide a1 = new Asteroide();
+        Asteroide a2 = new Asteroide();
+        EstacionDeCarga e1 = new EstacionDeCarga();
+        EstacionDeCarga e2 = new EstacionDeCarga();
+        //elementos.add(a1);
+        //elementos.add(a2);
+        //elementos.add(e1);
+        //elementos.add(e2);
+        
+        for(int i=0; i<20;i++){
+            elementos.add(a1);
+        }
+        
+        
+        // =====================================================
+        // 12. PROBAR UNIVERSO
+        // =====================================================
+        Nave nave = new Exploradora();
+        ArrayList<ElementoDelUniverso> elementosUniverso = new ArrayList<>();
+        //elementosUniverso.add(new Asteroide());
+        //elementosUniverso.add(new EstacionDeCarga());
+        
+        Universo universo = new Universo(nave, 50, 50, elementos); // (nave, FILAS, COLUMNAS, elems)
+
+        // =====================================================
+        // INICIO VENTANA LOGIN
+        // =====================================================
+        
+        InterfazVista w1 = new winLogin();
+        Controlador control = new Controlador(w1, universo);
+        
+        w1.setControlador(control);
+        w1.setVisible(true);
+        
+    }
+}
+
+
+/*
+package com.mycompany.main;
+
+import java.util.ArrayList;
 
 import modelo.asistente.AsistenteComando;
 import modelo.destinoytablero.CantidadDeElementosSuperaCasillaException;
@@ -32,23 +89,21 @@ public class Main {
         System.out.println("======================================");
 
         try {
-
             // =====================================================
             // 1. CREAR ELEMENTOS
             // =====================================================
-
             ArrayList<ElementoDelUniverso> elementos = new ArrayList<>();
-
             Asteroide a1 = new Asteroide();
             Asteroide a2 = new Asteroide();
-
             EstacionDeCarga e1 = new EstacionDeCarga();
             EstacionDeCarga e2 = new EstacionDeCarga();
-
             elementos.add(a1);
             elementos.add(a2);
             elementos.add(e1);
-            elementos.add(e2);
+            elementos.add(e2);    
+            
+
+            
 
             System.out.println("\n[1] Elementos creados correctamente");
             ok++;
@@ -404,10 +459,10 @@ public class Main {
             // 16. RUTA SIN WARP
             // =====================================================
 
-            /*
-             * Para esta prueba usamos un universo sin elementos
-             * para garantizar que nunca se intente Warp.
-             */
+            
+             // Para esta prueba usamos un universo sin elementos
+             // para garantizar que nunca se intente Warp.
+             
 
             Nave naveRuta = new Exploradora();
 
@@ -448,12 +503,12 @@ public class Main {
                             universoRuta
                     );
 
-            /*
-             * Si AC es protected y tu misión lo asigna en hacerMision(),
-             * podés probar directamente la misión completa.
-             *
-             * No agregamos asteroides para que NUNCA se intente Warp.
-             */
+            
+             // Si AC es protected y tu misión lo asigna en hacerMision(),
+             //podés probar directamente la misión completa.
+             
+             // No agregamos asteroides para que NUNCA se intente Warp.
+             
 
             System.out.println(
                     "[17] Combustible antes: "
@@ -800,3 +855,4 @@ public class Main {
         }
     }
 }
+*/
