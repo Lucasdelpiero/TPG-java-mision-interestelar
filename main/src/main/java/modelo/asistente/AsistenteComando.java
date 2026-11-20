@@ -56,18 +56,24 @@ public class AsistenteComando {
             iniciaMision(misionActual);
         }
     }
+    
+    public boolean hayMisionEnCurso() {
+        return misionActual != null;
+    }
     private void iniciaMision(Mision m){
         assert (m != null) : "Mision no puede ser nula";
         this.bitacora.registrar(TipoEvento.ORDEN, "Orden recibida: Iniciar mision " + m.getIdMision(), m.getIdMision());
         this.bitacora.registrar(TipoEvento.MISION, "Iniciando mision " + m.getNombreMision(), m.getIdMision());
-        try {
-            m.hacerMision(this);
-        }
-        catch (Exception e){
-            this.bitacora.registrar(TipoEvento.ERROR, "Error al Iniciar Mision " + m.getIdMision());
-        } finally {
-            misionActual = null;
-        }
+        new Thread(() -> {
+            try {
+                m.hacerMision(this);
+            }
+            catch (Exception e){
+                this.bitacora.registrar(TipoEvento.ERROR, "Error al Iniciar Mision " + m.getIdMision());
+            } finally {
+                misionActual = null;      // se libera recién cuando la misión realmente terminó
+            }
+        }).start();
     }
     
     public boolean consultaRecursos(int consumoCombustible,int consumoEnergia, int consumoDesgaste){

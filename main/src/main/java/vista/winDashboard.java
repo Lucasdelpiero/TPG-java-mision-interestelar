@@ -17,66 +17,120 @@ import modelo.nave.*;
 // AGREGADO
 
 
-public class winDashboard extends JFrame implements InterfazVistaDashboard{
+public class winDashboard extends JFrame implements InterfazVistaDashboard , Observador{
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(winDashboard.class.getName());
     private static final int SIZE_TABLERO = 540; //(pixeles) NO TOCAR
-    
+    private Controlador controlador;
+    private JPanel[][] celdas;
     
     // USERNAME obtenido desde LOGIN
     // UNIVERSO obtenido desde CONTROLADOR
     
     // CONSTRUCTOR
-    public winDashboard(String username, Universo universo) {
+    public winDashboard(String username, Controlador controlador) {
+        this.controlador = controlador;
         initComponents();
         setLocationRelativeTo(null);
         /// Cosas nuevardas
-        dibujaTablero(universo);
+        dibujaTablero();
         lblUsername.setText(username);
     }
 
-    private void dibujaTablero(Universo universo){
+    private void dibujaTablero() {
+        Universo universo = controlador.getUniverso();
+
         int dimX = universo.getX();
         int dimY = universo.getY();
+
         ElementoDelUniverso[][] tablero = universo.verTablero();
+
         int posX = universo.getPosicionNave().getX();
         int posY = universo.getPosicionNave().getY();
-        JPanel cuadricula = new JPanel(new GridLayout(dimX,dimY,0,0));
-        for (int i = 0; i < dimX; i++){
-            for(int j = 0; j < dimY;j++){
+
+        // Guardamos los JPanel para actualizarlos después
+        celdas = new JPanel[dimX][dimY];
+
+        JPanel cuadricula = new JPanel(new GridLayout(dimX, dimY, 0, 0));
+
+        for (int i = 0; i < dimX; i++) {
+            for (int j = 0; j < dimY; j++) {
+
                 JPanel p = new JPanel();
+                celdas[i][j] = p;
+
                 ElementoDelUniverso objActual = tablero[i][j];
-                if(tablero[i][j] != null){
-                    if (objActual instanceof EstacionDeCarga _) {
-                        p.setBackground(Color.decode("0xb757eb"));
-                    } 
-                    else if (objActual instanceof Asteroide _) {
-                        p.setBackground(Color.decode("0x9e9378"));
-                    }
-                    else if (objActual instanceof Nave _) {
-                        p.setBackground(Color.decode("0x78cfbc"));
-                    }
+
+                if (objActual instanceof EstacionDeCarga) {
+                    p.setBackground(Color.decode("0xb757eb"));
                 }
-                else{
-                    if(i%2 == j%2){
-                        p.setBackground(Color.decode("0x252525"));
-                    }
-                    else{
-                        p.setBackground(Color.decode("0x303030"));
-                    }
+                else if (objActual instanceof Asteroide) {
+                    p.setBackground(Color.decode("0x9e9378"));
                 }
-                if(i == posX && j==posY){
+                else if (objActual instanceof Nave) {
+                    p.setBackground(Color.decode("0x78cfbc"));
+                }
+                else if (i % 2 == j % 2) {
+                    p.setBackground(Color.decode("0x252525"));
+                }
+                else {
+                    p.setBackground(Color.decode("0x303030"));
+                }
+
+                if (i == posX && j == posY) {
                     p.setBackground(Color.GREEN);
                 }
+
                 cuadricula.add(p);
-            }        
+            }
         }
+
         JScrollPane scroll = new JScrollPane(cuadricula);
-        scroll.setPreferredSize(new Dimension( SIZE_TABLERO , SIZE_TABLERO ));        
-        panGrid.add(scroll);            // panGrid tiene FlowLayout
-        panGrid.setVisible(true);
-        // PANGRID contiene a SCROLL, y SCROLL contiene a CUADRICULA
-        // NO TOCAR PANGRID ni SIZETABLERO porque los mato
+        scroll.setPreferredSize(new Dimension(SIZE_TABLERO, SIZE_TABLERO));
+
+        panGrid.removeAll();
+        panGrid.add(scroll);
+        panGrid.revalidate();
+        panGrid.repaint();
+    }
+    
+    private void actualizarTablero() {
+        if (celdas == null) return;
+
+        Universo universo = controlador.getUniverso();
+        ElementoDelUniverso[][] tablero = universo.verTablero();
+
+        int posX = universo.getPosicionNave().getX();
+        int posY = universo.getPosicionNave().getY();
+
+        for (int i = 0; i < celdas.length; i++) {
+            for (int j = 0; j < celdas[i].length; j++) {
+
+                JPanel p = celdas[i][j];
+                ElementoDelUniverso objActual = tablero[i][j];
+
+                if (i == posX && j == posY) {
+                    p.setBackground(Color.GREEN);
+                }
+                else if (objActual instanceof EstacionDeCarga) {
+                    p.setBackground(Color.decode("0xb757eb"));
+                }
+                else if (objActual instanceof Asteroide) {
+                    p.setBackground(Color.decode("0x9e9378"));
+                }
+                else if (objActual instanceof Nave) {
+                    p.setBackground(Color.decode("0x78cfbc"));
+                }
+                else if (i % 2 == j % 2) {
+                    p.setBackground(Color.decode("0x252525"));
+                }
+                else {
+                    p.setBackground(Color.decode("0x303030"));
+                }
+            }
+        }
+
+        panGrid.repaint();
     }
     
     @SuppressWarnings("unchecked")
@@ -906,6 +960,7 @@ public class winDashboard extends JFrame implements InterfazVistaDashboard{
         btnAddCrewmate.addActionListener(c); //.. _ADDCREWMATE
         btnStartMission.addActionListener(c);//.. _STARTMISSION
     }
+    
 
     
     // ASISTENTE COMANDO
@@ -1029,8 +1084,14 @@ public class winDashboard extends JFrame implements InterfazVistaDashboard{
     public JTextArea getAreaReportes() {
         return jTextArea1;
     }
-
     
+    @Override
+    public void actualizar() {
+        SwingUtilities.invokeLater(() -> {
+            actualizarTablero();
+            controlador.recuperaRecursos();
+        });
+    };
 
     
     
