@@ -14,23 +14,17 @@ public class EstacionDeCarga implements ElementoDelUniverso {
     final int RECARGA_COMBUSTIBLE = 50;
     final int RECARGA_ENERGIA = 50;
 
-    @Override
-    public void chocaCarguera(Nave nave) {
-        nave.getRecursos().cargaCombustible(RECARGA_COMBUSTIBLE);
-        nave.getRecursos().cargaEnergia(RECARGA_ENERGIA);
+    public int getRecargaCombustible() {
+        return RECARGA_COMBUSTIBLE;
+    }
+
+    public int getRecargaEnergia() {
+        return RECARGA_ENERGIA;
     }
 
     @Override
-    public void chocaExploradora(Nave nave) {
-        nave.getRecursos().cargaCombustible(RECARGA_COMBUSTIBLE);
-        nave.getRecursos().cargaEnergia(RECARGA_ENERGIA);
+    public void choque(ElementoDelUniverso elem) {
+        if (elem instanceof Nave nave)
+            nave.choque(elem);
     }
-
-    @Override
-    public void chocaCombate(Nave nave) {
-        nave.getRecursos().cargaCombustible(RECARGA_COMBUSTIBLE);
-        nave.getRecursos().cargaEnergia(RECARGA_ENERGIA);
-    }
-    
-    
 }

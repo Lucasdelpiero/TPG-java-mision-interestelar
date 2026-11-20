@@ -5,6 +5,7 @@ import modelo.tripulacion.*;
 import modelo.motorwarp.*;
 import modelo.universo.Asteroide;
 import modelo.universo.ElementoDelUniverso;
+import modelo.universo.EstacionDeCarga;
 
 public abstract class Nave implements ElementoDelUniverso {
     
@@ -43,7 +44,49 @@ public abstract class Nave implements ElementoDelUniverso {
     //          ADICIONALES
     //-------------------------------------------    
     
-    public abstract void choque(ElementoDelUniverso elemento);
+    @Override
+    public void choque(ElementoDelUniverso elemento){
+        if (elemento instanceof Nave nave){
+            this.choqueNave(nave);
+        } else if (elemento instanceof Asteroide asteroide){
+            this.chocaAsteroide(asteroide);
+        } else if (elemento instanceof EstacionDeCarga estacion){
+            this.chocaEstacionDeCarga(estacion);
+        }
+    }
+    
+    /**
+     * Pre: asteroide no es null
+     * Post: la nave reduce su cantidad de energia o es destruida
+     * @param asteroide 
+     */
+    public void chocaAsteroide(Asteroide asteroide){
+        int costo = asteroide.getCostoChoqueEnergia();
+        if (this.getRecursos().getEnergia() >= costo){
+                this.getRecursos().consumeEnergia(costo);
+            } else {
+            this.destruirNave();
+        }
+    }
+    
+    /**
+     * Pre: la estacion no es null
+     * Post: a la nave se le carga como maximo la cantidad de recuross que estipula la estacion
+     * @param estacion 
+     */
+    public void chocaEstacionDeCarga(EstacionDeCarga estacion){
+        int combustible = estacion.getRecargaCombustible();
+        int energia = estacion.getRecargaEnergia();
+        this.getRecursos().cargaCombustible(combustible);
+        this.getRecursos().cargaEnergia(energia);
+    }
+    
+    
+    public abstract void choqueNave(Nave nave);
+    public abstract void chocaCarguera(Nave nave);
+    public abstract void chocaExploradora(Nave nave);
+    public abstract void chocaCombate(Nave nave);
+    
     
     // Al perder la pelea con una nave, se destruye y pierde todo
     /**

@@ -10,7 +10,5 @@ import modelo.nave.Nave;
  * @author ASUS
  */
 public interface ElementoDelUniverso {
-    public void chocaCarguera(Nave nave);
-    public void chocaExploradora(Nave nave);
-    public void chocaCombate(Nave nave);
+    public void choque(ElementoDelUniverso elem);
 }
