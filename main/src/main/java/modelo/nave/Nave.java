@@ -144,12 +144,15 @@ public abstract class Nave implements ElementoDelUniverso {
         return id;
     }
     
-    public boolean estaOperativa() {
-    return recursos.getEnergia() > 0
-        && recursos.getCombustible() > 0
-        && recursos.getDesgaste() < 100;
+    /**
+     * Chequea si la nave es funcoinal o no, viendo que tenga la tripulacion adecuada y el desgaste no sea maximo
+     * pre: la nave tiene un objeto tripulacion y recursos a los cuales consultar
+     * post: devuelve true o false dependiendo de los componentes de nave de la nave
+     * @return 
+     */
+    public boolean estaOperativa() { 
+        return getTripulacion().esOperativa() && getRecursos().getDesgaste() < 100;
     }
-    
     
     //---------------------------------------------
     
