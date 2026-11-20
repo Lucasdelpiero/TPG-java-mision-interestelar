@@ -64,6 +64,7 @@ public class Universo extends Observable  {
     
     public void pasarTurnoDestino() {
         destino.turnoDestino();
+        notificarObservadores();
     }
         
     public ElementoDelUniverso[][] verTablero() {

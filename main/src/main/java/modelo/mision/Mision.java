@@ -13,6 +13,7 @@ import modelo.nave.Nave;
 import modelo.universo.Asteroide;
 import modelo.nave.Nave;
 
+
 public abstract class Mision{
     
     public static enum tipoMision {
@@ -148,24 +149,25 @@ public abstract class Mision{
         System.out.println("[MISION] Mision terminada.");
         AC.registrarMision(TipoEvento.MISION, "[MISION] Mision terminada.", idMision);
         System.out.println("---------------------------------");
+        universo.notificarObservadores();
     }
     
     public boolean intentarSaltoWarp(){
         Nave nave = AC.getNave();
         MotorWarp motor = nave.getMotor();
         motor.saltoWarp();
-        return motor.getNombreEstado() == "Salto warp";
+        return "Salto warp".equals(motor.getNombreEstado());
     }
     
     private boolean realizarSaltoWarp(int indice) throws InterruptedException{
         
         universo.pasarTurnoDestino();
-        Thread.sleep(500);
+        Thread.sleep(100);
         if (!chequearChoque())
             return false;
         
         universo.pasarTurnoDestino();
-        Thread.sleep(500);
+        Thread.sleep(100);
         if (!chequearChoque())
             return false;
         
@@ -205,7 +207,7 @@ public abstract class Mision{
             // Si el choque destruyó/inutilizó la nave,
             // acá después podemos comprobarlo.
         
-        if (!AC.consultaRecursos((ruta.size() - indice) * 2, 0, 0)) {
+        if (!AC.consultaRecursos(2, 0, 0)) {
                 return false;
             }
         
@@ -235,7 +237,7 @@ public abstract class Mision{
         // 4. HAY ASTEROIDE -> WARP
         else {
 
-            if (intentarSaltoWarp()) {
+            if (AC.consultaRecursos(5, 0, 0) && intentarSaltoWarp()) {
                 if (!realizarSaltoWarp(indice))
                     return false;
                 indice += 2;
@@ -247,37 +249,13 @@ public abstract class Mision{
         // 5. TURNO DEL UNIVERSO
         universo.pasarTurnoDestino();
 
-        Thread.sleep(500);
+        Thread.sleep(100);
     }
     
     return chequearChoque();
 }
     
     
-    public boolean esZonaSegura(Posicion posicion) {
-
-        ElementoDelUniverso[][] tablero = universo.verTablero();
-
-        int n = universo.getX();
-        int m = universo.getY();
-
-        int x = posicion.getX();
-        int y = posicion.getY();
-
-        for (int i = x - 1; i <= x + 1; i++) {
-            for (int j = y - 1; j <= y + 1; j++) {
-
-                // Ignorar posiciones fuera del tablero
-                if (i < 0 || i >= n || j < 0 || j >= m)
-                    continue;
-
-                if (tablero[i][j] instanceof Asteroide)
-                    return false;
-            }
-        }
-
-        return true;
-    }
 
     public void calcularRuta(Posicion objetivo) {
 
@@ -309,14 +287,11 @@ public abstract class Mision{
                     if (x < 0 || x >= n || y < 0 || y >= m)
                         continue;
 
-                    // Hay un asteroide
-                    if (tablero[x][y] instanceof Asteroide)
-                        continue;
 
                     Posicion candidata = new Posicion(x, y);
 
                     // Evitar volver por donde ya pasamos
-                    if (ruta.contains(candidata) || !esZonaSegura(candidata))
+                    if (ruta.contains(candidata))
                         continue;
 
                     int distancia =

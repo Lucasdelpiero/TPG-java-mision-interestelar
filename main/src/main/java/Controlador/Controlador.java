@@ -8,6 +8,7 @@ import vista.*;
 import modelo.usuario.*;
 import modelo.plataforma.*;
 import modelo.persistencia.*;
+import modelo.destinoytablero.Observador;
 // importante
 
 //
@@ -53,6 +54,7 @@ public class Controlador implements ActionListener{
         factoryOrigen = new FactoryPlanetaOrigen();
         factoryMision = new FactoryMision();
     }
+    
     
     
     @Override
@@ -163,14 +165,35 @@ public class Controlador implements ActionListener{
             String mision = vistaDashboard.getMision();
             String nombreNave = vistaDashboard.getNombreNave();
             AsistenteComando AC = GGCC.getAC(nombreNave);
-            
-            Mision m = factoryMision.crearMision(mision, universo);
-            m.hacerMision(AC);
-            recuperaRecursos();
-            vistaDashboard.limpiaTablaBinnacle();
-            recuperaBitacora();
-            vistaDashboard.getAreaReportes().setText("");
-            recuperaReportes();
+
+            if (AC.hayMisionEnCurso()) {
+                javax.swing.JOptionPane.showMessageDialog(null, "Ya hay una misión en curso en esta nave");
+                return;
+            }
+
+            new javax.swing.SwingWorker<Void, Void>() {
+                @Override
+                protected Void doInBackground() {
+                    AC.realizarMision(mision);      // crea la misión y la ejecuta (iniciaMision) en este hilo
+                    
+                    return null;
+                }
+
+                @Override
+                protected void done() {             // de vuelta en el EDT
+                    try {
+                        get();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                recuperaRecursos();
+                vistaDashboard.limpiaTablaBinnacle();
+                recuperaBitacora();
+                vistaDashboard.getAreaReportes().setText("");
+                recuperaReportes();
+                    
+            }
+        }.execute();
             // RECUPERA REPORTES FINALES
             
         } // FALTA EJECUTAR MISION, MODIFICAR RECURSOS Y ETC
@@ -196,9 +219,10 @@ public class Controlador implements ActionListener{
 
     private void switchToDashboard(String username){
         vista.setVisible(false);
-        vistaDashboard = new winDashboard(username, universo);
+        vistaDashboard = new winDashboard(username, this);
         vistaDashboard.setControlador(this);
         vistaDashboard.setVisible(true);
+        universo.agregarObservador((Observador) vistaDashboard);
         
         universoParalelo.registrarObservador(new ObservadorPlataforma(){
             @Override
@@ -208,7 +232,7 @@ public class Controlador implements ActionListener{
         });
     }
     
-    private void recuperaRecursos(){
+    public void recuperaRecursos(){
         String nombre = vistaDashboard.getNombreNave();            
         Nave nave = GGCC.getNave(nombre);
             
@@ -272,6 +296,10 @@ public class Controlador implements ActionListener{
                 vistaDashboard.getAreaReportes().append("> "+ msg +"\n");
             }
         }
+    }
+    
+    public Universo getUniverso() {
+        return this.universo;
     }
 }
 
