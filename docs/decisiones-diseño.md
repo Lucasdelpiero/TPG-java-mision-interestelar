@@ -1,4 +1,4 @@
-# DECISIONES DE DISEñO
+# DECISIONES DE DISEÑO
 Los siguientes patrones fueron utilizados para la realizacion del proyecto de acuerdo a los requisitos planteados dentro del Trabajo Practico Grupal.
 
 ---
@@ -116,3 +116,113 @@ Interfaz EstadoMotor: define los métodos comunes de transición y consulta que 
 # *DECORATOR*
 
 Se implementó el patrón Decorator para asociar dinámicamente a cada tripulante un planeta de origen, modificando su comportamiento según el origen asignado. En particular, este patrón permite personalizar el sueldo del tripulante y obtener información detallada sobre sus características sin modificar directamente la clase base.
+
+---
+
+# *CONCURRENCIA*
+Se usa expresar paralelismo entre tareas mediante threads y monitores. 
+Se usa para resolver el problema productor-consumidor, en el que hay un recurso compartido (la plataforma con baterias), en la cual el productor pone baterias cargadas y el consumidor las retira para utilizarlas, pero como solo hay espacio para una cantidad limitada de baterías en la plataforma el productor tiene que esperar a depositar la bateria hasta que haya espacio y el consumidor debe esperara a que haya al menos una bateria. Esto de esperar y luego volver a chequear si puede usar el recurso compartido se hace mediante el wait() y el notifyAll() que proveen los hilos.
+
+---
+# *PERSISTENCIA*
+Se utiliza el patrón DAO y el patrón DTO
+### Patrón DAO: 
+Nos funciona de nexo entre los datos del programa y la base de datos a la que queremos almacenarlos.
+Para guardar/cargar los usuarios se creo una clase UsuarioDAOSQLite para almacenar los datos en SQLite, esta clase tiene todas las funciones necesarias para comunicarse con la base de datos para consultar datos o existencia de tal usuario.
+
+### Patrón DTO:
+Es un objeto que usamos para decidir como van a viajar los datos entre las distintas capas del programa con solo los datos que nos interesan tratar.
+Esto soluciona un problema de traerse datos de varias tablas en un solo llamado y el que estos datos se puedan juntar en un solo objeto del cual luego haremos uso.
+Si no usáramos este patrón habría que recuperar distintos objetos desde la base de datos y hacer varios llamados a esta.
+
+---
+# *ENCUENTROS CON ELEM DE UNIVERSO*
+La nave puede encontrarse con varios elementos del terreno, para cada uno deberá encararlo de una manera. La nave tiene un método de choque
+````
+  @Override
+    public void choque(ElementoDelUniverso elemento){
+        if (elemento instanceof Nave nave){
+            this.choqueNave(nave);
+        } else if (elemento instanceof Asteroide asteroide){
+            this.chocaAsteroide(asteroide);
+        } else if (elemento instanceof EstacionDeCarga estacion){
+            this.chocaEstacionDeCarga(estacion);
+        }
+    }
+````
+### Naves:
+Para cada encuentro con naves hay 2 cosas que intervienen en el resultado del encuentro:
+- Tipo de nuestra nave
+- Tipo de nave enemiga
+Como tenemos 3 tipos de naves, si hicieramos un if por cada convinación tendríamos 9 condiciones que evaluar, y en caso de que se añadiera otra nave y tuvieramos 4, habría 16 combinaciones.
+Para evitar este tipo de inconvenientes se usa el patron Double Dispatch:
+### Double Dispatch encuentros naves:
+Con este patrón la interacción entre objetos se da sin que uno necesite saber la clase a la que pertenece el otro objeto pero el propio objeto si conoce el propio, de manera que se puede invocar un método en el otro objeto que involucre a la clase desde la que se llama.
+Ej: Mi nave exploradora choca contra una carguera enemiga
+Mi nave con el método
+````
+public void choqueNave(Nave nave) {
+        nave.chocaExploradora(this);
+    }
+````
+
+Luego en la carguera enemiga:
+````
+public void chocaCombate(Nave nave) {
+		nave.destruirNave();
+    }
+    
+````
+Así la nave que pierde el combate recibe daño y queda inutilizada.
+````
+public void destruirNave(){
+        tripulacion.matarTripulacion();
+        recursos.setDesgaste(100);
+    }
+````
+Cuando la nave es destruida se mata al total de la tripulación y se pone el desgaste al máximo posible.
+
+
+### Asteroides
+Usamos simplemente un IF consultado por los recursos de la nave.
+Comprobamos si el objeto chocado es un asteroide, si lo es se descuenta energía y si no tiene energía suficiente entonces la nave es destruida.
+
+### Estaciones de carga
+Tan solo cargamos los recursos a la nave.
+
+Para los asteroides y estación de carga no hace ningún patrón complejo porque solo es evaluar una vez a que clase pertenece y luego resolver en la misma clase de nave utilizando los atributos que tienen el Asteroide y la Estación de carga.
+
+---
+
+# *MISIONES*
+
+Para realizar las misiones, estas deben seguir siempre un mismo orden, con 4 tareas a realizar:
+-preparar()
+-ejecutar()
+-evaluar()
+-cerrar()
+
+Para que se ejecuten siempre en el mismo orden usamos el patrón template method:
+### Template method
+Creamos una clase abstracta llamada misión a la cual le declaramos un método:
+
+````
+  public final void hacerMision(AsistenteComando AC){
+        assert (AC != null): "Error: AC es null" ;
+        this.AC = AC;
+   
+        preparar();
+        ejecutar();
+        evaluar();
+        cerrar();
+    }
+````
+
+El "final" del método es importante porque así nos evitamos que en las clases concretas se sobre escriba pudiendo así alterar el orden.
+
+##### Luego en la clase abstracta vamos a declarar los 4 métodos haciendo una distinción:
+-Los comunes entre las clases de misiones especificas:
+	Estas se implementan en la clase abstracta y se usan las clases concretas sin cambios ya que en todas hacen lo mismo.
+
+-Las especificas a cada misión:
+	Estas se declaran como métodos abstractos para que sean implementados por cada clase Mision especifica.

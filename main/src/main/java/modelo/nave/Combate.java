@@ -13,12 +13,12 @@ public class Combate extends Nave {
 
     @Override
     public void chocaCarguera(Nave nave) {
-        this.getRecursos().setDesgaste(100);
+        this.destruirNave();
     }
 
     @Override
     public void chocaExploradora(Nave nave) {
-        nave.getRecursos().setDesgaste(100);
+        nave.destruirNave();
     }
 
     @Override
@@ -26,8 +26,8 @@ public class Combate extends Nave {
     }
 
     @Override
-    public void choque(ElementoDelUniverso elemento) {
-        elemento.chocaCombate(this);
+    public void choqueNave(Nave nave) {
+        nave.chocaCombate(this);
     }
     
 }

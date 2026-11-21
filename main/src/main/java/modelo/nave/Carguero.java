@@ -17,17 +17,17 @@ public class Carguero extends Nave {
 
     @Override
     public void chocaExploradora(Nave nave) {
-        this.getRecursos().setDesgaste(100);
+        this.destruirNave();
     }
 
     @Override
     public void chocaCombate(Nave nave) {
-        nave.getRecursos().setDesgaste(100);
+        nave.destruirNave();
     }
 
     @Override
-    public void choque(ElementoDelUniverso elemento) {
-        elemento.chocaCarguera(this);
+    public void choqueNave(Nave nave) {
+        nave.chocaCarguera(this);
     }
     
 }

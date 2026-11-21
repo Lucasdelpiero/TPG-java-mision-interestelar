@@ -14,7 +14,7 @@ public class Exploradora extends Nave {
 
     @Override
     public void chocaCarguera(Nave nave) {
-        nave.getRecursos().setDesgaste(100);
+        nave.destruirNave();
     }
 
     @Override
@@ -23,12 +23,12 @@ public class Exploradora extends Nave {
 
     @Override
     public void chocaCombate(Nave nave) {
-        this.getRecursos().setDesgaste(100);
+        this.destruirNave();
     }
 
     @Override
-    public void choque(ElementoDelUniverso elemento) {
-        elemento.chocaExploradora(this);
+    public void choqueNave(Nave nave) {
+        nave.chocaExploradora(this);
     }
     
 }

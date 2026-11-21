@@ -9,7 +9,9 @@ import java.util.ArrayList;
  * @author ASUS
  */
 public class Tripulacion {
-
+    private final int MIN_CAPITANES = 1;
+    private final int MIN_TRIPULACION_TOTAL = 5; // 1 Capitan + 4 de otro cargo
+    
     private ArrayList<Haber> tripulantes;
 
     public ArrayList<Haber> getTripulantes() {
@@ -22,6 +24,11 @@ public class Tripulacion {
     
     public void matarTripulacion(){
         tripulantes.clear();
+    }
+    
+    public boolean esOperativa(){
+        ArrayList<Tripulante> capitanes = getTripulantesCargo("Capitan");
+        return (capitanes.size() >= MIN_CAPITANES) && (tripulantes.size() >= MIN_TRIPULACION_TOTAL) ;
     }
     
 // PRE: h no es null y contiene un Tripulante valido.
