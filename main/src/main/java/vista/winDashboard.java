@@ -313,6 +313,11 @@ public class winDashboard extends JFrame implements InterfazVistaDashboard , Obs
             }
         });
         tableBitacora.setShowGrid(false);
+        tableBitacora.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        tableBitacora.getColumnModel().getColumn(0).setPreferredWidth(130);
+        tableBitacora.getColumnModel().getColumn(1).setPreferredWidth(100);
+        tableBitacora.getColumnModel().getColumn(2).setPreferredWidth(500);
+        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         jScrollPane1.setViewportView(tableBitacora);
         
         

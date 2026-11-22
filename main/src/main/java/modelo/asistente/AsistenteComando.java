@@ -47,11 +47,11 @@ public class AsistenteComando {
      * - Instancia y ejecuta la misión indicada, o lanza IllegalStateException si la nave no está apta, no tiene Capitán o hay una misión en curso.
      */
     public void realizarMision(String texto) {
-        if (nave == null || nave.estaInservible()) {
+        if (nave == null || !nave.estaOperativa()) {
+            if (nave != null && nave.getTripulacion().getTripulantesCargo("Capitan").isEmpty()) {
+                throw new IllegalStateException("La nave no puede iniciar la misión: requiere obligatoriamente 1 Capitán asignado.");
+            }
             throw new IllegalStateException("La nave no se encuentra operativa para realizar misiones.");
-        }
-        if (nave.getTripulacion().getTripulantesCargo("Capitan").isEmpty()) {
-            throw new IllegalStateException("La nave no puede iniciar la misión: requiere obligatoriamente 1 Capitán asignado.");
         }
         if (misionActual != null) {
             this.bitacora.registrar(TipoEvento.ERROR, "Error otra mision en progreso " + misionActual.getIdMision());

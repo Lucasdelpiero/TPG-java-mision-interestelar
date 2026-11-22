@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import modelo.motorwarp.MotorWarp;
 import modelo.nave.Nave;
 import modelo.universo.Asteroide;
+import modelo.universo.EstacionDeCarga;
 import modelo.nave.Nave;
 
 
@@ -110,7 +111,7 @@ public abstract class Mision{
             System.out.println("[MISION] Iniciando mision...");
             AC.registrarMision(TipoEvento.MISION, "[MISION] Iniciando mision...", idMision);
 
-            boolean recursosOk = AC.consultaRecursos(consumoCombustible, consumoEnergia, consumoDesgaste);
+            boolean recursosOk = AC.consultaRecursos(consumoCombustible, consumoEnergia + 5, consumoDesgaste);
 
             if (!recursosOk) {
                 puedeIniciarMision = false;
@@ -118,6 +119,8 @@ public abstract class Mision{
                 AC.registrarMision(TipoEvento.MISION, "[MISION] ERROR: Recursos insuficientes", idMision);
             } else {
                 puedeIniciarMision = true;
+                AC.restaEnergia(5);
+                AC.registrarMision(TipoEvento.RECURSOS, "Escaneo radar largo alcance: consume 5 de energia", idMision);
                 System.out.println("[MISION] Nave lista.");
                 AC.registrarMision(TipoEvento.MISION, "[MISION] Nave lista.", idMision);
             }
@@ -224,7 +227,28 @@ public abstract class Mision{
     public void choque() {
         ElementoDelUniverso elementoActual = universo.inspeccionarPosicion();
         if (elementoActual != null && AC != null && AC.getNave() != null) {
-            AC.getNave().choque(elementoActual);
+            if (elementoActual instanceof EstacionDeCarga) {
+                int combAntes = AC.getNave().getRecursos().getCombustible();
+                int energAntes = AC.getNave().getRecursos().getEnergia();
+                AC.getNave().choque(elementoActual);
+                int combCargado = AC.getNave().getRecursos().getCombustible() - combAntes;
+                int energCargada = AC.getNave().getRecursos().getEnergia() - energAntes;
+
+                String desc;
+                if (combCargado > 0 || energCargada > 0) {
+                    desc = "Estación de carga: reabastecimiento completado (+ " + combCargado + " combustible, + " + energCargada + " energía).";
+                } else {
+                    desc = "Estación de carga alcanzada: tanques llenos (sin recarga adicional).";
+                }
+                AC.registrarMision(TipoEvento.RECURSOS, desc, idMision);
+                System.out.println("[MISION] " + desc);
+            } else if (elementoActual instanceof Asteroide) {
+                AC.getNave().choque(elementoActual);
+                AC.registrarMision(TipoEvento.MISION, "Colisión con asteroide: impacto recibido (-10 energía).", idMision);
+                System.out.println("[MISION] Colisión con asteroide: impacto recibido (-10 energía).");
+            } else {
+                AC.getNave().choque(elementoActual);
+            }
         }
     }
     
@@ -238,16 +262,16 @@ public abstract class Mision{
         assert objetivo != null : "El objetivo no puede ser nulo";
         int indice = 0;
 
-    while (!universo.getPosicionNave().equals(objetivo)) {
-        
-        // 1. Resolver encuentro en la posición actual
+        // Resolver encuentro en la posición de partida
         if (!chequearChoque())
             return false;
-        
-        // 2. Si se terminó la ruta sin llegar, falla
-        if (indice >= ruta.size()) {
-            return false;
-        }
+
+        while (!universo.getPosicionNave().equals(objetivo)) {
+            
+            // Si se terminó la ruta sin llegar, falla
+            if (indice >= ruta.size()) {
+                return false;
+            }
 
         Posicion siguiente = ruta.get(indice);
         ElementoDelUniverso[][] tablero = universo.verTablero();
@@ -256,11 +280,12 @@ public abstract class Mision{
         // 3. SIGUIENTE POSICIÓN LIBRE DE ASTEROIDE (o es el destino)
         if (!(elementoSiguiente instanceof Asteroide) || indice == ruta.size() - 1){
 
-            if (!AC.consultaRecursos(2, 0, 0)) {
+            if (!AC.consultaRecursos(2, 1, 0)) {
                 return false;
             }
 
             AC.restaCombustible(2);
+            AC.restaEnergia(1);
 
             universo.moverNave(siguiente);
             if (!chequearChoque())
@@ -272,7 +297,12 @@ public abstract class Mision{
         // 4. HAY ASTEROIDE -> WARP
         else {
 
-            if (intentarSaltoWarp() && (AC.getRecursos().getDesgaste() + 3 < 100)) {
+            if (!AC.consultaRecursos(0, 1, 0)) {
+                return false;
+            }
+            AC.restaEnergia(1);
+
+            if (intentarSaltoWarp() && (AC.getRecursos().getDesgaste() + 3 <= 100)) {
                 if (!realizarSaltoWarp(indice))
                     return false;
                 indice += 2;

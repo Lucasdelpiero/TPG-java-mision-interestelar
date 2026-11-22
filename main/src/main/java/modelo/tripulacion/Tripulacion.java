@@ -1,16 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- */
-
 package modelo.tripulacion;
 import java.util.ArrayList;
-/**
- *
- * @author ASUS
- */
+
 public class Tripulacion {
     private final int MIN_CAPITANES = 1;
-    private final int MIN_TRIPULACION_TOTAL = 5; // 1 Capitan + 4 de otro cargo
     
     private ArrayList<Haber> tripulantes;
 
@@ -28,11 +20,11 @@ public class Tripulacion {
     
     /**
      * <b>POST</b>
-     * - Retorna true si posee al menos 1 Capitán y al menos 5 tripulantes en total.
+     * - Retorna true si posee al menos 1 Capitán.
      */
     public boolean esOperativa(){
         ArrayList<Tripulante> capitanes = getTripulantesCargo("Capitan");
-        return (capitanes.size() >= MIN_CAPITANES) && (tripulantes.size() >= MIN_TRIPULACION_TOTAL) ;
+        return capitanes.size() >= MIN_CAPITANES;
     }
     
     /**

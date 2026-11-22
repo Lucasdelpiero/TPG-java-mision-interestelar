@@ -1,17 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package modelo.universo;
 import java.util.ArrayList;
 import modelo.nave.Nave;
 import modelo.destinoytablero.*;
 import java.util.ArrayList;
 
-/**
- *
- * @author ASUS
- */
 public class Universo extends Observable  {
     private final Nave nave;
     private final Tablero tablero;

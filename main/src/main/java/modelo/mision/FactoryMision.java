@@ -1,14 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package modelo.mision;
 import modelo.universo.Universo;
 
-/**
- *
- * @author ASUS
- */
 public class FactoryMision {
    
     public Mision crearMision(String texto,Universo universo) {

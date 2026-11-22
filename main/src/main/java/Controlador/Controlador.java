@@ -98,7 +98,7 @@ public class Controlador implements ActionListener{
                 if (password == null || password.trim().isEmpty()) {
                     throw new UsuarioException("La contraseña no puede estar vacía.");
                 }
-                if (confPassword != null && !confPassword.isEmpty() && !password.equals(confPassword)) {
+                if (confPassword == null || confPassword.isEmpty() || !password.equals(confPassword)) {
                     throw new UsuarioException("Las contraseñas ingresadas no coinciden.");
                 }
                 servicioUsuario.registrar(username, password);
@@ -263,12 +263,11 @@ public class Controlador implements ActionListener{
 
                 AsistenteComando AC = GGCC.getAC(nombreNave);
 
-                if (AC.getNave() == null || AC.getNave().estaInservible()) {
+                if (AC.getNave() == null || !AC.getNave().estaOperativa()) {
+                    if (AC.getNave() != null && AC.getNave().getTripulacion().getTripulantesCargo("Capitan").isEmpty()) {
+                        throw new IllegalStateException("La nave no puede iniciar la misión: requiere obligatoriamente 1 Capitán asignado.");
+                    }
                     throw new IllegalStateException("La nave no se encuentra operativa para realizar misiones.");
-                }
-
-                if (AC.getNave().getTripulacion().getTripulantesCargo("Capitan").isEmpty()) {
-                    throw new IllegalStateException("La nave no puede iniciar la misión: requiere obligatoriamente 1 Capitán asignado.");
                 }
 
                 if (AC.hayMisionEnCurso()) {
@@ -292,11 +291,42 @@ public class Controlador implements ActionListener{
                         
                         Nave nave = AC.getNave();
                         if (nave != null && nave.estaInservible()) {
+                            ArrayList<String> motivos = new ArrayList<>();
+                            if (nave.getRecursos().getCombustible() <= 0) {
+                                motivos.add("Combustible agotado (0)");
+                            }
+                            if (nave.getRecursos().getEnergia() <= 0) {
+                                motivos.add("Energía agotada (0)");
+                            }
+                            if (nave.getRecursos().getDesgaste() >= 100) {
+                                motivos.add("Desgaste crítico (" + nave.getRecursos().getDesgaste() + "%)");
+                            }
+                            String motivoStr = motivos.isEmpty() ? "Recursos críticos" : String.join(" | ", motivos);
+
+                            StringBuilder ultimosLogs = new StringBuilder();
+                            if (AC.getBitacora() != null) {
+                                ArrayList<Evento> eventos = AC.getBitacora().getEventos();
+                                int count = 0;
+                                for (int i = eventos.size() - 1; i >= 0 && count < 3; i--) {
+                                    Evento ev = eventos.get(i);
+                                    if (ev.getIdMision() != null) {
+                                        ultimosLogs.insert(0, "> " + ev.getDescripcion() + "\n");
+                                        count++;
+                                    }
+                                }
+                            }
+
                             nave.destruirNave();
                             GGCC.eliminarNave(nombreNave);
                             vistaDashboard.removerNave(nombreNave);
                             vistaDashboard.limpiarDatosNave();
-                            vistaDashboard.mensajeAlerta("La nave [" + nombreNave + "] ha quedado inservible y ha sido destruida.");
+
+                            String mensaje = "La nave [" + nombreNave + "] ha quedado inservible y ha sido destruida.\n\n"
+                                    + "Motivo: " + motivoStr;
+                            if (ultimosLogs.length() > 0) {
+                                mensaje += "\n\nÚltimos registros de la misión:\n" + ultimosLogs.toString().trim();
+                            }
+                            vistaDashboard.mensajeAlerta(mensaje);
                         } else {
                             recuperaRecursos();
                             vistaDashboard.limpiaTablaBinnacle();

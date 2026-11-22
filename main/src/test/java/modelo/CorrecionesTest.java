@@ -34,8 +34,10 @@ public class CorrecionesTest {
         Nave naveExploradora = NaveFactory.getNave(NaveFactory.tipoNave.EXPLORADORA);
         assert !naveExploradora.estaInservible() : "Nave recien construida no debe estar inservible";
 
-        // Asignamos tripulacion completa para validar operatividad
+        // Validar operatividad: sin tripulacion no es operativa, con solo Capitan ya es operativa
+        assert !naveExploradora.estaOperativa() : "Nave sin capitan no debe estar operativa";
         naveExploradora.addTripulante(new Tripulante("C1", new FactoryCargo().crearCargo("Capitan"), 5));
+        assert naveExploradora.estaOperativa() : "Nave con solo Capitan asignado y recursos debe estar operativa";
         for (int i = 1; i <= 4; i++) {
             naveExploradora.addTripulante(new Tripulante("T" + i, new FactoryCargo().crearCargo("Teniente"), 2));
         }

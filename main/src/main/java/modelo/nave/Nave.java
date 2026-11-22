@@ -86,10 +86,14 @@ public abstract class Nave implements ElementoDelUniverso {
      */
     public void chocaEstacionDeCarga(EstacionDeCarga estacion){
         assert estacion != null : "La estación de carga no puede ser nula";
-        int combustible = estacion.getRecargaCombustible();
-        int energia = estacion.getRecargaEnergia();
-        this.getRecursos().cargaCombustible(combustible);
-        this.getRecursos().cargaEnergia(energia);
+        int combustible = Math.min(100 - this.getRecursos().getCombustible(), estacion.getRecargaCombustible());
+        int energia = Math.min(100 - this.getRecursos().getEnergia(), estacion.getRecargaEnergia());
+        if (combustible > 0) {
+            this.getRecursos().cargaCombustible(combustible);
+        }
+        if (energia > 0) {
+            this.getRecursos().cargaEnergia(energia);
+        }
     }
     
     
