@@ -59,7 +59,13 @@ public abstract class Mision{
 
     // Posibles excepciones (ejemplo):
     //  - Nave con recursos insuficientes
-    public void hacerMision(AsistenteComando AC){
+
+    /**
+     * pre: el asistente de comando no es nulo
+     * post: ejecutara la mision en el orden establecido ejecutando los metodos especificos de las clases concretas
+     * @param AC
+     */
+    public final void hacerMision(AsistenteComando AC){
         assert (AC != null): "Error: AC es null" ;
         this.AC = AC;
       
