@@ -17,6 +17,10 @@ public class MisionRetornoSeguro extends Mision{
         tipo = Mision.tipoMision.RETORNO_SEGURO;
     }
     
+    /**
+     * <b>POST</b>
+     * - Si la misión pudo iniciar, aplica consumos y navega hacia la base segura; en caso contrario la aborta.
+     */
     @Override
     public void ejecutar(){  
        if (puedeIniciarMision){

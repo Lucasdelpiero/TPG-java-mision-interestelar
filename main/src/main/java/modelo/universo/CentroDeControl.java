@@ -20,6 +20,10 @@ public class CentroDeControl {
     //      GETTERS / SETTERS
     //-------------------------------
     
+    /**
+     * <b>POST</b>
+     * - Registra el AsistenteComando en la lista del centro de control si no es nulo.
+     */
     public void setAC(AsistenteComando AC){
         if(AC == null)
             System.out.println(":: ["+nombre+"] ASISTENTE DE COMANDO ingresado es INVALIDO");
@@ -29,46 +33,65 @@ public class CentroDeControl {
         }
     }
     
+    /**
+     * <b>POST</b>
+     * - Asigna la nave al asistente de comando correspondiente o lanza IllegalArgumentException si no existe.
+     */
     public void setNave(Nave N, String nombreAC){
-        try{
-            int i = buscaAC(nombreAC);
-            AsistenteComando Asist = listaAC.get(i);    // Puede tirar excepcion si 'i' es una pos invalida
+        int i = buscaAC(nombreAC);
+        if (i < listaAC.size()) {
+            AsistenteComando Asist = listaAC.get(i);
             Asist.setNave(N);
             System.out.println(":: ["+nombre+"] NAVE agregada con exito al Asistente ["+nombreAC+"]!");
-        }
-        catch(IndexOutOfBoundsException e){
-            System.out.println(":: ["+nombre+"] ERROR: ASISTENTE DE COMANDO inexistente");
-        }
-        finally{
-            
+        } else {
+            throw new IllegalArgumentException("No existe la nave: " + nombreAC);
         }
     }
     
+    /**
+     * <b>POST</b>
+     * - Retorna el AsistenteComando correspondiente o lanza IllegalArgumentException si el nombre es inválido o no existe.
+     */
     public AsistenteComando getAC(String nombreAC){
-        AsistenteComando Asist = null;
-        try{
-            int i = buscaAC(nombreAC);
-            Asist = listaAC.get(i);    // Puede tirar excepcion si 'i' es una pos invalida
+        if (nombreAC == null || nombreAC.isBlank()) {
+            throw new IllegalArgumentException("No se ha seleccionado ninguna nave.");
         }
-        catch(IndexOutOfBoundsException e){
-            System.out.println(":: ["+nombre+"] ERROR: ASISTENTE DE COMANDO inexistente");
+        int i = buscaAC(nombreAC);
+        if (i >= listaAC.size()) {
+            throw new IllegalArgumentException("La nave no existe: " + nombreAC);
         }
-        return Asist;
+        return listaAC.get(i);
     }
     
+    /**
+     * <b>POST</b>
+     * - Retorna la nave asociada al AsistenteComando o lanza IllegalArgumentException si no existe.
+     */
     public Nave getNave(String nombreAC){
-        Nave n = null;
-        try{
-            int i = buscaAC(nombreAC);
-            AsistenteComando Asist = listaAC.get(i);    // Puede tirar excepcion si 'i' es una pos invalida
-            
-            n = Asist.getNave();
-            System.out.println(":: ["+nombre+"] NAVE retornada con exito desde el Asistente ["+nombreAC+"]!");
+        AsistenteComando Asist = getAC(nombreAC);
+        return Asist.getNave();
+    }
+
+    /**
+     * <b>POST</b>
+     * - Remueve el AC y su nave asociada del registro si se encuentra presente.
+     */
+    public void eliminarNave(String nombreAC){
+        if (nombreAC == null || nombreAC.isBlank()) return;
+        int i = buscaAC(nombreAC);
+        if (i < listaAC.size()) {
+            listaAC.remove(i);
+            System.out.println(":: ["+nombre+"] Nave/AC ["+nombreAC+"] eliminada del Centro de Control.");
         }
-        catch(IndexOutOfBoundsException e){
-            System.out.println(":: ["+nombre+"] ERROR: ASISTENTE DE COMANDO inexistente");
-        }
-        return n;
+    }
+
+    /**
+     * <b>POST</b>
+     * - Retorna true si la nave existe en el centro de control; false si no existe o el nombre es inválido.
+     */
+    public boolean existeNave(String nombreAC){
+        if (nombreAC == null || nombreAC.isBlank()) return false;
+        return buscaAC(nombreAC) < listaAC.size();
     }
     
     //-------------------------------

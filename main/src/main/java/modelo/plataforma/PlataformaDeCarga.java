@@ -39,7 +39,14 @@ public class PlataformaDeCarga {
     // Se usa synchronized como modificador directamente porque es el recurso es uno solo, las baterias
     // Y solo puede haber un consumidor y/o productor al mismo tiempo
     
+    /**
+     * <b>PRE</b>
+     * - bat no nulo.
+     * <b>POST</b>
+     * - Deposita la batería cuando hay espacio libre y notifica a los hilos en espera.
+     */
     public synchronized void depositar(Bateria bat, int idGeneradora) throws InterruptedException{
+        assert bat != null : "La batería no puede ser nula";
         while(baterias.size() >= capacidadMaxima){
             notificarObservadores("[Generadora " + idGeneradora + "] esperando a que se libere espacio en la Plataforma.");
             wait();
@@ -49,6 +56,10 @@ public class PlataformaDeCarga {
         notifyAll();
     }
     
+    /**
+     * <b>POST</b>
+     * - Extrae y retorna una batería cuando está disponible, notificando a los hilos en espera.
+     */
     public synchronized Bateria retirar(int idConsumidora) throws InterruptedException{
         while(baterias.isEmpty()){
             notificarObservadores("[Nave " + idConsumidora + "] esperando por falta de baterías en la Plataforma.");

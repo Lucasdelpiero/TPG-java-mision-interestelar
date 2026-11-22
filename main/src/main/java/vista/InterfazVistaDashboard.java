@@ -42,4 +42,8 @@ public interface InterfazVistaDashboard {
     public void agregaEvento(Object[] row);
 
     public JTextArea getAreaReportes();
+
+    public void removerNave(String nombre);
+
+    public void limpiarDatosNave();
 }

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import modelo.motorwarp.MotorWarp;
 import modelo.nave.Nave;
 import modelo.universo.Asteroide;
+import modelo.universo.EstacionDeCarga;
 import modelo.nave.Nave;
 
 
@@ -59,8 +60,15 @@ public abstract class Mision{
 
     // Posibles excepciones (ejemplo):
     //  - Nave con recursos insuficientes
-    public void hacerMision(AsistenteComando AC){
+    /**
+     * <b>PRE</b>
+     * - AC no nulo y con una nave asignada.
+     * <b>POST</b>
+     * - Ejecuta la secuencia completa de la misión: preparar, ejecutar, evaluar y cerrar.
+     */
+    public final void hacerMision(AsistenteComando AC){
         assert (AC != null): "Error: AC es null" ;
+        assert (AC.getNave() != null): "Error: AC no tiene nave asignada";
         this.AC = AC;
       
         
@@ -74,15 +82,16 @@ public abstract class Mision{
     //          DESARROLLO MISIONES
     //-------------------------------------------
     
-    // PREPARAR: idea
-        //    INTENTAR APLICAR TRY/FINALLY PARA VERIFICAR RECURSOS.
-        // EN CASO DE NO CONTAR CON RECURSOS SUFICIENTES, CORTAR
-        // LA EJECUCION DIRECTAMENTE Y PROPAGAR LA EXCEPCION AL
-        // METODO hacerMision().
-        // CON ESO, IGNORAR EL USO DEL BOOLEANO 'puedeHacerMision'
+    /**
+     * <b>PRE</b>
+     * - AC inicializado con nave asignada.
+     * <b>POST</b>
+     * - Inicializa el informe, calcula la ruta y determina si la nave cuenta con los recursos mínimos para iniciar.
+     */
     protected void preparar(){
         informe = new InformeMision(idMision, nombreMision);
         
+        assert (AC != null) : ":: [MISION] ERROR: AC es null";
         assert (AC.getNave() != null) : ":: [MISION] ERROR: Nave es null";
         assert (AC.getNave().getRecursos() != null) : ":: [MISION] ERROR: Recursos es null";
         destino = obtenerPosicionObjetivo();
@@ -102,7 +111,7 @@ public abstract class Mision{
             System.out.println("[MISION] Iniciando mision...");
             AC.registrarMision(TipoEvento.MISION, "[MISION] Iniciando mision...", idMision);
 
-            boolean recursosOk = AC.consultaRecursos(consumoCombustible, consumoEnergia, consumoDesgaste);
+            boolean recursosOk = AC.consultaRecursos(consumoCombustible, consumoEnergia + 5, consumoDesgaste);
 
             if (!recursosOk) {
                 puedeIniciarMision = false;
@@ -110,6 +119,8 @@ public abstract class Mision{
                 AC.registrarMision(TipoEvento.MISION, "[MISION] ERROR: Recursos insuficientes", idMision);
             } else {
                 puedeIniciarMision = true;
+                AC.restaEnergia(5);
+                AC.registrarMision(TipoEvento.RECURSOS, "Escaneo radar largo alcance: consume 5 de energia", idMision);
                 System.out.println("[MISION] Nave lista.");
                 AC.registrarMision(TipoEvento.MISION, "[MISION] Nave lista.", idMision);
             }
@@ -120,19 +131,10 @@ public abstract class Mision{
     protected abstract Posicion obtenerPosicionObjetivo();
     
     
-    // EVAULAR: idea
-    //  CADA MISION TIENE SU PROPIO INFORME Y DISTINTOS
-    //  DATOS A GUARDAR EN BITACORA
-        //      Registrar INFORME DE MISION en este paso. Anotar:
-        //      -   Mision ejecutada
-        //      -   Resultado
-        //      -   Acciones principales
-        //      -   Recursos consumidos
-        //      -   Estado final de la nave
-        //      -   Observaciones relevantes
-        //      Aplicar diferencias entre el estado inicial y el
-        //  estado final para poder registrarlo.
-        //  - Agregar Desgaste, disminuir Combustible, energia?
+    /**
+     * <b>POST</b>
+     * - Registra los recursos finales en el informe y emite el balance de la misión.
+     */
     protected void evaluar(){
         Recursos resFinal = AC.getNave().getRecursos();
         informe.recursosFinales = new Recursos(resFinal.getCombustible(), resFinal.getEnergia(), resFinal.getDesgaste());
@@ -145,6 +147,10 @@ public abstract class Mision{
         AC.registrarMision(TipoEvento.MISION, "[MISION] Cerrando...", idMision);
     }
     
+    /**
+     * <b>POST</b>
+     * - Finaliza la misión y notifica la actualización del universo a los observadores.
+     */
     protected void cerrar(){
         System.out.println("[MISION] Mision terminada.");
         AC.registrarMision(TipoEvento.MISION, "[MISION] Mision terminada.", idMision);
@@ -152,32 +158,60 @@ public abstract class Mision{
         universo.notificarObservadores();
     }
     
+    /**
+     * <b>POST</b>
+     * - Retorna true si el motor está Disponible y la nave tiene al menos 5 de energía; false en caso contrario.
+     */
     public boolean intentarSaltoWarp(){
         Nave nave = AC.getNave();
         MotorWarp motor = nave.getMotor();
-        motor.saltoWarp();
-        return "Salto warp".equals(motor.getNombreEstado());
+        return motor.estaDisponible() && nave.getRecursos().getEnergia() >= 5;
     }
     
+    /**
+     * <b>POST</b>
+     * - Ejecuta ciclo de 3 turnos (2 preparación, 1 salto, 1 enfriamiento) y avanza 2 casilleros si es posible.
+     */
     private boolean realizarSaltoWarp(int indice) throws InterruptedException{
+        MotorWarp motor = AC.getNave().getMotor();
         
+        // Turno 1 de preparacion
+        motor.saltoWarp();
+        AC.registrarMision(TipoEvento.MISION, "Motor Warp: Preparando salto (turno 1/2)", idMision);
         universo.pasarTurnoDestino();
         Thread.sleep(100);
         if (!chequearChoque())
             return false;
         
+        // Turno 2 de preparacion
+        motor.saltoWarp();
+        AC.registrarMision(TipoEvento.MISION, "Motor Warp: Preparando salto (turno 2/2)", idMision);
         universo.pasarTurnoDestino();
         Thread.sleep(100);
         if (!chequearChoque())
             return false;
         
-        Posicion p = ruta.get(indice + 1);
+        // Ejecucion de Salto Warp (consume 5 de energia y transiciona a Enfriamiento)
+        motor.saltoWarp();
+        if (!"Enfriamiento".equals(motor.getNombreEstado())) {
+            AC.registrarMision(TipoEvento.MISION, "Motor Warp: Abortado por falta de energía. Vuelve a preparación.", idMision);
+            return false;
+        }
+        AC.registrarMision(TipoEvento.MISION, "Motor Warp: ¡Salto Warp ejecutado! Esquivando obstaculo", idMision);
+        Posicion p = (indice + 1 < ruta.size()) ? ruta.get(indice + 1) : ruta.get(indice);
         universo.moverNave(p);
         if (!chequearChoque())
             return false;
         
-        return true;
+        // Turno de Enfriamiento (consume 3 de desgaste y vuelve a Disponible)
+        universo.pasarTurnoDestino();
+        Thread.sleep(100);
+        if (!chequearChoque())
+            return false;
+        motor.saltar();
+        AC.registrarMision(TipoEvento.MISION, "Motor Warp: Enfriamiento finalizado (+3 desgaste). Motor disponible.", idMision);
         
+        return true;
     }
     
     private boolean chequearChoque() {
@@ -185,47 +219,73 @@ public abstract class Mision{
 
         if (elementoActual != null) {
             choque();
-            return this.AC.getNave().estaOperativa();
+            return !this.AC.getNave().estaInservible();
         }
-        return true;
+        return !this.AC.getNave().estaInservible();
     }
     
     public void choque() {
-        
+        ElementoDelUniverso elementoActual = universo.inspeccionarPosicion();
+        if (elementoActual != null && AC != null && AC.getNave() != null) {
+            if (elementoActual instanceof EstacionDeCarga) {
+                int combAntes = AC.getNave().getRecursos().getCombustible();
+                int energAntes = AC.getNave().getRecursos().getEnergia();
+                AC.getNave().choque(elementoActual);
+                int combCargado = AC.getNave().getRecursos().getCombustible() - combAntes;
+                int energCargada = AC.getNave().getRecursos().getEnergia() - energAntes;
+
+                String desc;
+                if (combCargado > 0 || energCargada > 0) {
+                    desc = "Estación de carga: reabastecimiento completado (+ " + combCargado + " combustible, + " + energCargada + " energía).";
+                } else {
+                    desc = "Estación de carga alcanzada: tanques llenos (sin recarga adicional).";
+                }
+                AC.registrarMision(TipoEvento.RECURSOS, desc, idMision);
+                System.out.println("[MISION] " + desc);
+            } else if (elementoActual instanceof Asteroide) {
+                AC.getNave().choque(elementoActual);
+                AC.registrarMision(TipoEvento.MISION, "Colisión con asteroide: impacto recibido (-10 energía).", idMision);
+                System.out.println("[MISION] Colisión con asteroide: impacto recibido (-10 energía).");
+            } else {
+                AC.getNave().choque(elementoActual);
+            }
+        }
     }
     
+    /**
+     * <b>PRE</b>
+     * - Coordenada objetivo no nula.
+     * <b>POST</b>
+     * - Desplaza la nave a lo largo de la ruta resolviendo saltos simples o Warp; retorna true si arriba al objetivo con vida o false si falla.
+     */
     public boolean realizarRecorrido(Posicion objetivo) throws InterruptedException {
+        assert objetivo != null : "El objetivo no puede ser nulo";
+        int indice = 0;
 
-    int indice = 0;
-
-    while (!universo.getPosicionNave().equals(objetivo)) {
-        
-        
-        // 1. Resolver encuentro en la posición 
+        // Resolver encuentro en la posición de partida
         if (!chequearChoque())
             return false;
-            // Si el choque destruyó/inutilizó la nave,
-            // acá después podemos comprobarlo.
-        
-        if (!AC.consultaRecursos(2, 0, 0)) {
+
+        while (!universo.getPosicionNave().equals(objetivo)) {
+            
+            // Si se terminó la ruta sin llegar, falla
+            if (indice >= ruta.size()) {
                 return false;
             }
-        
-        // 2. Si se terminó la ruta sin llegar, falla
-        if (indice >= ruta.size()) {
-            return false;
-        }
 
         Posicion siguiente = ruta.get(indice);
-
         ElementoDelUniverso[][] tablero = universo.verTablero();
-
         ElementoDelUniverso elementoSiguiente = tablero[siguiente.getX()][siguiente.getY()];
 
-        // 3. SIGUIENTE POSICIÓN LIBRE DE ASTEROIDE
-        if (!(elementoSiguiente instanceof Asteroide) || indice  == ruta.size() - 1){
+        // 3. SIGUIENTE POSICIÓN LIBRE DE ASTEROIDE (o es el destino)
+        if (!(elementoSiguiente instanceof Asteroide) || indice == ruta.size() - 1){
+
+            if (!AC.consultaRecursos(2, 1, 0)) {
+                return false;
+            }
 
             AC.restaCombustible(2);
+            AC.restaEnergia(1);
 
             universo.moverNave(siguiente);
             if (!chequearChoque())
@@ -237,7 +297,12 @@ public abstract class Mision{
         // 4. HAY ASTEROIDE -> WARP
         else {
 
-            if (AC.consultaRecursos(5, 0, 0) && intentarSaltoWarp()) {
+            if (!AC.consultaRecursos(0, 1, 0)) {
+                return false;
+            }
+            AC.restaEnergia(1);
+
+            if (intentarSaltoWarp() && (AC.getRecursos().getDesgaste() + 3 <= 100)) {
                 if (!realizarSaltoWarp(indice))
                     return false;
                 indice += 2;
@@ -257,7 +322,15 @@ public abstract class Mision{
     
     
 
+    /**
+     * <b>PRE</b>
+     * - Coordenada objetivo válida y dentro del tablero.
+     * <b>POST</b>
+     * - Genera lista de posiciones adyacentes optimizando distancia Manhattan hacia el objetivo.
+     */
     public void calcularRuta(Posicion objetivo) {
+        assert objetivo != null : "El objetivo no puede ser nulo";
+        assert objetivo.getX() >= 0 && objetivo.getX() < universo.getX() && objetivo.getY() >= 0 && objetivo.getY() < universo.getY() : "El objetivo se encuentra fuera de los límites del tablero";
 
         ElementoDelUniverso[][] tablero = universo.verTablero();
 

@@ -1,16 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- */
-
 package modelo.tripulacion;
 import java.util.ArrayList;
-/**
- *
- * @author ASUS
- */
+
 public class Tripulacion {
     private final int MIN_CAPITANES = 1;
-    private final int MIN_TRIPULACION_TOTAL = 5; // 1 Capitan + 4 de otro cargo
     
     private ArrayList<Haber> tripulantes;
 
@@ -26,26 +18,37 @@ public class Tripulacion {
         tripulantes.clear();
     }
     
+    /**
+     * <b>POST</b>
+     * - Retorna true si posee al menos 1 Capitán.
+     */
     public boolean esOperativa(){
         ArrayList<Tripulante> capitanes = getTripulantesCargo("Capitan");
-        return (capitanes.size() >= MIN_CAPITANES) && (tripulantes.size() >= MIN_TRIPULACION_TOTAL) ;
+        return capitanes.size() >= MIN_CAPITANES;
     }
     
-// PRE: h no es null y contiene un Tripulante valido.
-// POST: h queda agregado al final de la lista.
-//       La cantidad de elementos aumenta en uno.
-//       Los elementos anteriores conservan su orden.    
+    /**
+     * <b>PRE</b>
+     * - h no nulo y contiene un Tripulante válido.
+     * <b>POST</b>
+     * - Agrega h al final de la lista incrementando la tripulación.
+     */
     public void addTripulante(Haber h) {
         assert h != null : "Error: tripulante es null";
+        assert h.getTripulante() != null : "El haber debe contener un tripulante válido";
+        assert getTripulante(h.getTripulante().getId()) == null : "Identificador de tripulante ya existente";
+        if (h.getTripulante().getCargo().getCargoTripulante().equalsIgnoreCase("Capitan")) {
+            assert getTripulantesCargo("Capitan").isEmpty() : "Solo se permite un Capitan en la tripulacion";
+        }
         tripulantes.add(h);
     }
     
-    
-// PRE: id no es null ni esta en blanco.
-//      Existe al menos un tripulante con ese identificador.
-// POST: se elimina la primera entrada con ese identificador.
-//       La cantidad de elementos disminuye en uno.
-//       Los elementos restantes conservan su orden.
+    /**
+     * <b>PRE</b>
+     * - id no nulo ni vacío, existente en la tripulación.
+     * <b>POST</b>
+     * - Remueve la primera coincidencia del tripulante con ese id.
+     */
     public void removeTripulante(String id) {
         assert id != null && !id.isBlank() : "El identificador es invalido";
         int i = 0 , n = this.tripulantes.size();
@@ -57,30 +60,32 @@ public class Tripulacion {
         this.tripulantes.remove(i);
     }
     
-// PRE: cargo puede ser null; si no lo es, no debe estar en blanco.
-// POST: devuelve una nueva lista con todos los tripulantes
-//       cuyo cargo coincide con el solicitado.
-//       Si cargo es null, devuelve a todos.
-//       Si no hay coincidencias, devuelve una lista vacia.
-//       No modifica la tripulacion.    
+    /**
+     * <b>PRE</b>
+     * - cargo no nulo ni vacío.
+     * <b>POST</b>
+     * - Retorna lista con los tripulantes que desempeñan el cargo solicitado.
+     */
     public ArrayList<Tripulante> getTripulantesCargo(String cargo) {
         Cargo c;
         Tripulante t;
         ArrayList<Tripulante> tripulantesCargo = new ArrayList<>();
-        assert cargo == null || !cargo.isBlank() : "Cargo invalido";
+        assert cargo != null && !cargo.isBlank() : "Cargo invalido";
         for (Haber h : this.tripulantes) {
             t = h.getTripulante();
             c = t.getCargo();
-            if (cargo == null || c.getCargoTripulante().equalsIgnoreCase(cargo))
+            if (c.getCargoTripulante().equalsIgnoreCase(cargo))
                 tripulantesCargo.add(t);
         }
         return tripulantesCargo;
     }
     
-// PRE: id no es null ni esta en blanco.
-// POST: devuelve el primer tripulante con ese identificador.
-//       Si no existe, devuelve null, incluso si la lista esta vacia.
-//       No modifica la tripulacion.    
+    /**
+     * <b>PRE</b>
+     * - id no nulo ni vacío.
+     * <b>POST</b>
+     * - Retorna el tripulante con dicho id o null si no existe.
+     */
     public Haber getTripulante(String id) {
         int i = 0 , n = this.tripulantes.size();
         assert id != null && !id.isBlank(): "Identificador invalido";        
@@ -94,13 +99,11 @@ public class Tripulacion {
     }
     
     public void reiniciarPeriodo() {
-        ArrayList<Tripulante> consejeros = getTripulantesCargo(null);
-        Cargo c;
-        for (Tripulante t : consejeros) {
-            c = t.getCargo();
-            if (c.getCargoTripulante().equals("Consejero"))
-                ((Consejero) t.getCargo()).resetConsejos();
-            t.addAntiguedad(1);
+        for (Haber h : this.tripulantes) {
+            h.getTripulante().addAntiguedad(1);
+        }
+        for (Tripulante t : getTripulantesCargo("Consejero")) {
+            ((Consejero) t.getCargo()).resetConsejos();
         }
     }
     

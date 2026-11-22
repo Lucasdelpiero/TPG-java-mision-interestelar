@@ -16,6 +16,10 @@ public class UniversoParalelo {
         plataforma.registrarObservador(obj);
     }
     
+    /**
+     * <b>POST</b>
+     * - Crea un hilo productor daemon, lo inicia y notifica su ingreso a los observadores.
+     */
     public void agregarGeneradora(){
         GeneradoraDeEnergia gen= new GeneradoraDeEnergia(plataforma);
          // Se crea el hilo con la tarea a ejecutarse y con nombre que le asigno el mismo que sera el mismo que la generadora
@@ -29,6 +33,10 @@ public class UniversoParalelo {
         plataforma.notificarObservadores("¡Ingresó una nueva Generadora al universo paralelo! [Generadora " + gen.getId() + "]");
     }
     
+    /**
+     * <b>POST</b>
+     * - Crea un hilo consumidor daemon, lo inicia y notifica su ingreso a los observadores.
+     */
     public void agregarNaveConsumidora(){
         NaveConsumidora nave= new NaveConsumidora(plataforma);
          // Se crea el hilo con la tarea a ejecutarse y con nombre que le asigno el mismo que sera el mismo que la nave

@@ -26,6 +26,10 @@ public class MisionRecoleccion extends Mision{
         //return universo.getObjetivo();
     }
     
+    /**
+     * <b>POST</b>
+     * - Si la misión pudo iniciar, aplica consumos y navega hacia las gemas; en caso contrario la aborta.
+     */
     @Override
     public void ejecutar(){
         if (puedeIniciarMision){

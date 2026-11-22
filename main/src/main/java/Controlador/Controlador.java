@@ -92,6 +92,15 @@ public class Controlador implements ActionListener{
             String confPassword = vista.getConfPassword(); // agregar
             
             try{
+                if (username == null || username.trim().isEmpty()) {
+                    throw new UsuarioException("El nombre de usuario no puede estar vacío.");
+                }
+                if (password == null || password.trim().isEmpty()) {
+                    throw new UsuarioException("La contraseña no puede estar vacía.");
+                }
+                if (confPassword == null || confPassword.isEmpty() || !password.equals(confPassword)) {
+                    throw new UsuarioException("Las contraseñas ingresadas no coinciden.");
+                }
                 servicioUsuario.registrar(username, password);
                 vista.mensajeAlerta("Registro exitoso");
                 switchToLogin();
@@ -116,86 +125,220 @@ public class Controlador implements ActionListener{
         
         // <editor-fold defaultstate="collapsed" desc="DASHBOARD - Creacion/Seteo naves">
         else if(e.getActionCommand().equals("_CREATESHIP")){
-            String tipo = vistaDashboard.getTipoNave();
-            String nombre = vistaDashboard.mensajeConTexto("Ingrese nombre para nave", "Creacion nave");
-            
-            Nave nave = NaveFactory.getNave(NaveFactory.tipoNave.valueOf(tipo));
-            AsistenteComando AC = new AsistenteComando(nave, nombre, universo);
-            GGCC.setAC(AC);
-            
-            vistaDashboard.addNaveCreada(nombre,tipo);
-        
-        }   // FALTA MODIFICAR MODELO
+            try {
+                String tipo = vistaDashboard.getTipoNave();
+                if (tipo == null || tipo.isBlank()) {
+                    throw new IllegalArgumentException("Debe seleccionar un tipo de nave válido.");
+                }
+
+                String nombre = vistaDashboard.mensajeConTexto("Ingrese nombre para nave", "Creacion nave");
+                if (nombre == null) {
+                    return;
+                }
+                nombre = nombre.trim();
+                if (nombre.isEmpty()) {
+                    throw new IllegalArgumentException("El nombre de la nave no puede estar vacío.");
+                }
+                if (GGCC.existeNave(nombre)) {
+                    throw new IllegalArgumentException("Ya existe una nave con el nombre: " + nombre);
+                }
+                
+                Nave nave = NaveFactory.getNave(NaveFactory.tipoNave.valueOf(tipo));
+                AsistenteComando AC = new AsistenteComando(nave, nombre, universo);
+                GGCC.setAC(AC);
+                
+                vistaDashboard.addNaveCreada(nombre, tipo);
+            } catch (Exception ex) {
+                vistaDashboard.mensajeAlerta(ex.getMessage() != null ? ex.getMessage() : "Error al crear nave");
+            }
+        }
         
         else if(e.getActionCommand().equals("_SETSHIP")){
-            vistaDashboard.limpiaTablaCrew();
-            vistaDashboard.limpiaTablaBinnacle();
-            vistaDashboard.getAreaReportes().setText("");
-            recuperaRecursos();
-            recuperaTripulantes();
-            recuperaBitacora();
-            recuperaReportes();
+            try {
+                String nombreNave = vistaDashboard.getNombreNave();
+                if (nombreNave == null || nombreNave.isBlank()) {
+                    throw new IllegalArgumentException("No hay ninguna nave seleccionada en la lista.");
+                }
+                GGCC.getAC(nombreNave);
+                vistaDashboard.limpiaTablaCrew();
+                vistaDashboard.limpiaTablaBinnacle();
+                vistaDashboard.getAreaReportes().setText("");
+                recuperaRecursos();
+                recuperaTripulantes();
+                recuperaBitacora();
+                recuperaReportes();
+            } catch (Exception ex) {
+                vistaDashboard.limpiarDatosNave();
+                vistaDashboard.mensajeAlerta(ex.getMessage() != null ? ex.getMessage() : "Error al seleccionar nave");
+            }
         }
         // </editor-fold>     
         
         // <editor-fold defaultstate="collapsed" desc="DASHBOARD - Tripulacion">
         else if(e.getActionCommand().equals("_ADDCREWMATE")){
-            String id = vistaDashboard.getID();
-            String origen = vistaDashboard.getOrigen();
-            String employ = vistaDashboard.getEmploy();
-            String antiguedad = vistaDashboard.getAntiguedad();
-            String nombreNave = vistaDashboard.getNombreNave();
-            
-            Cargo c = factoryCargo.crearCargo(employ);
-            Tripulante t = new Tripulante(id, c, Integer.parseInt(antiguedad));
-            PlanetaOrigen PlaOri = factoryOrigen.factoryPlanetaOrigen(origen, t);
-            
-            AsistenteComando AC = GGCC.getAC(nombreNave);
-            AC.addTripulante(t);
-            
-            double haberes = t.sueldo();
-            Object empleado[] = {id, origen, employ, antiguedad, haberes};
-            vistaDashboard.agregaEmpleado(empleado);
-            
-            vistaDashboard.limpiaTablaBinnacle();
-            recuperaBitacora();
-        } // FALTA AGREGAR VERIFICACION DE VALORES??
-        
-        else if(e.getActionCommand().equals("_STARTMISSION")){
-            String mision = vistaDashboard.getMision();
-            String nombreNave = vistaDashboard.getNombreNave();
-            AsistenteComando AC = GGCC.getAC(nombreNave);
-
-            if (AC.hayMisionEnCurso()) {
-                javax.swing.JOptionPane.showMessageDialog(null, "Ya hay una misión en curso en esta nave");
-                return;
-            }
-
-            new javax.swing.SwingWorker<Void, Void>() {
-                @Override
-                protected Void doInBackground() {
-                    AC.realizarMision(mision);      // crea la misión y la ejecuta (iniciaMision) en este hilo
-                    
-                    return null;
+            try {
+                String nombreNave = vistaDashboard.getNombreNave();
+                if (nombreNave == null || nombreNave.isBlank()) {
+                    throw new IllegalArgumentException("Debe seleccionar una nave antes de agregar tripulantes.");
                 }
 
-                @Override
-                protected void done() {             // de vuelta en el EDT
-                    try {
-                        get();
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                recuperaRecursos();
+                String id = vistaDashboard.getID();
+                if (id == null || id.trim().isEmpty()) {
+                    throw new IllegalArgumentException("Debe ingresar un identificador (ID) para el tripulante.");
+                }
+                id = id.trim();
+
+                String origen = vistaDashboard.getOrigen();
+                if (origen == null || origen.isBlank() || origen.equals("<Select one>")) {
+                    throw new IllegalArgumentException("Debe seleccionar un planeta de origen para el tripulante.");
+                }
+
+                String employ = vistaDashboard.getEmploy();
+                if (employ == null || employ.isBlank() || employ.equals("<Select one>")) {
+                    throw new IllegalArgumentException("Debe seleccionar un empleo o cargo válido para el tripulante.");
+                }
+
+                String antiguedad = vistaDashboard.getAntiguedad();
+                if (antiguedad == null || antiguedad.isBlank()) {
+                    throw new IllegalArgumentException("Debe ingresar un valor numérico para la antigüedad (Seniority).");
+                }
+                int antiguedadVal;
+                try {
+                    antiguedadVal = Integer.parseInt(antiguedad.trim());
+                } catch (NumberFormatException nfe) {
+                    throw new IllegalArgumentException("La antigüedad (Seniority) debe ser un número entero válido.");
+                }
+                if (antiguedadVal < 0) {
+                    throw new IllegalArgumentException("La antigüedad (Seniority) debe ser mayor o igual a 0.");
+                }
+
+                AsistenteComando AC = GGCC.getAC(nombreNave);
+                if (AC.getNave() == null || AC.getNave().estaInservible()) {
+                    throw new IllegalStateException("No se pueden agregar tripulantes a una nave inservible.");
+                }
+
+                // Validacion de limite maximo de 5 tripulantes
+                if (AC.getNave().getTripulacion().getTripulantes().size() >= 5) {
+                    throw new IllegalStateException("La tripulación ya está completa (máximo 5 tripulantes permitidos).");
+                }
+
+                // Validacion explicita de Capitán único
+                if (employ.equalsIgnoreCase("Capitan") && !AC.getNave().getTripulacion().getTripulantesCargo("Capitan").isEmpty()) {
+                    throw new IllegalStateException("La nave ya posee un Capitán. Solo se permite un Capitán por tripulación.");
+                }
+
+                // Validacion de ID duplicado en la nave
+                if (AC.getNave().getTripulacion().getTripulante(id) != null) {
+                    throw new IllegalArgumentException("Ya existe un tripulante con el ID [" + id + "] en esta tripulación.");
+                }
+                
+                Cargo c = factoryCargo.crearCargo(employ);
+                Tripulante t = new Tripulante(id, c, antiguedadVal);
+                PlanetaOrigen PlaOri = factoryOrigen.factoryPlanetaOrigen(origen, t);
+                
+                AC.addTripulante(PlaOri);
+                
+                double haberes = PlaOri.sueldo();
+                Object empleado[] = {id, employ, origen, antiguedadVal, haberes};
+                vistaDashboard.agregaEmpleado(empleado);
+                
                 vistaDashboard.limpiaTablaBinnacle();
                 recuperaBitacora();
-                vistaDashboard.getAreaReportes().setText("");
-                recuperaReportes();
-                    
+            } catch (Exception ex) {
+                vistaDashboard.mensajeAlerta(ex.getMessage() != null ? ex.getMessage() : "Error al agregar tripulante");
             }
-        }.execute();
-            // RECUPERA REPORTES FINALES
-            
+        }
+        
+        else if(e.getActionCommand().equals("_STARTMISSION")){
+            try {
+                String nombreNave = vistaDashboard.getNombreNave();
+                if (nombreNave == null || nombreNave.isBlank()) {
+                    throw new IllegalArgumentException("Debe seleccionar una nave antes de iniciar una misión.");
+                }
+
+                String mision = vistaDashboard.getMision();
+                if (mision == null || mision.isBlank()) {
+                    throw new IllegalArgumentException("Debe seleccionar un tipo de misión.");
+                }
+
+                AsistenteComando AC = GGCC.getAC(nombreNave);
+
+                if (AC.getNave() == null || !AC.getNave().estaOperativa()) {
+                    if (AC.getNave() != null && AC.getNave().getTripulacion().getTripulantesCargo("Capitan").isEmpty()) {
+                        throw new IllegalStateException("La nave no puede iniciar la misión: requiere obligatoriamente 1 Capitán asignado.");
+                    }
+                    throw new IllegalStateException("La nave no se encuentra operativa para realizar misiones.");
+                }
+
+                if (AC.hayMisionEnCurso()) {
+                    throw new IllegalStateException("Ya hay una misión en curso en esta nave.");
+                }
+
+                new javax.swing.SwingWorker<Void, Void>() {
+                    @Override
+                    protected Void doInBackground() {
+                        AC.realizarMision(mision);
+                        return null;
+                    }
+
+                    @Override
+                    protected void done() {
+                        try {
+                            get();
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                        
+                        Nave nave = AC.getNave();
+                        if (nave != null && nave.estaInservible()) {
+                            ArrayList<String> motivos = new ArrayList<>();
+                            if (nave.getRecursos().getCombustible() <= 0) {
+                                motivos.add("Combustible agotado (0)");
+                            }
+                            if (nave.getRecursos().getEnergia() <= 0) {
+                                motivos.add("Energía agotada (0)");
+                            }
+                            if (nave.getRecursos().getDesgaste() >= 100) {
+                                motivos.add("Desgaste crítico (" + nave.getRecursos().getDesgaste() + "%)");
+                            }
+                            String motivoStr = motivos.isEmpty() ? "Recursos críticos" : String.join(" | ", motivos);
+
+                            StringBuilder ultimosLogs = new StringBuilder();
+                            if (AC.getBitacora() != null) {
+                                ArrayList<Evento> eventos = AC.getBitacora().getEventos();
+                                int count = 0;
+                                for (int i = eventos.size() - 1; i >= 0 && count < 3; i--) {
+                                    Evento ev = eventos.get(i);
+                                    if (ev.getIdMision() != null) {
+                                        ultimosLogs.insert(0, "> " + ev.getDescripcion() + "\n");
+                                        count++;
+                                    }
+                                }
+                            }
+
+                            nave.destruirNave();
+                            GGCC.eliminarNave(nombreNave);
+                            vistaDashboard.removerNave(nombreNave);
+                            vistaDashboard.limpiarDatosNave();
+
+                            String mensaje = "La nave [" + nombreNave + "] ha quedado inservible y ha sido destruida.\n\n"
+                                    + "Motivo: " + motivoStr;
+                            if (ultimosLogs.length() > 0) {
+                                mensaje += "\n\nÚltimos registros de la misión:\n" + ultimosLogs.toString().trim();
+                            }
+                            vistaDashboard.mensajeAlerta(mensaje);
+                        } else {
+                            recuperaRecursos();
+                            vistaDashboard.limpiaTablaBinnacle();
+                            recuperaBitacora();
+                            vistaDashboard.getAreaReportes().setText("");
+                            recuperaReportes();
+                        }
+                    }
+                }.execute();
+            } catch (Exception ex) {
+                vistaDashboard.mensajeAlerta(ex.getMessage() != null ? ex.getMessage() : "Error al ejecutar mision");
+            }
         } // FALTA EJECUTAR MISION, MODIFICAR RECURSOS Y ETC
         // </editor-fold>     
         
@@ -227,14 +370,18 @@ public class Controlador implements ActionListener{
         universoParalelo.registrarObservador(new ObservadorPlataforma(){
             @Override
             public void onEvento(String msg){
-                vistaDashboard.getAreaConsola().append("> "+ msg +"\n");
+                javax.swing.SwingUtilities.invokeLater(() -> {
+                    vistaDashboard.getAreaConsola().append("> "+ msg +"\n");
+                });
             }
         });
     }
     
     public void recuperaRecursos(){
         String nombre = vistaDashboard.getNombreNave();            
+        if (nombre == null || !GGCC.existeNave(nombre)) return;
         Nave nave = GGCC.getNave(nombre);
+        if (nave == null || nave.getRecursos() == null) return;
             
         int combus = nave.getRecursos().getCombustible();
         int desgas = nave.getRecursos().getDesgaste();
@@ -245,25 +392,29 @@ public class Controlador implements ActionListener{
     
     private void recuperaTripulantes(){
         String nombre = vistaDashboard.getNombreNave();            
+        if (nombre == null || !GGCC.existeNave(nombre)) return;
         Nave nave = GGCC.getNave(nombre);
+        if (nave == null) return;
         
         ArrayList<Haber> t = nave.getTripulantes();
         //vistaDashboard.limpiaTablaCrew();
         for (Haber persona : t){
             String id = persona.getTripulante().getId();
             String employ = persona.getTripulante().getCargo().getCargoTripulante();
+            String origen = (persona instanceof PlanetaOrigen) ? persona.getClass().getSimpleName() : "Desconocido";
             String antiguedad = String.valueOf(persona.getTripulante().getAntiguedad());
             Double haberes = persona.sueldo();
                 
-                
-            Object empleado[] = {id, "Origen?" , employ, antiguedad, haberes};
+            Object empleado[] = {id, employ, origen, antiguedad, haberes};
             vistaDashboard.agregaEmpleado(empleado);
         }
     }
     
     private void recuperaBitacora(){
         String nombreNave = vistaDashboard.getNombreNave();            
+        if (nombreNave == null || !GGCC.existeNave(nombreNave)) return;
         AsistenteComando AC = GGCC.getAC(nombreNave);
+        if (AC == null || AC.getBitacora() == null) return;
         ArrayList<Evento> lista = AC.getBitacora().getEventos();
         //vistaDashboard.limpiaTablaBinnacle();
         for(Evento e: lista){
@@ -282,7 +433,9 @@ public class Controlador implements ActionListener{
 
     private void recuperaReportes(){
         String nombreNave = vistaDashboard.getNombreNave();            
+        if (nombreNave == null || !GGCC.existeNave(nombreNave)) return;
         AsistenteComando AC = GGCC.getAC(nombreNave);
+        if (AC == null || AC.getBitacora() == null) return;
         ArrayList<Evento> lista = AC.getBitacora().getEventos();
         
         for(Evento e: lista){

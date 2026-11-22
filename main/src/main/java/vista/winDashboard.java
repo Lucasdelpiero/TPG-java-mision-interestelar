@@ -31,6 +31,19 @@ public class winDashboard extends JFrame implements InterfazVistaDashboard , Obs
     public winDashboard(String username, Controlador controlador) {
         this.controlador = controlador;
         initComponents();
+
+        // Barra de scroll a toda la aplicacion
+        java.awt.Container content = getContentPane();
+        if (content instanceof javax.swing.JComponent) {
+            ((javax.swing.JComponent) content).setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 10, 10));
+        }
+        JScrollPane appScroll = new JScrollPane(content);
+        appScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        appScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        appScroll.getVerticalScrollBar().setUnitIncrement(16);
+        appScroll.setBorder(null);
+        setContentPane(appScroll);
+
         setLocationRelativeTo(null);
         /// Cosas nuevardas
         dibujaTablero();
@@ -48,6 +61,10 @@ public class winDashboard extends JFrame implements InterfazVistaDashboard , Obs
         int posX = universo.getPosicionNave().getX();
         int posY = universo.getPosicionNave().getY();
 
+        Posicion posObjetivo = universo.getObjetivo();
+        int objX = (posObjetivo != null) ? posObjetivo.getX() : -1;
+        int objY = (posObjetivo != null) ? posObjetivo.getY() : -1;
+
         // Guardamos los JPanel para actualizarlos después
         celdas = new JPanel[dimX][dimY];
 
@@ -61,7 +78,13 @@ public class winDashboard extends JFrame implements InterfazVistaDashboard , Obs
 
                 ElementoDelUniverso objActual = tablero[i][j];
 
-                if (objActual instanceof EstacionDeCarga) {
+                if (i == posX && j == posY) {
+                    p.setBackground(Color.GREEN);
+                }
+                else if (i == objX && j == objY) {
+                    p.setBackground(Color.decode("0xa3c795"));
+                }
+                else if (objActual instanceof EstacionDeCarga) {
                     p.setBackground(Color.decode("0xb757eb"));
                 }
                 else if (objActual instanceof Asteroide) {
@@ -75,10 +98,6 @@ public class winDashboard extends JFrame implements InterfazVistaDashboard , Obs
                 }
                 else {
                     p.setBackground(Color.decode("0x303030"));
-                }
-
-                if (i == posX && j == posY) {
-                    p.setBackground(Color.GREEN);
                 }
 
                 cuadricula.add(p);
@@ -103,6 +122,10 @@ public class winDashboard extends JFrame implements InterfazVistaDashboard , Obs
         int posX = universo.getPosicionNave().getX();
         int posY = universo.getPosicionNave().getY();
 
+        Posicion posObjetivo = universo.getObjetivo();
+        int objX = (posObjetivo != null) ? posObjetivo.getX() : -1;
+        int objY = (posObjetivo != null) ? posObjetivo.getY() : -1;
+
         for (int i = 0; i < celdas.length; i++) {
             for (int j = 0; j < celdas[i].length; j++) {
 
@@ -111,6 +134,9 @@ public class winDashboard extends JFrame implements InterfazVistaDashboard , Obs
 
                 if (i == posX && j == posY) {
                     p.setBackground(Color.GREEN);
+                }
+                else if (i == objX && j == objY) {
+                    p.setBackground(Color.decode("0xffcc00"));
                 }
                 else if (objActual instanceof EstacionDeCarga) {
                     p.setBackground(Color.decode("0xb757eb"));
@@ -140,9 +166,9 @@ public class winDashboard extends JFrame implements InterfazVistaDashboard , Obs
         
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Glass Group Control Center");
-        setPreferredSize(new java.awt.Dimension(1080, 800));
-        setResizable(false);
-        setSize(new java.awt.Dimension(1080, 800));
+        setPreferredSize(new java.awt.Dimension(1120, 700));
+        setResizable(true);
+        setSize(new java.awt.Dimension(1120, 700));
         
         
         // <editor-fold defaultstate="collapsed" desc="(NO TOCAR) CREACION DE ENTIDADES (Botones, cuadros, etc)">                    
@@ -287,6 +313,11 @@ public class winDashboard extends JFrame implements InterfazVistaDashboard , Obs
             }
         });
         tableBitacora.setShowGrid(false);
+        tableBitacora.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        tableBitacora.getColumnModel().getColumn(0).setPreferredWidth(130);
+        tableBitacora.getColumnModel().getColumn(1).setPreferredWidth(100);
+        tableBitacora.getColumnModel().getColumn(2).setPreferredWidth(500);
+        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         jScrollPane1.setViewportView(tableBitacora);
         
         
@@ -345,7 +376,9 @@ public class winDashboard extends JFrame implements InterfazVistaDashboard , Obs
         lblCrewmateID.setText("ID");
         boxOrigin.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Terricola", "Marciano", "Vulcano" }));
         boxEmploy.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Capitan", "Teniente", "Alferez", "Consejero" }));
-        intSenority.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
+        java.text.NumberFormat nf = java.text.NumberFormat.getIntegerInstance();
+        nf.setGroupingUsed(false);
+        intSenority.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(nf)));
         btnAddCrewmate.setText("Add"); /// IMPORTANTE
         
         tabMain.addTab("Crew", jPanel5);
@@ -988,6 +1021,9 @@ public class winDashboard extends JFrame implements InterfazVistaDashboard , Obs
     @Override
     public String getNombreNave() {
         Object itemSeleccionado = boxSetShip.getSelectedItem();
+        if (itemSeleccionado == null) {
+            return null;
+        }
         String nombreNave = itemSeleccionado.toString();
         int indiceParentesis = nombreNave.indexOf("(");
             nombreNave = (indiceParentesis != -1)
@@ -999,6 +1035,32 @@ public class winDashboard extends JFrame implements InterfazVistaDashboard , Obs
     @Override
     public void addNaveCreada(String nombre, String tipo) {
         boxSetShip.addItem(nombre+"("+tipo+")");
+    }
+
+    @Override
+    public void removerNave(String nombre) {
+        if (nombre == null) return;
+        for (int i = 0; i < boxSetShip.getItemCount(); i++) {
+            String item = boxSetShip.getItemAt(i);
+            if (item != null && (item.equals(nombre) || item.startsWith(nombre + "("))) {
+                boxSetShip.removeItemAt(i);
+                break;
+            }
+        }
+        boxSetShip.setSelectedItem(null);
+    }
+
+    @Override
+    public void limpiarDatosNave() {
+        setRecursos(0, 0, 0, 0);
+        limpiaTablaCrew();
+        limpiaTablaBinnacle();
+        if (getAreaReportes() != null) {
+            getAreaReportes().setText("");
+        }
+        intSenority.setValue(null);
+        intSenority.setText("");
+        txtID.setText("");
     }
     
     
@@ -1023,13 +1085,18 @@ public class winDashboard extends JFrame implements InterfazVistaDashboard , Obs
 
     @Override
     public String getAntiguedad() {
-        return intSenority.getText();
+        String txt = intSenority.getText();
+        if (txt != null) {
+            txt = txt.replace(".", "").replace(",", "").trim();
+        }
+        return txt;
     }
 
     @Override
     public void agregaEmpleado(Object[] empleado) {
         DefaultTableModel modelo = (DefaultTableModel) tableCrewmates.getModel();
         modelo.addRow(empleado);
+        intSenority.setValue(null);
         intSenority.setText("");
         txtID.setText("");
     }
@@ -1428,7 +1495,9 @@ public class winDashboard extends JFrame implements InterfazVistaDashboard{
 
         btnAddCrewmate.setText("Add");
 
-        intSenority.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
+        java.text.NumberFormat nf = java.text.NumberFormat.getIntegerInstance();
+        nf.setGroupingUsed(false);
+        intSenority.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(nf)));
 
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);

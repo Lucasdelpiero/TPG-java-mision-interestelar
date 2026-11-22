@@ -4,8 +4,15 @@ import modelo.asistente.AsistenteComando;
 import modelo.nave.Recursos;
 
 public class PreparandoSaltoState implements EstadoMotor {
+    private int turnoPreparacion;
     
-    public PreparandoSaltoState(){ }
+    public PreparandoSaltoState(){
+        this(1);
+    }
+
+    public PreparandoSaltoState(int turno){
+        this.turnoPreparacion = turno;
+    }
     
     @Override
     public String getNombre(){
@@ -16,23 +23,35 @@ public class PreparandoSaltoState implements EstadoMotor {
     public boolean estaDisponible(){
         return false;
     }
+
+    public int getTurnoPreparacion() {
+        return turnoPreparacion;
+    }
     
     
     @Override
     public void saltar(MotorWarp motor){
+        assert motor != null : "El motor no puede ser nulo";
         AsistenteComando ac = motor.getAC();
-        Recursos recursos = ac.getRecursos();
-        if (recursos.getCombustible() >= 2)
-            recursos.consumeCombustible(2);
+        if (ac != null && ac.getRecursos() != null) {
+            Recursos recursos = ac.getRecursos();
+            if (recursos.getCombustible() >= 2)
+                recursos.consumeCombustible(2);
+        }
     }
     
     @Override
     public void saltoWarp(MotorWarp motor){
+        assert motor != null : "El motor no puede ser nulo";
         AsistenteComando ac = motor.getAC();
-        Recursos recursos = ac.getRecursos();
-        saltar(motor);
-        if(recursos.getEnergia() >= 5 && recursos.getDesgaste() >= 3)
+        if (ac != null && ac.getRecursos() != null) {
+            Recursos recursos = ac.getRecursos();
+            if (recursos.getEnergia() < 5) {
+                // Si no dispone de 5 de energia, la maniobra no continua y se queda en modo preparacion
+                return;
+            }
             motor.setEstado(new SaltoWarpState());
+        }
     }
     
     /*

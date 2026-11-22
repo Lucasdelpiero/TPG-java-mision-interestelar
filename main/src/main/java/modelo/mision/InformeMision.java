@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package modelo.mision;
 
 import java.util.ArrayList;
@@ -95,5 +91,9 @@ public class InformeMision {
 
     public boolean esResultadoExitoso() {
         return resultadoExitoso;
+    }
+
+    public void setResultadoExitoso(boolean resultadoExitoso) {
+        this.resultadoExitoso = resultadoExitoso;
     }
 }

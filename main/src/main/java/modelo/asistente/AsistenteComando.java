@@ -25,6 +25,7 @@ public class AsistenteComando {
     //          CONSTRUCTOR
     //-------------------------------------------
     public AsistenteComando(Nave nave, String nombre, Universo universo){
+        assert nave != null : "La nave no puede ser nula";
         this.universo = universo;
         this.nave = nave;
         this.nombre = nombre;
@@ -41,20 +42,23 @@ public class AsistenteComando {
     
         //---------------   MISIONES    -----------------
     
-    //Esta mision es invocada desde MAIN
     /**
-    * PRE: Mision no es nula<br>
-    * POST: Devuelve un informe de mision a la bitacora<br>  
-    * @param m una clase hija de mision
-    */
-    
+     * <b>POST</b>
+     * - Instancia y ejecuta la misión indicada, o lanza IllegalStateException si la nave no está apta, no tiene Capitán o hay una misión en curso.
+     */
     public void realizarMision(String texto) {
-        if (misionActual != null)
-            this.bitacora.registrar(TipoEvento.ERROR, "Error otra mision en progreso " + misionActual.getIdMision());
-        else {
-            misionActual = fm.crearMision(texto,universo);
-            iniciaMision(misionActual);
+        if (nave == null || !nave.estaOperativa()) {
+            if (nave != null && nave.getTripulacion().getTripulantesCargo("Capitan").isEmpty()) {
+                throw new IllegalStateException("La nave no puede iniciar la misión: requiere obligatoriamente 1 Capitán asignado.");
+            }
+            throw new IllegalStateException("La nave no se encuentra operativa para realizar misiones.");
         }
+        if (misionActual != null) {
+            this.bitacora.registrar(TipoEvento.ERROR, "Error otra mision en progreso " + misionActual.getIdMision());
+            throw new IllegalStateException("Ya hay una misión en curso en esta nave.");
+        }
+        misionActual = fm.crearMision(texto, universo);
+        iniciaMision(misionActual);
     }
     
     public boolean hayMisionEnCurso() {
@@ -64,26 +68,27 @@ public class AsistenteComando {
         assert (m != null) : "Mision no puede ser nula";
         this.bitacora.registrar(TipoEvento.ORDEN, "Orden recibida: Iniciar mision " + m.getIdMision(), m.getIdMision());
         this.bitacora.registrar(TipoEvento.MISION, "Iniciando mision " + m.getNombreMision(), m.getIdMision());
-        new Thread(() -> {
-            try {
-                m.hacerMision(this);
-            }
-            catch (Exception e){
-                this.bitacora.registrar(TipoEvento.ERROR, "Error al Iniciar Mision " + m.getIdMision());
-            } finally {
-                misionActual = null;      // se libera recién cuando la misión realmente terminó
-            }
-        }).start();
+        try {
+            m.hacerMision(this);
+        }
+        catch (Exception e){
+            this.bitacora.registrar(TipoEvento.ERROR, "Error al Iniciar Mision " + m.getIdMision());
+        } finally {
+            misionActual = null;      // se libera recién cuando la misión realmente terminó
+        }
     }
     
+    /**
+     * <b>POST</b>
+     * - Retorna true si la nave conserva recursos suficientes y desgaste menor o igual a 100 tras el consumo; false en caso contrario.
+     */
     public boolean consultaRecursos(int consumoCombustible,int consumoEnergia, int consumoDesgaste){
         if (nave == null || nave.getRecursos() == null) return false;
         return 
-            (nave.getRecursos().getCombustible() - consumoCombustible > 0) 
+            (nave.getRecursos().getCombustible() - consumoCombustible >= 0) 
                 && 
-            (nave.getRecursos().getDesgaste() + consumoDesgaste < 100) &&
-            (nave.getRecursos().getEnergia() - consumoEnergia > 0)    
-                ;
+            (nave.getRecursos().getDesgaste() + consumoDesgaste <= 100) &&
+            (nave.getRecursos().getEnergia() - consumoEnergia >= 0);
     }   
     
         //---------------   MODIF RECURSOS    -----------------
@@ -100,6 +105,10 @@ public class AsistenteComando {
         nave.getRecursos().consumeDesgaste(consumoDesgaste);
     }
     
+    /**
+     * <b>POST</b>
+     * - Intenta cargar combustible en la nave y registra el resultado del intento en bitácora.
+     */
     public void cargaCombustible(int valor){
         System.out.println(":: ["+nombre+"] CARGA DE COMBUSTIBLE");
         System.out.println(":: ["+nombre+"] Actual: "+nave.getRecursos().getCombustible());
@@ -115,6 +124,10 @@ public class AsistenteComando {
         }
     }
     
+    /**
+     * <b>POST</b>
+     * - Intenta cargar energía en la nave y registra el resultado del intento en bitácora.
+     */
     public void cargaEnergia(int valor){
         System.out.println(":: ["+nombre+"] CARGA DE ENERGIA");
         System.out.println(":: ["+nombre+"] Actual: "+nave.getRecursos().getEnergia());
@@ -130,6 +143,10 @@ public class AsistenteComando {
         }
     }
     
+    /**
+     * <b>POST</b>
+     * - Restablece el desgaste de la nave a 0 y registra la acción en bitácora.
+     */
     public void realizaMantenimiento(){
         System.out.println(":: ["+nombre+"] MANTENIMIENTO A LA NAVE");
         System.out.println(":: ["+nombre+"] Desgaste: "+nave.getRecursos().getDesgaste());
@@ -162,20 +179,41 @@ public class AsistenteComando {
     }
 
     /**
-     * PRE: tripulante t != null<br>
-     * POST: se agrega tripulante a la tripulacion
-     * @param t es el tripulante que se quiere añadir a la tripulacion 
+     * <b>POST</b>
+     * - Agrega el tripulante a la nave y registra en bitácora, o lanza excepción si infringe restricciones.
      */
     public void addTripulante(Haber t){
-        assert(t != null): "Error: tripulando es null";
-        assert(!t.getTripulante().getCargo().getCargoTripulante().equalsIgnoreCase("Capitan") || nave.getTripulacion().getTripulantesCargo("Capitan").isEmpty()):"Error : Ya hay un capitan";
+        if (t == null) {
+            throw new IllegalArgumentException("El tripulante no puede ser nulo.");
+        }
+        if (nave == null || nave.estaInservible()) {
+            throw new IllegalStateException("No se pueden agregar tripulantes a una nave inservible.");
+        }
+        if (nave.getTripulacion().getTripulantes().size() >= 5) {
+            throw new IllegalStateException("La tripulación ya está completa (máximo 5 tripulantes permitidos).");
+        }
+        if (t.getTripulante().getCargo().getCargoTripulante().equalsIgnoreCase("Capitan") 
+                && !nave.getTripulacion().getTripulantesCargo("Capitan").isEmpty()) {
+            throw new IllegalStateException("La nave ya posee un Capitán. Solo se permite un Capitán por tripulación.");
+        }
+        if (nave.getTripulacion().getTripulante(t.getTripulante().getId()) != null) {
+            throw new IllegalArgumentException("Ya existe un tripulante con el ID [" + t.getTripulante().getId() + "] en esta nave.");
+        }
         nave.getTripulacion().addTripulante(t);
         this.registrarEvento(TipoEvento.TRIPULACION, "Tripulante " + t.getTripulante().getId() + " añadido");
     }
     
+    /**
+     * <b>POST</b>
+     * - Remueve el tripulante de la nave y registra en bitácora, o lanza excepción si es nulo o corresponde al Capitán.
+     */
     public void removeTripulante(Haber t){
-        assert(t != null): "Error: tripulando es null";
-        assert(!t.getTripulante().getCargo().getCargoTripulante().equalsIgnoreCase("Capitan")) :"Error : No se puede eliminar el capitan";
+        if (t == null) {
+            throw new IllegalArgumentException("El tripulante no puede ser nulo.");
+        }
+        if (t.getTripulante().getCargo().getCargoTripulante().equalsIgnoreCase("Capitan")) {
+            throw new IllegalStateException("No se puede eliminar al Capitán de la nave.");
+        }
         nave.getTripulacion().removeTripulante(t.getTripulante().getId());
         this.registrarEvento(TipoEvento.TRIPULACION, "Tripulante " + t.getTripulante().getId() + " removido");
     }
@@ -183,16 +221,17 @@ public class AsistenteComando {
    //---------------   BITACORA    -----------------
     
     /**
-     * PRE: debe ser un evento no nulo, descripcion != 0 <br>
-     * POST: agrega un evento a la bitacora<br>
-     * 
-     * @param evento va a ser eventualmente un evento<br>
-     * 
+     * <b>POST</b>
+     * - Inserta el evento asociado a la misión especificada en la bitácora.
      */
     public void registrarMision(TipoEvento e, String descripcion, int idMision){
         this.bitacora.registrar(e, descripcion, idMision);
     }
     
+    /**
+     * <b>POST</b>
+     * - Inserta el evento general en la bitácora.
+     */
     public void registrarEvento(TipoEvento e, String descripcion){
         this.bitacora.registrar(e, descripcion);
     }
@@ -209,6 +248,7 @@ public class AsistenteComando {
     }
     
     public void setNave(Nave nave){
+        assert nave != null : "La nave no puede ser nula";
         this.nave = nave;
         if (nave != null && nave.getMotor() != null) {
             nave.getMotor().setAC(this);

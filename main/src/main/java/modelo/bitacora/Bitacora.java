@@ -16,14 +16,17 @@ public class Bitacora {
     //-------------------------------------------
 
     // Sobrecarga
+    /**
+     * <b>POST</b>
+     * - Registra un evento general sin id de misión en la bitácora o lanza IllegalArgumentException si los datos son inválidos.
+     */
     public void registrar(TipoEvento tipo, String descripcion){
         this.registrar(tipo, descripcion, null);
     }
 
     /**
-     * La validacion de los datos la hace la clase Evento
      * <b>POST</b>
-     * Crea un evento y lo añade al arrayList de eventos
+     * - Crea un evento con id de misión y lo añade a la bitácora o lanza IllegalArgumentException si los datos son inválidos.
      */
     public void registrar(TipoEvento tipo, String descripcion, Integer idMision){
         Evento evento = new Evento(tipo, descripcion, idMision);

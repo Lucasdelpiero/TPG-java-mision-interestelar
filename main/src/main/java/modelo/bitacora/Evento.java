@@ -1,12 +1,6 @@
 package modelo.bitacora;
 import java.util.Date;
 
-/**
- * <b>PRE</b>
- * Tipo debe ser algunos de los tipos soportados por el Enum TipoEvento
- * La descripcion no debe estar vacia
- * El idMision puede ser null pero de no serlo no puede estar vacio
- */
 public class Evento {
     private final Date momento;
     private final TipoEvento tipo;

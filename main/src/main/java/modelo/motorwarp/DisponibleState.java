@@ -19,16 +19,19 @@ public class DisponibleState implements EstadoMotor {
     
     @Override
     public void saltar(MotorWarp motor){
+        assert motor != null : "El motor no puede ser nulo";
         AsistenteComando ac = motor.getAC();
-        Recursos recursos = ac.getRecursos();
-        if (recursos.getCombustible() >= 2)
-            recursos.consumeCombustible(2);
+        if (ac != null && ac.getRecursos() != null) {
+            Recursos recursos = ac.getRecursos();
+            if (recursos.getCombustible() >= 2)
+                recursos.consumeCombustible(2);
+        }
     }
     
     @Override
     public void saltoWarp(MotorWarp motor){
-        saltar(motor);
-        motor.setEstado(new PreparandoSaltoState());
+        assert motor != null : "El motor no puede ser nulo";
+        motor.setEstado(new PreparandoSaltoState(1));
     }
     
     /*

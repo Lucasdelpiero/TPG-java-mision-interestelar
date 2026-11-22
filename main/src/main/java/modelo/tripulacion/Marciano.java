@@ -1,15 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package modelo.tripulacion;
-/**
- *
- * @author ASUS
- */
+
 public class Marciano extends PlanetaOrigen {
     
-    public Marciano(Tripulante tripulante) {
+    public Marciano(Haber tripulante) {
         super(tripulante);
     }
     
