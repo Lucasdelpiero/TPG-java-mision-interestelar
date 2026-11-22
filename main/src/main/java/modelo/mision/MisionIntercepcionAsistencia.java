@@ -23,6 +23,10 @@ public class MisionIntercepcionAsistencia extends Mision{
     
     
     
+    /**
+     * <b>POST</b>
+     * - Si la misión pudo iniciar, aplica consumos, recorre hacia la nave aliada y evalúa asistencia; en caso contrario la aborta.
+     */
     @Override
     public void ejecutar(){
         if (puedeIniciarMision){

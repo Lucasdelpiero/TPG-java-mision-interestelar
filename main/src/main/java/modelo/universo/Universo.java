@@ -50,18 +50,36 @@ public class Universo extends Observable  {
         return tablero.obtenerObjetivo();
     }
     
+    /**
+     * <b>PRE</b>
+     * - posicion no nula y dentro de los límites del tablero.
+     * <b>POST</b>
+     * - Actualiza la posición de la nave y notifica a los observadores.
+     */
     public void moverNave(Posicion posicion) {
         tablero.moverNave(posicion);
     }
     
+    /**
+     * <b>POST</b>
+     * - Retorna el elemento en la casilla actual de la nave o null si está libre.
+     */
     public ElementoDelUniverso inspeccionarPosicion() {
         return tablero.inspeccionarPosicion();
     }
     
+    /**
+     * <b>POST</b>
+     * - Retorna matriz 3x3 centrada en la nave con los elementos del vecindario inmediato.
+     */
     public ElementoDelUniverso[][] observarAlrededores() {
         return tablero.observarAlrededores();
     }
     
+    /**
+     * <b>POST</b>
+     * - Ejecuta movimiento aleatorio de elementos y notifica a los observadores.
+     */
     public void pasarTurnoDestino() {
         destino.turnoDestino();
         notificarObservadores();

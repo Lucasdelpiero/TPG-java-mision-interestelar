@@ -44,6 +44,12 @@ public abstract class Nave implements ElementoDelUniverso {
     //          ADICIONALES
     //-------------------------------------------    
     
+    /**
+     * <b>PRE</b>
+     * - elemento no nulo.
+     * <b>POST</b>
+     * - Resuelve el encuentro interactuando con nave, asteroide o estación según corresponda.
+     */
     @Override
     public void choque(ElementoDelUniverso elemento){
         if (elemento instanceof Nave nave){
@@ -56,9 +62,10 @@ public abstract class Nave implements ElementoDelUniverso {
     }
     
     /**
-     * Pre: asteroide no es null
-     * Post: la nave reduce su cantidad de energia o es destruida
-     * @param asteroide 
+     * <b>PRE</b>
+     * - asteroide no nulo.
+     * <b>POST</b>
+     * - Descuenta energía por impacto o destruye la nave si la energía es insuficiente.
      */
     public void chocaAsteroide(Asteroide asteroide){
         int costo = asteroide.getCostoChoqueEnergia();
@@ -70,9 +77,10 @@ public abstract class Nave implements ElementoDelUniverso {
     }
     
     /**
-     * Pre: la estacion no es null
-     * Post: a la nave se le carga como maximo la cantidad de recuross que estipula la estacion
-     * @param estacion 
+     * <b>PRE</b>
+     * - estacion no nula.
+     * <b>POST</b>
+     * - Recarga combustible y energía según los suministros que ofrece la estación.
      */
     public void chocaEstacionDeCarga(EstacionDeCarga estacion){
         int combustible = estacion.getRecargaCombustible();
@@ -90,23 +98,35 @@ public abstract class Nave implements ElementoDelUniverso {
     
     // Al perder la pelea con una nave, se destruye y pierde todo
     /**
-     * PRE: tripulacion y recursos != null
-     * POST: tripulacion es una lista vacia y desgaste al maximo
-     * 
-    */
+     * <b>POST</b>
+     * - Vacía la tripulación y fija el desgaste de la nave en 100.
+     */
     public void destruirNave(){
         tripulacion.matarTripulacion();
         recursos.setDesgaste(100);
     }
     
     /**
-     * PRE: tripulante t != null<br>
-     * POST: se agrega tripulante a la tripulacion
-     * @param t es el tripulante que se quiere añadir a la tripulacion 
+     * <b>POST</b>
+     * - Incorpora el tripulante a la nave o lanza excepción si no cumple con las restricciones operativas.
      */
     public void addTripulante(Haber t){
-        assert(t != null): "Error: tripulando es null";
-        assert(!t.getTripulante().getCargo().getCargoTripulante().equalsIgnoreCase("Capitan") || tripulacion.getTripulantesCargo("Capitan").isEmpty()): "Error : Ya hay un capitan";
+        if (t == null) {
+            throw new IllegalArgumentException("El tripulante no puede ser nulo.");
+        }
+        if (this.estaInservible()) {
+            throw new IllegalStateException("No se pueden agregar tripulantes a una nave inservible.");
+        }
+        if (tripulacion.getTripulantes().size() >= 5) {
+            throw new IllegalStateException("La tripulación ya está completa (máximo 5 tripulantes permitidos).");
+        }
+        if (t.getTripulante().getCargo().getCargoTripulante().equalsIgnoreCase("Capitan") 
+                && !tripulacion.getTripulantesCargo("Capitan").isEmpty()) {
+            throw new IllegalStateException("La nave ya posee un Capitán. Solo se permite un Capitán por tripulación.");
+        }
+        if (tripulacion.getTripulante(t.getTripulante().getId()) != null) {
+            throw new IllegalArgumentException("Ya existe un tripulante con el ID [" + t.getTripulante().getId() + "] en esta tripulación.");
+        }
         tripulacion.addTripulante(t);
     }
     
@@ -145,15 +165,17 @@ public abstract class Nave implements ElementoDelUniverso {
     }
     
     /**
-     * Chequea si la nave es funcoinal o no, viendo que tenga la tripulacion adecuada y el desgaste no sea maximo
-     * pre: la nave tiene un objeto tripulacion y recursos a los cuales consultar
-     * post: devuelve true o false dependiendo de los componentes de nave de la nave
-     * @return 
+     * <b>POST</b>
+     * - Retorna true si la tripulación es operativa y la nave no está inservible.
      */
     public boolean estaOperativa() { 
         return getTripulacion().esOperativa() && !estaInservible();
     }
 
+    /**
+     * <b>POST</b>
+     * - Retorna true si el desgaste es >= 100, combustible <= 0 o energía <= 0.
+     */
     public boolean estaInservible() {
         return getRecursos().getDesgaste() >= 100 
                 || getRecursos().getCombustible() <= 0 

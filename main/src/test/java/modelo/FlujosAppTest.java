@@ -195,6 +195,7 @@ public class FlujosAppTest {
         Universo universo = new Universo(navePrincipal, 50, 50, elementos);
 
         Nave naveMision = NaveFactory.getNave(NaveFactory.tipoNave.EXPLORADORA);
+        naveMision.addTripulante(new Tripulante("CAP-01", new FactoryCargo().crearCargo("Capitan"), 5));
         AsistenteComando ac = new AsistenteComando(naveMision, "Odyssey", universo);
 
         // 1. Misión M-02 (Recolección)

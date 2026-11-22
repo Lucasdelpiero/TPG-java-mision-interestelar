@@ -20,6 +20,10 @@ public class CentroDeControl {
     //      GETTERS / SETTERS
     //-------------------------------
     
+    /**
+     * <b>POST</b>
+     * - Registra el AsistenteComando en la lista del centro de control si no es nulo.
+     */
     public void setAC(AsistenteComando AC){
         if(AC == null)
             System.out.println(":: ["+nombre+"] ASISTENTE DE COMANDO ingresado es INVALIDO");
@@ -29,6 +33,10 @@ public class CentroDeControl {
         }
     }
     
+    /**
+     * <b>POST</b>
+     * - Asigna la nave al asistente de comando correspondiente o lanza IllegalArgumentException si no existe.
+     */
     public void setNave(Nave N, String nombreAC){
         int i = buscaAC(nombreAC);
         if (i < listaAC.size()) {
@@ -40,6 +48,10 @@ public class CentroDeControl {
         }
     }
     
+    /**
+     * <b>POST</b>
+     * - Retorna el AsistenteComando correspondiente o lanza IllegalArgumentException si el nombre es inválido o no existe.
+     */
     public AsistenteComando getAC(String nombreAC){
         if (nombreAC == null || nombreAC.isBlank()) {
             throw new IllegalArgumentException("No se ha seleccionado ninguna nave.");
@@ -51,11 +63,19 @@ public class CentroDeControl {
         return listaAC.get(i);
     }
     
+    /**
+     * <b>POST</b>
+     * - Retorna la nave asociada al AsistenteComando o lanza IllegalArgumentException si no existe.
+     */
     public Nave getNave(String nombreAC){
         AsistenteComando Asist = getAC(nombreAC);
         return Asist.getNave();
     }
 
+    /**
+     * <b>POST</b>
+     * - Remueve el AC y su nave asociada del registro si se encuentra presente.
+     */
     public void eliminarNave(String nombreAC){
         if (nombreAC == null || nombreAC.isBlank()) return;
         int i = buscaAC(nombreAC);
@@ -65,6 +85,10 @@ public class CentroDeControl {
         }
     }
 
+    /**
+     * <b>POST</b>
+     * - Retorna true si la nave existe en el centro de control; false si no existe o el nombre es inválido.
+     */
     public boolean existeNave(String nombreAC){
         if (nombreAC == null || nombreAC.isBlank()) return false;
         return buscaAC(nombreAC) < listaAC.size();

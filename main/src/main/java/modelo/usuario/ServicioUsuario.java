@@ -18,6 +18,10 @@ public class ServicioUsuario {
     // CONTRA: Alguien puede llamar new Usuario y olvidarse de validar
     // Mitigacion: Se podria crear una clase factory de usuario y usar esta clase para crear el usuario
     // Y que esta clase llame a una funcion validar
+    /**
+     * <b>POST</b>
+     * - Persiste el nuevo usuario a través del DAO o lanza UsuarioException ante parámetros inválidos, usuario existente o fallo de base.
+     */
     public void registrar(String username, String password) throws UsuarioException{
         if (username == null || username.trim().isEmpty() || password == null || password.trim().isEmpty()) {
             throw new UsuarioException("Intento de registro con parametros Invalidos");
@@ -36,6 +40,10 @@ public class ServicioUsuario {
         }   
     }
     
+    /**
+     * <b>POST</b>
+     * - Retorna true si las credenciales coinciden con un usuario registrado; false si no existe o no coincide; lanza UsuarioException si los datos son inválidos.
+     */
     public boolean autenticar(String username, String password) throws UsuarioException {
         if (username == null || username.trim().isEmpty() || password == null || password.trim().isEmpty()) {
             throw new UsuarioException("Intento de autenticación con parámetros inválidos");

@@ -90,19 +90,40 @@ public class Recursos {
         this.gemas = gemas;
     }
     
+    /**
+     * <b>PRE</b>
+     * - consumo mayor o igual a 0.
+     * <b>POST</b>
+     * - Disminuye el combustible en la cantidad indicada.
+     */
     public void consumeCombustible(int consumo){
         this.combustible -= consumo;
     }
     
+    /**
+     * <b>PRE</b>
+     * - consumo mayor o igual a 0.
+     * <b>POST</b>
+     * - Disminuye la energía en la cantidad indicada.
+     */
     public void consumeEnergia(int consumo){
         this.energia -= consumo;
     }
     
+    /**
+     * <b>PRE</b>
+     * - consumo mayor o igual a 0.
+     * <b>POST</b>
+     * - Incrementa el desgaste en la cantidad indicada.
+     */
     public void consumeDesgaste(int consumo){
         this.desgaste += consumo;
     }
     
-    
+    /**
+     * <b>POST</b>
+     * - Incrementa el combustible en la cantidad indicada si es positivo y no supera el máximo de 100.
+     */
     public void cargaCombustible(int valor){
         if (valor > 0 && valor + combustible <= 100) {
             combustible += valor;
@@ -111,6 +132,10 @@ public class Recursos {
         }
     }
     
+    /**
+     * <b>POST</b>
+     * - Incrementa la energía en la cantidad indicada si es positivo y no supera el máximo de 100.
+     */
     public void cargaEnergia(int valor){
         if (valor > 0 && valor + energia <= 100){
             energia += valor;
@@ -119,6 +144,10 @@ public class Recursos {
         }
     }
     
+    /**
+     * <b>POST</b>
+     * - Incrementa las gemas recolectadas si el valor es positivo.
+     */
     public void cargaGemas(int valor) {
         if (valor > 0)
             gemas += valor;
@@ -126,6 +155,10 @@ public class Recursos {
             System.out.println("[ERROR] Imposible cargar");
     }
     
+    /**
+     * <b>POST</b>
+     * - Restablece el desgaste mecánico de la nave a 0.
+     */
     public void realizaMantenimiento(){
         desgaste = 0;
     }

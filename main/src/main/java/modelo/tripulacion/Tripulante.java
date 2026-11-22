@@ -32,6 +32,10 @@ public class Tripulante implements Haber {
         this.antiguedad = antiguedad;
     }
     
+    /**
+     * <b>POST</b>
+     * - Incrementa los años de antigüedad del tripulante o lanza IllegalArgumentException si el valor es menor o igual a 0.
+     */
     protected void addAntiguedad(int anios) {  
         if (anios <= 0)
             throw new IllegalArgumentException("anios invalidos");
@@ -43,6 +47,10 @@ public class Tripulante implements Haber {
         return this;
     }
 
+    /**
+     * <b>POST</b>
+     * - Calcula el haber neto sumando básico y adicional por antigüedad/consejos.
+     */
     @Override
     public double sueldo() {
         double sueldo = this.cargo.sueldoBase();
@@ -54,6 +62,11 @@ public class Tripulante implements Haber {
         
         return sueldo + adicional;
     }
+
+    /**
+     * <b>POST</b>
+     * - Devuelve desglose en texto con base y adicionales del tripulante.
+     */
     @Override
     public String detalleHaber() {
         double base = cargo.sueldoBase();

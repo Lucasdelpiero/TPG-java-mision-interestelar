@@ -59,6 +59,12 @@ public abstract class Mision{
 
     // Posibles excepciones (ejemplo):
     //  - Nave con recursos insuficientes
+    /**
+     * <b>PRE</b>
+     * - AC no nulo y con una nave asignada.
+     * <b>POST</b>
+     * - Ejecuta la secuencia completa de la misión: preparar, ejecutar, evaluar y cerrar.
+     */
     public void hacerMision(AsistenteComando AC){
         assert (AC != null): "Error: AC es null" ;
         this.AC = AC;
@@ -74,12 +80,12 @@ public abstract class Mision{
     //          DESARROLLO MISIONES
     //-------------------------------------------
     
-    // PREPARAR: idea
-        //    INTENTAR APLICAR TRY/FINALLY PARA VERIFICAR RECURSOS.
-        // EN CASO DE NO CONTAR CON RECURSOS SUFICIENTES, CORTAR
-        // LA EJECUCION DIRECTAMENTE Y PROPAGAR LA EXCEPCION AL
-        // METODO hacerMision().
-        // CON ESO, IGNORAR EL USO DEL BOOLEANO 'puedeHacerMision'
+    /**
+     * <b>PRE</b>
+     * - AC inicializado con nave asignada.
+     * <b>POST</b>
+     * - Inicializa el informe, calcula la ruta y determina si la nave cuenta con los recursos mínimos para iniciar.
+     */
     protected void preparar(){
         informe = new InformeMision(idMision, nombreMision);
         
@@ -120,19 +126,10 @@ public abstract class Mision{
     protected abstract Posicion obtenerPosicionObjetivo();
     
     
-    // EVAULAR: idea
-    //  CADA MISION TIENE SU PROPIO INFORME Y DISTINTOS
-    //  DATOS A GUARDAR EN BITACORA
-        //      Registrar INFORME DE MISION en este paso. Anotar:
-        //      -   Mision ejecutada
-        //      -   Resultado
-        //      -   Acciones principales
-        //      -   Recursos consumidos
-        //      -   Estado final de la nave
-        //      -   Observaciones relevantes
-        //      Aplicar diferencias entre el estado inicial y el
-        //  estado final para poder registrarlo.
-        //  - Agregar Desgaste, disminuir Combustible, energia?
+    /**
+     * <b>POST</b>
+     * - Registra los recursos finales en el informe y emite el balance de la misión.
+     */
     protected void evaluar(){
         Recursos resFinal = AC.getNave().getRecursos();
         informe.recursosFinales = new Recursos(resFinal.getCombustible(), resFinal.getEnergia(), resFinal.getDesgaste());
@@ -145,6 +142,10 @@ public abstract class Mision{
         AC.registrarMision(TipoEvento.MISION, "[MISION] Cerrando...", idMision);
     }
     
+    /**
+     * <b>POST</b>
+     * - Finaliza la misión y notifica la actualización del universo a los observadores.
+     */
     protected void cerrar(){
         System.out.println("[MISION] Mision terminada.");
         AC.registrarMision(TipoEvento.MISION, "[MISION] Mision terminada.", idMision);
@@ -152,12 +153,20 @@ public abstract class Mision{
         universo.notificarObservadores();
     }
     
+    /**
+     * <b>POST</b>
+     * - Retorna true si el motor está Disponible y la nave tiene al menos 5 de energía; false en caso contrario.
+     */
     public boolean intentarSaltoWarp(){
         Nave nave = AC.getNave();
         MotorWarp motor = nave.getMotor();
         return motor.estaDisponible() && nave.getRecursos().getEnergia() >= 5;
     }
     
+    /**
+     * <b>POST</b>
+     * - Ejecuta ciclo de 3 turnos (2 preparación, 1 salto, 1 enfriamiento) y avanza 2 casilleros si es posible.
+     */
     private boolean realizarSaltoWarp(int indice) throws InterruptedException{
         MotorWarp motor = AC.getNave().getMotor();
         
@@ -179,6 +188,10 @@ public abstract class Mision{
         
         // Ejecucion de Salto Warp (consume 5 de energia y transiciona a Enfriamiento)
         motor.saltoWarp();
+        if (!"Enfriamiento".equals(motor.getNombreEstado())) {
+            AC.registrarMision(TipoEvento.MISION, "Motor Warp: Abortado por falta de energía. Vuelve a preparación.", idMision);
+            return false;
+        }
         AC.registrarMision(TipoEvento.MISION, "Motor Warp: ¡Salto Warp ejecutado! Esquivando obstaculo", idMision);
         Posicion p = (indice + 1 < ruta.size()) ? ruta.get(indice + 1) : ruta.get(indice);
         universo.moverNave(p);
@@ -213,6 +226,12 @@ public abstract class Mision{
         }
     }
     
+    /**
+     * <b>PRE</b>
+     * - Coordenada objetivo no nula.
+     * <b>POST</b>
+     * - Desplaza la nave a lo largo de la ruta resolviendo saltos simples o Warp; retorna true si arriba al objetivo con vida o false si falla.
+     */
     public boolean realizarRecorrido(Posicion objetivo) throws InterruptedException {
 
     int indice = 0;
@@ -271,6 +290,12 @@ public abstract class Mision{
     
     
 
+    /**
+     * <b>PRE</b>
+     * - Coordenada objetivo válida y dentro del tablero.
+     * <b>POST</b>
+     * - Genera lista de posiciones adyacentes optimizando distancia Manhattan hacia el objetivo.
+     */
     public void calcularRuta(Posicion objetivo) {
 
         ElementoDelUniverso[][] tablero = universo.verTablero();

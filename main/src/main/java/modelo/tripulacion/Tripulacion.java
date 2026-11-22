@@ -26,26 +26,32 @@ public class Tripulacion {
         tripulantes.clear();
     }
     
+    /**
+     * <b>POST</b>
+     * - Retorna true si posee al menos 1 Capitán y al menos 5 tripulantes en total.
+     */
     public boolean esOperativa(){
         ArrayList<Tripulante> capitanes = getTripulantesCargo("Capitan");
         return (capitanes.size() >= MIN_CAPITANES) && (tripulantes.size() >= MIN_TRIPULACION_TOTAL) ;
     }
     
-// PRE: h no es null y contiene un Tripulante valido.
-// POST: h queda agregado al final de la lista.
-//       La cantidad de elementos aumenta en uno.
-//       Los elementos anteriores conservan su orden.    
+    /**
+     * <b>PRE</b>
+     * - h no nulo y contiene un Tripulante válido.
+     * <b>POST</b>
+     * - Agrega h al final de la lista incrementando la tripulación.
+     */
     public void addTripulante(Haber h) {
         assert h != null : "Error: tripulante es null";
         tripulantes.add(h);
     }
     
-    
-// PRE: id no es null ni esta en blanco.
-//      Existe al menos un tripulante con ese identificador.
-// POST: se elimina la primera entrada con ese identificador.
-//       La cantidad de elementos disminuye en uno.
-//       Los elementos restantes conservan su orden.
+    /**
+     * <b>PRE</b>
+     * - id no nulo ni vacío, existente en la tripulación.
+     * <b>POST</b>
+     * - Remueve la primera coincidencia del tripulante con ese id.
+     */
     public void removeTripulante(String id) {
         assert id != null && !id.isBlank() : "El identificador es invalido";
         int i = 0 , n = this.tripulantes.size();
@@ -57,12 +63,12 @@ public class Tripulacion {
         this.tripulantes.remove(i);
     }
     
-// PRE: cargo puede ser null; si no lo es, no debe estar en blanco.
-// POST: devuelve una nueva lista con todos los tripulantes
-//       cuyo cargo coincide con el solicitado.
-//       Si cargo es null, devuelve a todos.
-//       Si no hay coincidencias, devuelve una lista vacia.
-//       No modifica la tripulacion.    
+    /**
+     * <b>PRE</b>
+     * - cargo puede ser null (retorna todos) o nombre de cargo válido.
+     * <b>POST</b>
+     * - Retorna lista con los tripulantes que desempeñan el cargo solicitado.
+     */
     public ArrayList<Tripulante> getTripulantesCargo(String cargo) {
         Cargo c;
         Tripulante t;
@@ -77,10 +83,12 @@ public class Tripulacion {
         return tripulantesCargo;
     }
     
-// PRE: id no es null ni esta en blanco.
-// POST: devuelve el primer tripulante con ese identificador.
-//       Si no existe, devuelve null, incluso si la lista esta vacia.
-//       No modifica la tripulacion.    
+    /**
+     * <b>PRE</b>
+     * - id no nulo ni vacío.
+     * <b>POST</b>
+     * - Retorna el tripulante con dicho id o null si no existe.
+     */
     public Haber getTripulante(String id) {
         int i = 0 , n = this.tripulantes.size();
         assert id != null && !id.isBlank(): "Identificador invalido";        
