@@ -151,7 +151,13 @@ public abstract class Nave implements ElementoDelUniverso {
      * @return 
      */
     public boolean estaOperativa() { 
-        return getTripulacion().esOperativa() && getRecursos().getDesgaste() < 100;
+        return getTripulacion().esOperativa() && !estaInservible();
+    }
+
+    public boolean estaInservible() {
+        return getRecursos().getDesgaste() >= 100 
+                || getRecursos().getCombustible() <= 0 
+                || getRecursos().getEnergia() <= 0;
     }
     
     //---------------------------------------------

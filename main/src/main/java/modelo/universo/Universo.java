@@ -43,7 +43,7 @@ public class Universo extends Observable  {
     }
     
     public Posicion getObjetivo() {
-        return tablero.obtenerObjetivo();
+        return tablero.getObjetivo();
     }
     
     public Posicion obtenerObjetivo(){

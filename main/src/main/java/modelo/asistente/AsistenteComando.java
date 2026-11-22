@@ -64,16 +64,14 @@ public class AsistenteComando {
         assert (m != null) : "Mision no puede ser nula";
         this.bitacora.registrar(TipoEvento.ORDEN, "Orden recibida: Iniciar mision " + m.getIdMision(), m.getIdMision());
         this.bitacora.registrar(TipoEvento.MISION, "Iniciando mision " + m.getNombreMision(), m.getIdMision());
-        new Thread(() -> {
-            try {
-                m.hacerMision(this);
-            }
-            catch (Exception e){
-                this.bitacora.registrar(TipoEvento.ERROR, "Error al Iniciar Mision " + m.getIdMision());
-            } finally {
-                misionActual = null;      // se libera recién cuando la misión realmente terminó
-            }
-        }).start();
+        try {
+            m.hacerMision(this);
+        }
+        catch (Exception e){
+            this.bitacora.registrar(TipoEvento.ERROR, "Error al Iniciar Mision " + m.getIdMision());
+        } finally {
+            misionActual = null;      // se libera recién cuando la misión realmente terminó
+        }
     }
     
     public boolean consultaRecursos(int consumoCombustible,int consumoEnergia, int consumoDesgaste){
@@ -167,15 +165,27 @@ public class AsistenteComando {
      * @param t es el tripulante que se quiere añadir a la tripulacion 
      */
     public void addTripulante(Haber t){
-        assert(t != null): "Error: tripulando es null";
-        assert(!t.getTripulante().getCargo().getCargoTripulante().equalsIgnoreCase("Capitan") || nave.getTripulacion().getTripulantesCargo("Capitan").isEmpty()):"Error : Ya hay un capitan";
+        if (t == null) {
+            throw new IllegalArgumentException("El tripulante no puede ser nulo.");
+        }
+        if (t.getTripulante().getCargo().getCargoTripulante().equalsIgnoreCase("Capitan") 
+                && !nave.getTripulacion().getTripulantesCargo("Capitan").isEmpty()) {
+            throw new IllegalStateException("La nave ya posee un Capitán. Solo se permite un Capitán por tripulación.");
+        }
+        if (nave.getTripulacion().getTripulante(t.getTripulante().getId()) != null) {
+            throw new IllegalArgumentException("Ya existe un tripulante con el ID [" + t.getTripulante().getId() + "] en esta nave.");
+        }
         nave.getTripulacion().addTripulante(t);
         this.registrarEvento(TipoEvento.TRIPULACION, "Tripulante " + t.getTripulante().getId() + " añadido");
     }
     
     public void removeTripulante(Haber t){
-        assert(t != null): "Error: tripulando es null";
-        assert(!t.getTripulante().getCargo().getCargoTripulante().equalsIgnoreCase("Capitan")) :"Error : No se puede eliminar el capitan";
+        if (t == null) {
+            throw new IllegalArgumentException("El tripulante no puede ser nulo.");
+        }
+        if (t.getTripulante().getCargo().getCargoTripulante().equalsIgnoreCase("Capitan")) {
+            throw new IllegalStateException("No se puede eliminar al Capitán de la nave.");
+        }
         nave.getTripulacion().removeTripulante(t.getTripulante().getId());
         this.registrarEvento(TipoEvento.TRIPULACION, "Tripulante " + t.getTripulante().getId() + " removido");
     }

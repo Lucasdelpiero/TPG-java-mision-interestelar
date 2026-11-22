@@ -20,17 +20,21 @@ public class EnfriamientoState implements EstadoMotor {
     
     @Override
     public void saltar(MotorWarp motor){
-        AsistenteComando ac = motor.getAC();
-        Recursos recursos = ac.getRecursos();
-        if (recursos.getCombustible() >= 2)
-            recursos.consumeCombustible(2);
-        recursos.consumeDesgaste(3);
-        motor.setEstado(new DisponibleState());
+        terminarEnfriamiento(motor);
     }
     
     @Override
     public void saltoWarp(MotorWarp motor){
-        saltar(motor);
+        terminarEnfriamiento(motor);
+    }
+
+    private void terminarEnfriamiento(MotorWarp motor){
+        AsistenteComando ac = motor.getAC();
+        if (ac != null && ac.getRecursos() != null) {
+            Recursos recursos = ac.getRecursos();
+            recursos.consumeDesgaste(3);
+        }
+        motor.setEstado(new DisponibleState());
     }
     
     /*

@@ -155,29 +155,45 @@ public abstract class Mision{
     public boolean intentarSaltoWarp(){
         Nave nave = AC.getNave();
         MotorWarp motor = nave.getMotor();
-        motor.saltoWarp();
-        return "Salto warp".equals(motor.getNombreEstado());
+        return motor.estaDisponible() && nave.getRecursos().getEnergia() >= 5;
     }
     
     private boolean realizarSaltoWarp(int indice) throws InterruptedException{
+        MotorWarp motor = AC.getNave().getMotor();
         
+        // Turno 1 de preparacion
+        motor.saltoWarp();
+        AC.registrarMision(TipoEvento.MISION, "Motor Warp: Preparando salto (turno 1/2)", idMision);
         universo.pasarTurnoDestino();
         Thread.sleep(100);
         if (!chequearChoque())
             return false;
         
+        // Turno 2 de preparacion
+        motor.saltoWarp();
+        AC.registrarMision(TipoEvento.MISION, "Motor Warp: Preparando salto (turno 2/2)", idMision);
         universo.pasarTurnoDestino();
         Thread.sleep(100);
         if (!chequearChoque())
             return false;
         
-        Posicion p = ruta.get(indice + 1);
+        // Ejecucion de Salto Warp (consume 5 de energia y transiciona a Enfriamiento)
+        motor.saltoWarp();
+        AC.registrarMision(TipoEvento.MISION, "Motor Warp: ¡Salto Warp ejecutado! Esquivando obstaculo", idMision);
+        Posicion p = (indice + 1 < ruta.size()) ? ruta.get(indice + 1) : ruta.get(indice);
         universo.moverNave(p);
         if (!chequearChoque())
             return false;
         
-        return true;
+        // Turno de Enfriamiento (consume 3 de desgaste y vuelve a Disponible)
+        universo.pasarTurnoDestino();
+        Thread.sleep(100);
+        if (!chequearChoque())
+            return false;
+        motor.saltar();
+        AC.registrarMision(TipoEvento.MISION, "Motor Warp: Enfriamiento finalizado (+3 desgaste). Motor disponible.", idMision);
         
+        return true;
     }
     
     private boolean chequearChoque() {
@@ -185,13 +201,16 @@ public abstract class Mision{
 
         if (elementoActual != null) {
             choque();
-            return this.AC.getNave().estaOperativa();
+            return !this.AC.getNave().estaInservible();
         }
-        return true;
+        return !this.AC.getNave().estaInservible();
     }
     
     public void choque() {
-        
+        ElementoDelUniverso elementoActual = universo.inspeccionarPosicion();
+        if (elementoActual != null && AC != null && AC.getNave() != null) {
+            AC.getNave().choque(elementoActual);
+        }
     }
     
     public boolean realizarRecorrido(Posicion objetivo) throws InterruptedException {
@@ -200,16 +219,9 @@ public abstract class Mision{
 
     while (!universo.getPosicionNave().equals(objetivo)) {
         
-        
-        // 1. Resolver encuentro en la posición 
+        // 1. Resolver encuentro en la posición actual
         if (!chequearChoque())
             return false;
-            // Si el choque destruyó/inutilizó la nave,
-            // acá después podemos comprobarlo.
-        
-        if (!AC.consultaRecursos(2, 0, 0)) {
-                return false;
-            }
         
         // 2. Si se terminó la ruta sin llegar, falla
         if (indice >= ruta.size()) {
@@ -217,13 +229,15 @@ public abstract class Mision{
         }
 
         Posicion siguiente = ruta.get(indice);
-
         ElementoDelUniverso[][] tablero = universo.verTablero();
-
         ElementoDelUniverso elementoSiguiente = tablero[siguiente.getX()][siguiente.getY()];
 
-        // 3. SIGUIENTE POSICIÓN LIBRE DE ASTEROIDE
-        if (!(elementoSiguiente instanceof Asteroide) || indice  == ruta.size() - 1){
+        // 3. SIGUIENTE POSICIÓN LIBRE DE ASTEROIDE (o es el destino)
+        if (!(elementoSiguiente instanceof Asteroide) || indice == ruta.size() - 1){
+
+            if (!AC.consultaRecursos(2, 0, 0)) {
+                return false;
+            }
 
             AC.restaCombustible(2);
 
@@ -237,7 +251,7 @@ public abstract class Mision{
         // 4. HAY ASTEROIDE -> WARP
         else {
 
-            if (AC.consultaRecursos(5, 0, 0) && intentarSaltoWarp()) {
+            if (intentarSaltoWarp() && (AC.getRecursos().getDesgaste() + 3 < 100)) {
                 if (!realizarSaltoWarp(indice))
                     return false;
                 indice += 2;

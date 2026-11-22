@@ -32,7 +32,7 @@ public class ServicioUsuario {
         }
         catch(DAOException e){
             // Pasar el error directamente para no perder informacion, ademas tener en cuenta que e.getCause puede dar null si se creo un error sin especificar la causa
-            throw new UsuarioException("Error interno", e);
+            throw new UsuarioException("Error interno al registrar usuario", e);
         }   
     }
     

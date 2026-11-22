@@ -21,19 +21,25 @@ public class SaltoWarpState implements EstadoMotor {
     @Override
     public void saltar(MotorWarp motor){
         AsistenteComando ac = motor.getAC();
-        Recursos recursos = ac.getRecursos();
-        if (recursos.getCombustible() >= 2)
-            recursos.consumeCombustible(2);
-        motor.setEstado(new PreparandoSaltoState());
+        if (ac != null && ac.getRecursos() != null) {
+            Recursos recursos = ac.getRecursos();
+            if (recursos.getCombustible() >= 2)
+                recursos.consumeCombustible(2);
+        }
+        motor.setEstado(new PreparandoSaltoState(1));
     }
     
     @Override
     public void saltoWarp(MotorWarp motor){
         AsistenteComando ac = motor.getAC();
-        Recursos recursos = ac.getRecursos();
-        if(recursos.getEnergia() >= 5){
-            motor.setEstado(new SaltoWarpState());
-            recursos.consumeEnergia(5);
+        if (ac != null && ac.getRecursos() != null) {
+            Recursos recursos = ac.getRecursos();
+            if (recursos.getEnergia() >= 5){
+                recursos.consumeEnergia(5);
+                motor.setEstado(new EnfriamientoState());
+            } else {
+                motor.setEstado(new PreparandoSaltoState(1));
+            }
         }
     }
     

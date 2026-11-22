@@ -20,15 +20,16 @@ public class DisponibleState implements EstadoMotor {
     @Override
     public void saltar(MotorWarp motor){
         AsistenteComando ac = motor.getAC();
-        Recursos recursos = ac.getRecursos();
-        if (recursos.getCombustible() >= 2)
-            recursos.consumeCombustible(2);
+        if (ac != null && ac.getRecursos() != null) {
+            Recursos recursos = ac.getRecursos();
+            if (recursos.getCombustible() >= 2)
+                recursos.consumeCombustible(2);
+        }
     }
     
     @Override
     public void saltoWarp(MotorWarp motor){
-        saltar(motor);
-        motor.setEstado(new PreparandoSaltoState());
+        motor.setEstado(new PreparandoSaltoState(1));
     }
     
     /*

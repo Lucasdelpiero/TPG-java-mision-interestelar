@@ -22,7 +22,7 @@ public class Main {
         EstacionDeCarga e2 = new EstacionDeCarga();
         //elementos.add(a1);
         //elementos.add(a2);
-        //elementos.add(e1);
+        elementos.add(e1);
         //elementos.add(e2);
         
         for(int i=0; i<20;i++){

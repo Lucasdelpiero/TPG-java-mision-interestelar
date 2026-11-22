@@ -33,6 +33,10 @@ public class MotorWarp {
     public void saltoWarp(){
         this.estado.saltoWarp(this);
     }
+
+    public void saltarWarp(){
+        this.saltoWarp();
+    }
     
     
     /**
