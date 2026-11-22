@@ -340,7 +340,9 @@ public class Controlador implements ActionListener{
         universoParalelo.registrarObservador(new ObservadorPlataforma(){
             @Override
             public void onEvento(String msg){
-                vistaDashboard.getAreaConsola().append("> "+ msg +"\n");
+                javax.swing.SwingUtilities.invokeLater(() -> {
+                    vistaDashboard.getAreaConsola().append("> "+ msg +"\n");
+                });
             }
         });
     }

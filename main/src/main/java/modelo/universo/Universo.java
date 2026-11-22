@@ -57,6 +57,8 @@ public class Universo extends Observable  {
      * - Actualiza la posición de la nave y notifica a los observadores.
      */
     public void moverNave(Posicion posicion) {
+        assert posicion != null : "La posición no puede ser nula";
+        assert posicion.getX() >= 0 && posicion.getX() < getX() && posicion.getY() >= 0 && posicion.getY() < getY() : "La posición se encuentra fuera de los límites del tablero";
         tablero.moverNave(posicion);
     }
     

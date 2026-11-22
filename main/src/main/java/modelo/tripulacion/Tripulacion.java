@@ -43,6 +43,11 @@ public class Tripulacion {
      */
     public void addTripulante(Haber h) {
         assert h != null : "Error: tripulante es null";
+        assert h.getTripulante() != null : "El haber debe contener un tripulante válido";
+        assert getTripulante(h.getTripulante().getId()) == null : "Identificador de tripulante ya existente";
+        if (h.getTripulante().getCargo().getCargoTripulante().equalsIgnoreCase("Capitan")) {
+            assert getTripulantesCargo("Capitan").isEmpty() : "Solo se permite un Capitan en la tripulacion";
+        }
         tripulantes.add(h);
     }
     
@@ -65,7 +70,7 @@ public class Tripulacion {
     
     /**
      * <b>PRE</b>
-     * - cargo puede ser null (retorna todos) o nombre de cargo válido.
+     * - cargo no nulo ni vacío.
      * <b>POST</b>
      * - Retorna lista con los tripulantes que desempeñan el cargo solicitado.
      */
@@ -73,11 +78,11 @@ public class Tripulacion {
         Cargo c;
         Tripulante t;
         ArrayList<Tripulante> tripulantesCargo = new ArrayList<>();
-        assert cargo == null || !cargo.isBlank() : "Cargo invalido";
+        assert cargo != null && !cargo.isBlank() : "Cargo invalido";
         for (Haber h : this.tripulantes) {
             t = h.getTripulante();
             c = t.getCargo();
-            if (cargo == null || c.getCargoTripulante().equalsIgnoreCase(cargo))
+            if (c.getCargoTripulante().equalsIgnoreCase(cargo))
                 tripulantesCargo.add(t);
         }
         return tripulantesCargo;
@@ -102,13 +107,11 @@ public class Tripulacion {
     }
     
     public void reiniciarPeriodo() {
-        ArrayList<Tripulante> consejeros = getTripulantesCargo(null);
-        Cargo c;
-        for (Tripulante t : consejeros) {
-            c = t.getCargo();
-            if (c.getCargoTripulante().equals("Consejero"))
-                ((Consejero) t.getCargo()).resetConsejos();
-            t.addAntiguedad(1);
+        for (Haber h : this.tripulantes) {
+            h.getTripulante().addAntiguedad(1);
+        }
+        for (Tripulante t : getTripulantesCargo("Consejero")) {
+            ((Consejero) t.getCargo()).resetConsejos();
         }
     }
     

@@ -20,11 +20,13 @@ public class EnfriamientoState implements EstadoMotor {
     
     @Override
     public void saltar(MotorWarp motor){
+        assert motor != null : "El motor no puede ser nulo";
         terminarEnfriamiento(motor);
     }
     
     @Override
     public void saltoWarp(MotorWarp motor){
+        assert motor != null : "El motor no puede ser nulo";
         terminarEnfriamiento(motor);
     }
 

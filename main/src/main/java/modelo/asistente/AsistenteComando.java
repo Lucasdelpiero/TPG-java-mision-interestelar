@@ -25,6 +25,7 @@ public class AsistenteComando {
     //          CONSTRUCTOR
     //-------------------------------------------
     public AsistenteComando(Nave nave, String nombre, Universo universo){
+        assert nave != null : "La nave no puede ser nula";
         this.universo = universo;
         this.nave = nave;
         this.nombre = nombre;
@@ -79,16 +80,15 @@ public class AsistenteComando {
     
     /**
      * <b>POST</b>
-     * - Retorna true si la nave conserva recursos suficientes y desgaste menor a 100 tras el consumo; false en caso contrario.
+     * - Retorna true si la nave conserva recursos suficientes y desgaste menor o igual a 100 tras el consumo; false en caso contrario.
      */
     public boolean consultaRecursos(int consumoCombustible,int consumoEnergia, int consumoDesgaste){
         if (nave == null || nave.getRecursos() == null) return false;
         return 
-            (nave.getRecursos().getCombustible() - consumoCombustible > 0) 
+            (nave.getRecursos().getCombustible() - consumoCombustible >= 0) 
                 && 
-            (nave.getRecursos().getDesgaste() + consumoDesgaste < 100) &&
-            (nave.getRecursos().getEnergia() - consumoEnergia > 0)    
-                ;
+            (nave.getRecursos().getDesgaste() + consumoDesgaste <= 100) &&
+            (nave.getRecursos().getEnergia() - consumoEnergia >= 0);
     }   
     
         //---------------   MODIF RECURSOS    -----------------
@@ -248,6 +248,7 @@ public class AsistenteComando {
     }
     
     public void setNave(Nave nave){
+        assert nave != null : "La nave no puede ser nula";
         this.nave = nave;
         if (nave != null && nave.getMotor() != null) {
             nave.getMotor().setAC(this);

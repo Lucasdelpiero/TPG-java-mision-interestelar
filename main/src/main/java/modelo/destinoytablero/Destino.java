@@ -20,6 +20,7 @@ public class Destino {
      * @param tablero tablero cuyos elementos coordinará
      */
     public Destino(Tablero tablero){
+        assert tablero != null : "El tablero no puede ser nulo";
         this.tablero = tablero;
     }
     /**
@@ -34,6 +35,7 @@ public class Destino {
      * elemento se movió.</p>
      */
     public void turnoDestino() {
+        assert tablero != null : "El tablero no puede ser nulo";
         HashMap<Posicion, ElementoDelUniverso> elementos = tablero.obtenerElementos();
         ArrayList<Posicion> seleccion = new ArrayList<Posicion>(elementos.keySet());
         Collections.shuffle(seleccion, azar);

@@ -65,8 +65,9 @@ public abstract class Mision{
      * <b>POST</b>
      * - Ejecuta la secuencia completa de la misión: preparar, ejecutar, evaluar y cerrar.
      */
-    public void hacerMision(AsistenteComando AC){
+    public final void hacerMision(AsistenteComando AC){
         assert (AC != null): "Error: AC es null" ;
+        assert (AC.getNave() != null): "Error: AC no tiene nave asignada";
         this.AC = AC;
       
         
@@ -89,6 +90,7 @@ public abstract class Mision{
     protected void preparar(){
         informe = new InformeMision(idMision, nombreMision);
         
+        assert (AC != null) : ":: [MISION] ERROR: AC es null";
         assert (AC.getNave() != null) : ":: [MISION] ERROR: Nave es null";
         assert (AC.getNave().getRecursos() != null) : ":: [MISION] ERROR: Recursos es null";
         destino = obtenerPosicionObjetivo();
@@ -233,8 +235,8 @@ public abstract class Mision{
      * - Desplaza la nave a lo largo de la ruta resolviendo saltos simples o Warp; retorna true si arriba al objetivo con vida o false si falla.
      */
     public boolean realizarRecorrido(Posicion objetivo) throws InterruptedException {
-
-    int indice = 0;
+        assert objetivo != null : "El objetivo no puede ser nulo";
+        int indice = 0;
 
     while (!universo.getPosicionNave().equals(objetivo)) {
         
@@ -297,6 +299,8 @@ public abstract class Mision{
      * - Genera lista de posiciones adyacentes optimizando distancia Manhattan hacia el objetivo.
      */
     public void calcularRuta(Posicion objetivo) {
+        assert objetivo != null : "El objetivo no puede ser nulo";
+        assert objetivo.getX() >= 0 && objetivo.getX() < universo.getX() && objetivo.getY() >= 0 && objetivo.getY() < universo.getY() : "El objetivo se encuentra fuera de los límites del tablero";
 
         ElementoDelUniverso[][] tablero = universo.verTablero();
 

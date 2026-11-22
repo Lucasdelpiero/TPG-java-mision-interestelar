@@ -29,6 +29,7 @@ public class MotorWarp {
      * - Retorna true si la nave posee al menos 2 unidades de combustible.
      */
     public boolean puedeSaltar(){
+        assert this.AC != null && this.AC.getRecursos() != null : "El asistente de comando y sus recursos deben estar asignados";
         return AC.getRecursos().getCombustible() >= 2;
     }
     

@@ -52,6 +52,7 @@ public abstract class Nave implements ElementoDelUniverso {
      */
     @Override
     public void choque(ElementoDelUniverso elemento){
+        assert elemento != null : "El elemento del choque no puede ser nulo";
         if (elemento instanceof Nave nave){
             this.choqueNave(nave);
         } else if (elemento instanceof Asteroide asteroide){
@@ -68,6 +69,7 @@ public abstract class Nave implements ElementoDelUniverso {
      * - Descuenta energía por impacto o destruye la nave si la energía es insuficiente.
      */
     public void chocaAsteroide(Asteroide asteroide){
+        assert asteroide != null : "El asteroide no puede ser nulo";
         int costo = asteroide.getCostoChoqueEnergia();
         if (this.getRecursos().getEnergia() >= costo){
                 this.getRecursos().consumeEnergia(costo);
@@ -83,6 +85,7 @@ public abstract class Nave implements ElementoDelUniverso {
      * - Recarga combustible y energía según los suministros que ofrece la estación.
      */
     public void chocaEstacionDeCarga(EstacionDeCarga estacion){
+        assert estacion != null : "La estación de carga no puede ser nula";
         int combustible = estacion.getRecargaCombustible();
         int energia = estacion.getRecargaEnergia();
         this.getRecursos().cargaCombustible(combustible);

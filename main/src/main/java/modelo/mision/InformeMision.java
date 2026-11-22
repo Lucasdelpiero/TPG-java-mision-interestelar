@@ -96,4 +96,8 @@ public class InformeMision {
     public boolean esResultadoExitoso() {
         return resultadoExitoso;
     }
+
+    public void setResultadoExitoso(boolean resultadoExitoso) {
+        this.resultadoExitoso = resultadoExitoso;
+    }
 }

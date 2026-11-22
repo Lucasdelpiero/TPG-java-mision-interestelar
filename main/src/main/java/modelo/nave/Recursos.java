@@ -75,14 +75,17 @@ public class Recursos {
     
     
     public void setCombustible(int combustible) {
+        assert combustible >= 0 && combustible <= 100 : "Combustible fuera de rango [0, 100]";
         this.combustible = combustible;
     }
 
     public void setEnergia(int energia) {
+        assert energia >= 0 && energia <= 100 : "Energia fuera de rango [0, 100]";
         this.energia = energia;
     }
 
     public void setDesgaste(int desgaste) {
+        assert desgaste >= 0 && desgaste <= 100 : "Desgaste fuera de rango [0, 100]";
         this.desgaste = desgaste;
     }
     
@@ -97,6 +100,8 @@ public class Recursos {
      * - Disminuye el combustible en la cantidad indicada.
      */
     public void consumeCombustible(int consumo){
+        assert consumo >= 0 : "El consumo no puede ser negativo";
+        assert this.combustible - consumo >= 0 : "Combustible no puede ser negativo";
         this.combustible -= consumo;
     }
     
@@ -107,6 +112,8 @@ public class Recursos {
      * - Disminuye la energía en la cantidad indicada.
      */
     public void consumeEnergia(int consumo){
+        assert consumo >= 0 : "El consumo no puede ser negativo";
+        assert this.energia - consumo >= 0 : "Energia no puede ser negativa";
         this.energia -= consumo;
     }
     
@@ -117,6 +124,8 @@ public class Recursos {
      * - Incrementa el desgaste en la cantidad indicada.
      */
     public void consumeDesgaste(int consumo){
+        assert consumo >= 0 : "El consumo no puede ser negativo";
+        assert this.desgaste + consumo <= 100 : "Desgaste no puede superar 100";
         this.desgaste += consumo;
     }
     

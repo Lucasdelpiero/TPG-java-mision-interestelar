@@ -94,6 +94,32 @@ public class CorrecionesTest {
         assert naveCombate.getRecursos().getEnergia() == (energiaAntesAsteroide - 10) : "Asteroide debe descontar 10 de energia";
         System.out.println("-> OK: Choque con asteroide desconto 10 de energia correctamente.");
 
+        System.out.println("\nTest 6: Validacion de Precondiciones mediante asserts (-ea)");
+        boolean assertCombustibleLanzado = false;
+        try {
+            naveCombate.getRecursos().consumeCombustible(-1);
+        } catch (AssertionError e) {
+            assertCombustibleLanzado = true;
+        }
+        assert assertCombustibleLanzado : "consumeCombustible con valor negativo debe disparar AssertionError";
+
+        boolean assertChoqueNullLanzado = false;
+        try {
+            naveCombate.choque(null);
+        } catch (AssertionError e) {
+            assertChoqueNullLanzado = true;
+        }
+        assert assertChoqueNullLanzado : "choque con elemento nulo debe disparar AssertionError";
+
+        boolean assertMotorSinACLanzado = false;
+        try {
+            new MotorWarp().puedeSaltar();
+        } catch (AssertionError e) {
+            assertMotorSinACLanzado = true;
+        }
+        assert assertMotorSinACLanzado : "puedeSaltar sin AC asignado debe disparar AssertionError";
+        System.out.println("-> OK: Asserts de precondiciones validados exitosamente.");
+
         System.out.println("\n=== TODAS LAS PRUEBAS FINALIZARON CON EXITO ===");
     }
 }

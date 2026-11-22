@@ -20,6 +20,7 @@ public class SaltoWarpState implements EstadoMotor {
     
     @Override
     public void saltar(MotorWarp motor){
+        assert motor != null : "El motor no puede ser nulo";
         AsistenteComando ac = motor.getAC();
         if (ac != null && ac.getRecursos() != null) {
             Recursos recursos = ac.getRecursos();
@@ -31,6 +32,7 @@ public class SaltoWarpState implements EstadoMotor {
     
     @Override
     public void saltoWarp(MotorWarp motor){
+        assert motor != null : "El motor no puede ser nulo";
         AsistenteComando ac = motor.getAC();
         if (ac != null && ac.getRecursos() != null) {
             Recursos recursos = ac.getRecursos();

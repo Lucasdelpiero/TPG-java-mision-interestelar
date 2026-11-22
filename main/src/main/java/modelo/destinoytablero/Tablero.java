@@ -45,6 +45,7 @@ public class Tablero extends Observable {
      *         {@code x * y / 4 * 3}, con división entera
      */
     public Tablero(int x, int y, ArrayList<ElementoDelUniverso> elementos) throws DimensionesDeTableroInconsistentesException, CantidadDeElementosSuperaCasillaException {
+        assert elementos != null : "La lista de elementos no puede ser nula";
         if (x < 5 || y < 5) {
             throw new DimensionesDeTableroInconsistentesException("tamaño mínimo 5x5");
         }
@@ -122,6 +123,7 @@ public class Tablero extends Observable {
      * @throws NullPointerException si la posición inicial es nula
      */
     private Posicion buscarLibre(Posicion actual) {
+        assert actual != null && estaDentro(actual) : "La posición inicial no puede ser nula y debe estar dentro del tablero";
         if (estaLibre(actual)) {
             return actual;
         }
@@ -155,6 +157,7 @@ public class Tablero extends Observable {
      * @throws NullPointerException si la posición es nula
      */
     private ArrayList<Posicion> vecinasDe(Posicion posicion) {
+        assert posicion != null && estaDentro(posicion) : "La posición no puede ser nula y debe pertenecer al tablero";
         ArrayList<Posicion> vecinas = new ArrayList<Posicion>();
         for (int dx = -1; dx <= 1; dx++) {
             for (int dy = -1; dy <= 1; dy++) {
@@ -179,6 +182,7 @@ public class Tablero extends Observable {
      * @throws NullPointerException si la posición es nula
      */
     protected boolean estaDentro(Posicion posicion) {
+        assert posicion != null : "La posición no puede ser nula";
         return posicion.getX() >= 0 && posicion.getX() < x && posicion.getY() >= 0 && posicion.getY() < y;
     }
 
@@ -191,6 +195,7 @@ public class Tablero extends Observable {
      * @return {@code true} si no hay elemento y no coincide con el objetivo
      */
     private boolean estaLibre(Posicion posicion) {
+        assert posicion != null && estaDentro(posicion) : "La posición no puede ser nula y debe estar dentro del tablero";
         return !ocupacion.containsKey(posicion) && !posicion.equals(objetivo);
     }
 
@@ -236,6 +241,8 @@ public class Tablero extends Observable {
      * @param posicion nueva ubicación de la nave
      */
     public void moverNave(Posicion posicion) {
+        assert posicion != null : "La posición de la nave no puede ser nula";
+        assert estaDentro(posicion) : "La posición de la nave debe estar dentro del tablero";
         posicionNave = posicion;
         notificarObservadores();
     } 
@@ -329,6 +336,8 @@ public class Tablero extends Observable {
      * @param posNueva destino del elemento
      */
     protected void moverElemento(Posicion posActual, Posicion posNueva) {
+        assert posActual != null && ocupacion.containsKey(posActual) : "El origen debe estar ocupado";
+        assert posNueva != null && estaDentro(posNueva) && estaLibre(posNueva) : "El destino debe ser no nulo, dentro del tablero, libre y no coincidir con el objetivo";
         ElementoDelUniverso elemento = ocupacion.remove(posActual);
         ocupacion.put(posNueva, elemento);
     }
