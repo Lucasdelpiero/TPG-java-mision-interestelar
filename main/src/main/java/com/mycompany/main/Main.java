@@ -17,21 +17,19 @@ public class Main {
         // =====================================================
         ArrayList<ElementoDelUniverso> elementos = new ArrayList<>();
         Asteroide a1 = new Asteroide();
-        Asteroide a2 = new Asteroide();
         EstacionDeCarga e1 = new EstacionDeCarga();
-        EstacionDeCarga e2 = new EstacionDeCarga();
         //elementos.add(a1);
         //elementos.add(a2);
         //elementos.add(e1);
         //elementos.add(e2);
         
         // Añadir 10 estaciones de carga
-        for(int i=0; i<10;i++){
+        for(int i=0; i<5;i++){
             elementos.add(e1);
         }
         
         // Añadir 20 asteroides
-        for(int i=0; i<20;i++){
+        for(int i=0; i<25;i++){
             elementos.add(a1);
         }
         
