@@ -226,3 +226,30 @@ El "final" del método es importante porque así nos evitamos que en las clases 
 
 -Las especificas a cada misión:
 	Estas se declaran como métodos abstractos para que sean implementados por cada clase Mision especifica.
+
+---
+
+# *VENTANAS (vistas)*
+### Log In:
+Se compone de una ventana 400x300(px) donde contiene titulo, 2 campos de texto para ingreso de datos (usuario y clave) y dos botones de (Register), donde abre la ventana para registrar un usuario nuevo; y el boton (Log In) lleva al usuario a la ventana principal del sistema siempre y cuando los datos esten presentes dentro de la base de datos.
+### Register:
+Esta compuesto por una ventana de 400x300(px), dos botones y 3 campos de texto para completar datos obligatorios. El boton "Cancelar" regresa de a la ventana Log In, mientras que el boton "Register" almacena los datos ingresados por el usuario dentro de la base de datos, permitiendo ingresar al sistema utilizando la ventana Log In.
+### Dashboard:#
+La ventana principal esta dentro de un marco redimensionable de 1080x800(px), dividida en 3 secciones: Tablero de tiempo real, Universo paralelo e Informacion acerca de la nave seleccionada. Existen opciones para crear una nave de distinto tipo, ver el estado de sus recursos, su tripulacion y sus eventos recientes mediante la bitacora. Se presenta tambien un apartado donde se pueden ejecutar cualquiera de las 3 misiones siempre y cuando se dispongan de los recursos necesarios.
+El tablero puede tener dimensiones variables, que por defecto se establece la cantidad de casilleros en 50x50, donde dentro del mismo aparecen distintos elementos del universo representado con los siguientes colores:
+- Verde: Nave principal.
+- Turquesa: Naves ajenas.
+- Gris oscuro: Vacio, representa el espacio.
+- Beige: Asteroides.
+- Violeta: Estacion de carga.
+- Amarillo: Objetivo.
+Algunos elementos (Nave, Asteroides, etc) se mueven dentro del tablero al ejecutar una mision. Cuando se llama a un metodo que mueve los elementos (o la posicion de la nave) el universo notifica dicho movimiento a la vista y se recomponen los respectivos colores dentro del tablero.(Patron observer)
+Para mostrar los eventos del universo paralelo se tiene una consola donde se muetra cada una de las acciones de las naves generadoras y consumidoras que son agregadas por el usuario mediante dos botones en los laterales.
+La bitacora se muestra en una pestania y los eventos de la bitacora se encuentras en una tabla. Los reportes finales de la nave se muestran en una consola con los respectivos mensajes del estado de una mision terminada (exitosa o fracaso).
+La tripulacion de una nave se muestra en una tabla y se van agregando al mismo luego de completar un formulario de datos en la parte inferior de la tabla, con un boton llamado "Add".
+Las misiones se ejecutan seleccionando la mision a realizar junto con un boton "Start", donde luego involucrara el movimiento de los elementos dentro del tablero.
+
+---
+
+# *CONTROLADOR*
+Se opto por usar un controlador, donde la mayor parte de su tarea se trata de atender las acciones del usuario frente a las ventanas y delegar las peticiones al modelo, ya sea actualizando sus valores o cambiar de una ventana a otra.
